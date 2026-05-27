@@ -20,6 +20,7 @@
   --teal:     #4ab8a8;
   --teal2:    #6dd4c4;
   --rose:     #c86478;
+  --rose2:    #e08090;
   --violet:   #9878c8;
   --green:    #5a9e6a;
   --mono:     'JetBrains Mono', monospace;
@@ -57,12 +58,12 @@ nav ul { list-style: none; }
 nav a { display: block; font-family: var(--sans); font-size: 12px; color: var(--ink2); text-decoration: none; padding: .3rem 1.2rem; line-height: 1.4; border-left: 2px solid transparent; transition: all .15s; }
 nav a:hover { color: var(--ink); background: var(--bg3); }
 nav a.active { color: var(--gold); border-left-color: var(--gold); background: var(--bg3); }
-main { flex: 1; max-width: 920px; padding: 3.5rem 4rem; }
+main { flex: 1; max-width: 980px; padding: 3.5rem 4rem; }
 .cover { margin-bottom: 3.5rem; padding-bottom: 2.5rem; border-bottom: 1px solid var(--border); }
 .course-badge { display: inline-block; font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); background: rgba(212,168,67,.12); border: 1px solid rgba(212,168,67,.3); border-radius: 3px; padding: .25rem .7rem; margin-bottom: 1rem; }
-.cover h1 { font-family: var(--display); font-size: 2.7rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .75rem; }
+.cover h1 { font-family: var(--display); font-size: 2.75rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .75rem; }
 .cover h1 em { color: var(--gold); font-style: italic; }
-.cover .subtitle { font-family: var(--sans); font-size: .92rem; color: var(--ink2); font-weight: 300; letter-spacing: .02em; max-width: 720px; }
+.cover .subtitle { font-family: var(--sans); font-size: .92rem; color: var(--ink2); font-weight: 300; letter-spacing: .02em; max-width: 760px; }
 .topics-row { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.4rem; }
 .topic-pill { font-family: var(--sans); font-size: 11px; font-weight: 500; padding: .28rem .7rem; border-radius: 20px; border: 1px solid var(--border); color: var(--ink2); }
 h2 { font-family: var(--display); font-size: 1.6rem; font-weight: 600; color: var(--ink); margin: 3.2rem 0 1.2rem; scroll-margin-top: 2rem; display: flex; align-items: center; gap: .7rem; }
@@ -71,49 +72,45 @@ h3 { font-family: var(--sans); font-size: 1rem; font-weight: 600; color: var(--t
 p { margin-bottom: .9rem; }
 a { color: var(--teal2); text-decoration: none; }
 a:hover { text-decoration: underline; }
-.block { margin: 1.2rem 0; padding: 1rem 1.2rem; border-radius: 6px; }
+.block { margin: 1.2rem 0; padding: 1.05rem 1.25rem; border-radius: 6px; }
 .note { background: var(--bg3); border-left: 3px solid var(--border); font-size: .94rem; color: var(--ink2); }
-.goal { background: rgba(74,184,168,.07); border-left: 3px solid var(--teal); }
-.warn { background: rgba(200,100,120,.07); border-left: 3px solid var(--rose); }
+.intro { background: rgba(74,184,168,.07); border-left: 3px solid var(--teal); }
+.disclaimer { background: rgba(200,100,120,.08); border-left: 3px solid var(--rose); border-top: 1px solid rgba(200,100,120,.18); border-bottom: 1px solid rgba(200,100,120,.18); }
 .label { font-family: var(--sans); font-size: 9.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; display: block; margin-bottom: .4rem; }
-.goal .label { color: var(--teal); }
+.intro .label { color: var(--teal); }
 .note .label { color: var(--ink3); }
-.warn .label { color: var(--rose); }
+.disclaimer .label { color: var(--rose2); }
 .m { font-family: var(--mono); font-size: .83em; background: var(--bg4); color: var(--gold2); padding: .12em .38em; border-radius: 3px; white-space: nowrap; }
-.card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.2rem 0; }
-.card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 1.05rem; transition: border-color .15s, transform .15s, background .15s; }
-.card:hover { border-color: rgba(212,168,67,.55); transform: translateY(-1px); background: #22242d; }
-.card .badge { font-family: var(--sans); font-size: 9px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin-bottom: .55rem; display: block; }
-.card h3 { margin: 0 0 .35rem; font-size: 1rem; color: var(--ink); }
-.card p { font-size: .88rem; color: var(--ink2); margin-bottom: .75rem; line-height: 1.65; }
-.card a.button { display: inline-block; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--bg); background: var(--gold); border-radius: 4px; padding: .34rem .7rem; text-decoration: none; }
-.card a.button.secondary { color: var(--ink2); background: transparent; border: 1px solid var(--border); margin-left: .35rem; }
-.status { display: inline-block; font-family: var(--sans); font-size: 10px; color: var(--green); border: 1px solid rgba(90,158,106,.35); background: rgba(90,158,106,.08); padding: .16rem .45rem; border-radius: 20px; margin-left: .35rem; }
+.week-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.2rem 0; }
+.week-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 1.05rem; transition: border-color .15s, transform .15s, background .15s; min-height: 165px; display: flex; flex-direction: column; justify-content: space-between; }
+.week-card:hover { border-color: rgba(212,168,67,.55); transform: translateY(-1px); background: #22242d; }
+.week-card .badge { font-family: var(--sans); font-size: 9px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin-bottom: .55rem; display: block; }
+.week-card h3 { margin: 0 0 .35rem; font-size: 1rem; color: var(--ink); }
+.week-card p { font-size: .88rem; color: var(--ink2); margin-bottom: .75rem; line-height: 1.65; }
+.week-card a.button { display: inline-block; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--bg); background: var(--gold); border-radius: 4px; padding: .34rem .7rem; text-decoration: none; width: fit-content; }
+.week-card a.button.secondary { color: var(--ink2); background: transparent; border: 1px solid var(--border); pointer-events: none; cursor: default; }
+.status { display: inline-block; font-family: var(--sans); font-size: 10px; color: var(--green); border: 1px solid rgba(90,158,106,.35); background: rgba(90,158,106,.08); padding: .16rem .45rem; border-radius: 20px; margin-left: .35rem; letter-spacing: 0; text-transform: none; }
+.status.planned { color: var(--ink3); border-color: var(--border); background: rgba(255,255,255,.03); }
 ul.L { padding-left: 1.4rem; margin: .5rem 0 .8rem; }
 ul.L li { margin-bottom: .35rem; }
-.tbl-wrap { overflow-x: auto; margin: 1rem 0; }
-table { width: 100%; border-collapse: collapse; font-size: .88rem; font-family: var(--sans); }
-th { background: var(--bg3); color: var(--ink2); font-weight: 600; padding: .5rem .8rem; text-align: left; border-bottom: 1px solid var(--border); font-size: .82rem; letter-spacing: .04em; text-transform: uppercase; }
-td { padding: .48rem .8rem; border-bottom: 1px solid var(--bg3); vertical-align: top; color: var(--ink2); }
-td:first-child { color: var(--ink); font-weight: 500; }
 .footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-family: var(--sans); font-size: 11px; color: var(--ink3); }
 @media (max-width: 960px) { nav { display: none; } main { padding: 2rem 1.5rem; max-width: 100%; } }
-@media (max-width: 700px) { .card-grid { grid-template-columns: 1fr; } .cover h1 { font-size: 2.15rem; } }
+@media (max-width: 760px) { .week-grid { grid-template-columns: 1fr; } .cover h1 { font-size: 2.15rem; } }
 </style>
 </head>
 <body>
 <div class="shell">
 <nav>
   <div class="nav-logo">
-    <div class="course">MAT100 · CS149</div>
-    <div class="title">Course Notes &amp; Problem Walkthroughs</div>
+    <div class="course">MATH 100 · COSC 149.2 · COSC 49.02</div>
+    <div class="title">Permutations, Probability &amp; Sorting</div>
   </div>
   <ul>
     <li class="nav-section">Home</li>
     <li><a href="#overview">1 · Overview</a></li>
-    <li><a href="#weeks">2 · Weekly Notes</a></li>
-    <li><a href="#topics">3 · Topics</a></li>
-    <li><a href="#howto">4 · How to Use</a></li>
+    <li><a href="#disclaimer">2 · Disclaimer</a></li>
+    <li><a href="#weeks">3 · Ten Weeks</a></li>
+    <li><a href="#usage">4 · How to Use</a></li>
     <li class="nav-section">Repository</li>
     <li><a href="https://github.com/Taosongyun/MAT100-CS149">GitHub Repo</a></li>
   </ul>
@@ -121,122 +118,164 @@ td:first-child { color: var(--ink); font-weight: 500; }
 
 <main>
   <section class="cover" id="overview">
-    <div class="course-badge">MAT100 / CS149</div>
-    <h1>Discrete Probability,<br>Permutations &amp; <em>Algorithms</em></h1>
+    <div class="course-badge">MATH 100 / COSC 149.2 / COSC 49.02</div>
+    <h1>Permutations, Probability<br>&amp; <em>Sorting</em></h1>
     <div class="subtitle">
-      A lightweight course website for notes, worked examples, practice problems, and proof walkthroughs.
-      The site is hosted directly from the GitHub repository using GitHub Pages.
+      Topics in Probability. A course-note website for study summaries, proof walkthroughs, homework review, midterm preparation, and office-hour-style explanations.
     </div>
     <div class="topics-row">
       <span class="topic-pill">Permutations</span>
+      <span class="topic-pill">Probability</span>
+      <span class="topic-pill">Sorting</span>
       <span class="topic-pill">Cycles</span>
-      <span class="topic-pill">Fixed points</span>
       <span class="topic-pill">Random processes</span>
       <span class="topic-pill">Counting</span>
-      <span class="topic-pill">Proofs</span>
       <span class="topic-pill">Algorithms</span>
     </div>
   </section>
 
   <section>
-    <h2><span class="sec-num">01</span>Overview</h2>
-    <p>
-      This repository collects readable course-style pages. Each page is designed as a self-contained handout:
-      definitions first, then examples, then worked solutions, then practice problems.
-    </p>
-
-    <div class="block goal">
-      <span class="label">Design Principle</span>
-      The goal is not just to store notes. The goal is to make each topic navigable, visually structured, and easy to review before homework, exams, or recitations.
+    <h2><span class="sec-num">01</span>Course Introduction</h2>
+    <div class="block intro">
+      <span class="label">Course Description</span>
+      <p>
+        This site is for <strong>MATH 100 / COSC 149.2 and COSC 49.02</strong>, <em>Topics in Probability: Permutations, Probability, and Sorting</em>, taught by <strong>Peter Winkler</strong>.
+      </p>
+      <p>
+        The course studies probabilistic and combinatorial structures behind permutations, cycles, sorting procedures, random processes, and related algorithmic questions. The pages here are intended as review-oriented study materials rather than official course documents.
+      </p>
     </div>
+  </section>
 
-    <div class="block note">
-      <span class="label">Current Status</span>
-      Week 1 is ready. Additional weeks can be added by placing new HTML files in the repository root and linking them from this index page.
+  <section id="disclaimer">
+    <h2><span class="sec-num">02</span>Read Before Using</h2>
+    <div class="block disclaimer">
+      <span class="label">Important Disclaimer</span>
+      <p>
+        The summaries on this website are generated from lecture notes, homework, midterms, office hours, and discussion with Claude AI. Read them with caution. Please double-check definitions, formulas, proofs, and final answers before relying on them.
+      </p>
+      <p>
+        If you find any error, unclear step, typo, or misleading explanation, feel free to message me so I can correct it.
+      </p>
     </div>
   </section>
 
   <section id="weeks">
-    <h2><span class="sec-num">02</span>Weekly Notes</h2>
+    <h2><span class="sec-num">03</span>Ten Weeks of Study</h2>
     <p>
-      Start here. Each card links to one standalone page.
+      Each button links to a standalone weekly page. Week names are intentionally simple so the index works as a fast navigation page.
     </p>
 
-    <div class="card-grid">
-      <article class="card">
-        <span class="badge">Week 1 <span class="status">Available</span></span>
-        <h3>Permutations, Cycles &amp; Fixed Points</h3>
-        <p>
-          Cycle notation, fixed points, derangements, long-cycle probability, and the 100 Prisoners problem.
-        </p>
-        <a class="button" href="week1_permutations_cycles_fixed_points.html">Open notes</a>
-        <a class="button secondary" href="https://github.com/Taosongyun/MAT100-CS149">Source</a>
+    <div class="week-grid">
+      <article class="week-card">
+        <div>
+          <span class="badge">Week 1 <span class="status">Available</span></span>
+          <h3>Permutations, Cycles &amp; Fixed Points</h3>
+          <p>Cycle notation, fixed points, derangements, long cycles, and the 100 Prisoners problem.</p>
+        </div>
+        <a class="button" href="week1_permutations_cycles_fixed_points.html">Open Week 1</a>
       </article>
 
-      <article class="card">
-        <span class="badge">Week 2</span>
-        <h3>Counting Methods</h3>
-        <p>
-          Placeholder for binomial coefficients, inclusion-exclusion, recurrence relations, and combinatorial identities.
-        </p>
-        <a class="button secondary" href="#">Coming soon</a>
+      <article class="week-card">
+        <div>
+          <span class="badge">Week 2 <span class="status planned">Planned</span></span>
+          <h3>Counting &amp; Inclusion-Exclusion</h3>
+          <p>Binomial coefficients, constrained counting, double-counting, and inclusion-exclusion arguments.</p>
+        </div>
+        <a class="button secondary" href="#">Coming Soon</a>
       </article>
 
-      <article class="card">
-        <span class="badge">Week 3</span>
-        <h3>Random Variables &amp; Expectation</h3>
-        <p>
-          Placeholder for indicators, linearity of expectation, variance, covariance, and common distributions.
-        </p>
-        <a class="button secondary" href="#">Coming soon</a>
+      <article class="week-card">
+        <div>
+          <span class="badge">Week 3 <span class="status planned">Planned</span></span>
+          <h3>Random Variables &amp; Expectation</h3>
+          <p>Indicator variables, linearity of expectation, variance, covariance, and useful distributions.</p>
+        </div>
+        <a class="button secondary" href="#">Coming Soon</a>
       </article>
 
-      <article class="card">
-        <span class="badge">Week 4</span>
-        <h3>Algorithms &amp; Probability</h3>
-        <p>
-          Placeholder for randomized algorithms, sorting, hashing, and probabilistic analysis.
-        </p>
-        <a class="button secondary" href="#">Coming soon</a>
+      <article class="week-card">
+        <div>
+          <span class="badge">Week 4 <span class="status planned">Planned</span></span>
+          <h3>Sorting Basics</h3>
+          <p>Comparison sorting, decision trees, lower bounds, MergeSort, QuickSort, and average-case reasoning.</p>
+        </div>
+        <a class="button secondary" href="#">Coming Soon</a>
+      </article>
+
+      <article class="week-card">
+        <div>
+          <span class="badge">Week 5 <span class="status planned">Planned</span></span>
+          <h3>Random Permutations</h3>
+          <p>Uniform permutations, cycle structure, records, inversions, and asymptotic behavior.</p>
+        </div>
+        <a class="button secondary" href="#">Coming Soon</a>
+      </article>
+
+      <article class="week-card">
+        <div>
+          <span class="badge">Week 6 <span class="status planned">Planned</span></span>
+          <h3>Recurrences &amp; Generating Functions</h3>
+          <p>Recursive counting, probability recurrences, generating functions, and closed-form derivations.</p>
+        </div>
+        <a class="button secondary" href="#">Coming Soon</a>
+      </article>
+
+      <article class="week-card">
+        <div>
+          <span class="badge">Week 7 <span class="status planned">Planned</span></span>
+          <h3>Random Walks &amp; Stopping</h3>
+          <p>Simple random walks, gambler's ruin, hitting times, stopping rules, and expectation tricks.</p>
+        </div>
+        <a class="button secondary" href="#">Coming Soon</a>
+      </article>
+
+      <article class="week-card">
+        <div>
+          <span class="badge">Week 8 <span class="status planned">Planned</span></span>
+          <h3>Probabilistic Method</h3>
+          <p>Existence proofs, union bounds, expectation arguments, and randomized construction ideas.</p>
+        </div>
+        <a class="button secondary" href="#">Coming Soon</a>
+      </article>
+
+      <article class="week-card">
+        <div>
+          <span class="badge">Week 9 <span class="status planned">Planned</span></span>
+          <h3>Advanced Sorting &amp; Algorithms</h3>
+          <p>Randomized algorithms, hashing-style ideas, algorithmic probability, and refined sorting analyses.</p>
+        </div>
+        <a class="button secondary" href="#">Coming Soon</a>
+      </article>
+
+      <article class="week-card">
+        <div>
+          <span class="badge">Week 10 <span class="status planned">Planned</span></span>
+          <h3>Review &amp; Exam Problems</h3>
+          <p>Midterm-style questions, office-hour clarifications, common mistakes, and final review summaries.</p>
+        </div>
+        <a class="button secondary" href="#">Coming Soon</a>
       </article>
     </div>
   </section>
 
-  <section id="topics">
-    <h2><span class="sec-num">03</span>Topic Map</h2>
-    <p>
-      The table below gives a compact view of what this site is meant to cover.
-    </p>
-
-    <div class="tbl-wrap">
-      <table>
-        <tr><th>Topic</th><th>Core Questions</th><th>Status</th></tr>
-        <tr><td>Permutations</td><td>How do we represent rearrangements? What is a cycle decomposition?</td><td>Week 1</td></tr>
-        <tr><td>Derangements</td><td>What is the probability that no element remains fixed?</td><td>Week 1</td></tr>
-        <tr><td>Long cycles</td><td>Why does <span class="m">Pr(cycle length &gt; n/2)</span> approach <span class="m">ln 2</span>?</td><td>Week 1</td></tr>
-        <tr><td>Counting</td><td>How do we count constrained objects without double-counting?</td><td>Planned</td></tr>
-        <tr><td>Expectation</td><td>How do indicator variables simplify hard probability questions?</td><td>Planned</td></tr>
-      </table>
-    </div>
-  </section>
-
-  <section id="howto">
-    <h2><span class="sec-num">04</span>How to Use This Repository</h2>
+  <section id="usage">
+    <h2><span class="sec-num">04</span>How to Use This Site</h2>
     <ul class="L">
-      <li>Open a weekly note from the card grid above.</li>
-      <li>Read the definitions before jumping into examples.</li>
-      <li>Use the worked examples to check the logic of each proof step.</li>
-      <li>Try the practice questions before revealing solutions.</li>
+      <li>Use the ten week buttons as the main navigation system.</li>
+      <li>Read the disclaimer before treating any proof or formula as final.</li>
+      <li>Compare each explanation with the official lecture notes, homework statements, and course materials.</li>
+      <li>When a weekly page is added, keep its link relative, for example <span class="m">week2_counting_inclusion_exclusion.html</span>.</li>
     </ul>
 
-    <div class="block warn">
+    <div class="block note">
       <span class="label">GitHub Pages Note</span>
-      Keep links relative. For example, use <span class="m">week1_permutations_cycles_fixed_points.html</span>, not <span class="m">/week1_permutations_cycles_fixed_points.html</span>, because this site lives under the repository path <span class="m">/MAT100-CS149/</span>.
+      This is a project site under <span class="m">/MAT100-CS149/</span>. Use relative links such as <span class="m">week1_permutations_cycles_fixed_points.html</span>, not absolute links such as <span class="m">/week1_permutations_cycles_fixed_points.html</span>.
     </div>
   </section>
 
   <div class="footer">
-    MAT100 / CS149 · Course Notes · Hosted with GitHub Pages · Repository: Taosongyun/MAT100-CS149
+    MATH 100 / COSC 149.2 / COSC 49.02 · Topics in Probability · Permutations, Probability, and Sorting · Peter Winkler · Hosted with GitHub Pages
   </div>
 </main>
 </div>
