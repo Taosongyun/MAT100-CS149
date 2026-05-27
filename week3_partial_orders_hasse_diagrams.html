@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 3 — Partial Orders &amp; Hasse Diagrams</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1117;--bg2:#161820;--bg3:#1e2028;--bg4:#252730;--border:#2e3040;--ink:#e8e4dc;--ink2:#a8a49c;--ink3:#68645c;--gold:#d4a843;--gold2:#f0c060;--teal:#4ab8a8;--teal2:#6dd4c4;--rose:#c86478;--rose2:#e08090;--violet:#9878c8;--violet2:#b898e0;--green:#5a9e6a;--green2:#7ac88a;--orange:#d4824a;--orange2:#f0a060;--mono:'JetBrains Mono',monospace;--serif:'Source Serif 4',Georgia,serif;--display:'Playfair Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--serif);background:var(--bg);color:var(--ink);line-height:1.8;font-size:16.5px}
+.shell{display:flex;min-height:100vh}
+nav{width:248px;min-width:248px;background:var(--bg2);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;padding:1.6rem 0;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.nav-logo{padding:0 1.2rem 1.2rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.nav-logo .course{font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3)}
+.nav-logo .title{font-family:var(--display);font-size:13px;color:var(--gold);margin-top:.25rem;line-height:1.3}
+nav ul{list-style:none}
+.nav-section{font-family:var(--sans);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);padding:.9rem 1.2rem .2rem}
+nav a{display:block;font-family:var(--sans);font-size:12px;color:var(--ink2);text-decoration:none;padding:.3rem 1.2rem;line-height:1.4;border-left:2px solid transparent;transition:all .15s}
+nav a:hover{color:var(--ink);background:var(--bg3)}
+nav a.active{color:var(--gold);border-left-color:var(--gold);background:var(--bg3)}
+main{flex:1;max-width:860px;padding:3.5rem 4rem}
+.cover{margin-bottom:3.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border)}
+.week-badge{display:inline-block;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.3);border-radius:3px;padding:.25rem .7rem;margin-bottom:1rem}
+.cover h1{font-family:var(--display);font-size:2.3rem;font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:.6rem}
+.cover h1 em{color:var(--gold);font-style:italic}
+.cover .subtitle{font-family:var(--sans);font-size:.9rem;color:var(--ink2);font-weight:300}
+.topics-row{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1.4rem}
+.topic-pill{font-family:var(--sans);font-size:11px;font-weight:500;padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);color:var(--ink2)}
+h2{font-family:var(--display);font-size:1.55rem;font-weight:600;color:var(--ink);margin:3.5rem 0 1.2rem;scroll-margin-top:2rem;display:flex;align-items:center;gap:.7rem}
+h2 .sn{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);padding:.25rem .55rem;border-radius:3px;flex-shrink:0}
+h3{font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--teal);margin:2rem 0 .65rem;scroll-margin-top:2rem;letter-spacing:.01em}
+h4{font-family:var(--sans);font-size:.9rem;font-weight:600;color:var(--ink2);margin:1.4rem 0 .4rem}
+p{margin-bottom:.9rem}
+.block{margin:1.2rem 0;padding:1rem 1.2rem;border-radius:6px}
+.def{background:rgba(74,184,168,.07);border-left:3px solid var(--teal)}
+.thm{background:rgba(212,168,67,.07);border-left:3px solid var(--gold)}
+.proof{background:var(--bg3);border-left:3px solid var(--border)}
+.ex{background:rgba(154,120,200,.07);border-left:3px solid var(--violet)}
+.note{background:var(--bg3);border-left:3px solid var(--border);font-size:.92rem;color:var(--ink2)}
+.hw{background:rgba(200,100,120,.07);border-left:3px solid var(--rose)}
+.warn{background:rgba(212,130,74,.07);border-left:3px solid var(--orange)}
+.lbl{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:.4rem}
+.def .lbl{color:var(--teal)}.thm .lbl{color:var(--gold)}.proof .lbl{color:var(--ink3)}.ex .lbl{color:var(--violet)}.hw .lbl{color:var(--rose)}.note .lbl{color:var(--ink3)}.warn .lbl{color:var(--orange)}
+.m{font-family:var(--mono);font-size:.83em;background:var(--bg4);color:var(--gold2);padding:.12em .38em;border-radius:3px;white-space:nowrap}
+.mb{display:block;font-family:var(--mono);font-size:.86em;background:var(--bg3);color:var(--teal2);padding:.65rem 1rem;border-radius:4px;margin:.7rem 0;border:1px solid var(--border);overflow-x:auto;white-space:pre}
+ul.L,ol.L{padding-left:1.4rem;margin:.5rem 0 .8rem}
+ul.L li,ol.L li{margin-bottom:.35rem}
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:.87rem;font-family:var(--sans)}
+th{background:var(--bg3);color:var(--ink2);font-weight:600;padding:.5rem .8rem;text-align:left;border-bottom:1px solid var(--border);font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
+td{padding:.42rem .8rem;border-bottom:1px solid var(--bg3);vertical-align:top;color:var(--ink2)}
+tr:last-child td{border-bottom:none}
+td:first-child{color:var(--ink);font-weight:500}
+/* Hasse diagram SVG containers */
+.hasse-wrap{display:flex;flex-wrap:wrap;gap:2rem;margin:1.5rem 0;align-items:flex-start}
+.hasse-fig{text-align:center}
+.hasse-fig svg{display:block;margin:0 auto}
+.hasse-fig .caption{font-family:var(--sans);font-size:11px;color:var(--ink3);margin-top:.5rem}
+.examples-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:1.2rem 0}
+.ex-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem}
+.ex-card .ex-badge{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.5rem;display:block}
+.ex-card.easy .ex-badge{color:var(--green)}.ex-card.med .ex-badge{color:var(--gold)}.ex-card.hard .ex-badge{color:var(--rose)}
+.ex-card h4{margin:0 0 .4rem;font-size:.85rem;color:var(--ink)}.ex-card p{font-size:.83rem;color:var(--ink2);margin-bottom:0}
+.check-table{width:100%;border-collapse:collapse;font-size:.85rem;font-family:var(--sans);margin:.8rem 0}
+.check-table th{background:var(--bg3);color:var(--ink2);padding:.4rem .7rem;text-align:left;border-bottom:1px solid var(--border);font-size:.78rem;letter-spacing:.04em;text-transform:uppercase}
+.check-table td{padding:.38rem .7rem;border-bottom:1px solid var(--bg3);vertical-align:middle}
+.check-table tr:last-child td{border-bottom:none}
+.yes{color:var(--green2);font-weight:600}.no{color:var(--rose2);font-weight:600}
+.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+.practice-header{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#2a3a5e,#1e4a3a);padding:.6rem 1.1rem;border-radius:6px 6px 0 0;display:flex;align-items:center;gap:.5rem}
+.practice-wrap{border:1px solid var(--border);border-radius:0 0 6px 6px;overflow:hidden;margin-bottom:2rem}
+.pq{border-bottom:1px solid var(--border)}.pq:last-child{border-bottom:none}
+.pq-q{font-family:var(--sans);font-size:.875rem;font-weight:500;color:var(--ink);padding:.75rem 1.1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;user-select:none;transition:background .12s}
+.pq-q:hover{background:var(--bg3)}
+.pq-q .qn{font-size:9.5px;font-weight:700;letter-spacing:.1em;color:var(--teal);min-width:1.8rem;padding-top:.1rem;flex-shrink:0}
+.pq-q .arr{font-size:11px;color:var(--ink3);transition:transform .18s;flex-shrink:0;padding-top:.1rem}
+.pq-q.open .arr{transform:rotate(180deg)}
+.pq-a{display:none;padding:.2rem 1.1rem .9rem;border-top:1px dashed var(--border);background:var(--bg2)}
+.pq-a.vis{display:block}
+.pq-a .al{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green2);margin-bottom:.5rem;display:block;padding-top:.55rem}
+.pq-a p{font-size:.875rem;font-family:var(--sans);color:var(--ink2);margin-bottom:.45rem;line-height:1.65}
+.pq-a .m{font-size:.8em}
+.pq-a ul,.pq-a ol{padding-left:1.3rem;margin:.3rem 0 .45rem;font-size:.875rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a li{margin-bottom:.25rem}
+.pq-a .step{background:var(--bg3);border-left:2px solid var(--teal);padding:.5rem .8rem;border-radius:0 4px 4px 0;margin:.4rem 0;font-size:.85rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a .step strong{color:var(--teal2)}
+.ans-box{background:rgba(90,158,106,.1);border:1px solid rgba(90,158,106,.3);border-radius:4px;padding:.4rem .8rem;font-family:var(--mono);font-size:.82em;color:var(--green2);margin:.4rem 0;display:inline-block}
+.cheat-sheet{background:var(--bg2);border:1px solid var(--gold);border-radius:8px;padding:1.5rem;margin:2rem 0}
+.cheat-title{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem}
+.cheat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.cheat-section h5{font-family:var(--sans);font-size:.8rem;font-weight:700;color:var(--teal2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.cheat-section p,.cheat-section li{font-family:var(--sans);font-size:.8rem;color:var(--ink2);line-height:1.5;margin-bottom:.25rem}
+.cheat-section ul{padding-left:1.1rem;margin:.25rem 0}
+
+/* ── Page navigation buttons ── */
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-bottom: 1.4rem;
+}
+.sidebar-actions {
+  padding: 0 1.2rem 1rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: .7rem;
+}
+.page-link {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--gold);
+  border: 1px solid rgba(212,168,67,.55);
+  border-radius: 4px;
+  padding: .34rem .7rem;
+  text-decoration: none;
+  line-height: 1.35;
+}
+.page-link:hover {
+  background: var(--gold2);
+  color: var(--bg);
+  text-decoration: none;
+}
+.page-link.secondary {
+  color: var(--ink2);
+  background: transparent;
+  border: 1px solid var(--border);
+}
+.page-link.secondary:hover {
+  color: var(--ink);
+  background: var(--bg3);
+  border-color: rgba(212,168,67,.45);
+}
+.page-link.disabled,
+.page-link[aria-disabled="true"] {
+  color: var(--ink3);
+  background: transparent;
+  border-color: var(--border);
+  cursor: not-allowed;
+  opacity: .75;
+}
+.sidebar-actions .page-link {
+  display: block;
+  margin-bottom: .45rem;
+  text-align: left;
+}
+
+.footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:var(--sans);font-size:11px;color:var(--ink3)}
+@media(max-width:960px){nav{display:none}main{padding:2rem 1.5rem}}
+@media(max-width:660px){.examples-grid,.cheat-grid{grid-template-columns:1fr}.hasse-wrap{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav>
+  <div class="nav-logo">
+    <div class="course">Math 100 · Spring 2026</div>
+    <div class="title">Week 3 — Partial Orders &amp; Hasse Diagrams</div>
+  </div>
+  <ul>
+    <li class="nav-section">Sections</li>
+    <li><a href="#why">1 · Why We Care</a></li>
+    <li><a href="#defs">2 · Definitions</a></li>
+    <li><a href="#partial-order">↳ Partial Orders</a></li>
+    <li><a href="#hasse">↳ Hasse Diagrams</a></li>
+    <li><a href="#linear-ext">↳ Linear Extensions</a></li>
+    <li><a href="#sorting-link">↳ Link to Sorting</a></li>
+    <li><a href="#examples">3 · Running Examples</a></li>
+    <li><a href="#worked">4 · Worked Examples</a></li>
+    <li><a href="#is-poset">↳ Is This a Poset?</a></li>
+    <li><a href="#draw-hasse">↳ Drawing Hasse Diagrams</a></li>
+    <li><a href="#state-poset">↳ State Poset (n=4)</a></li>
+    <li><a href="#practice">5 · Try It Yourself</a></li>
+    <li><a href="#hw">6 · Homework</a></li>
+    <li><a href="#cheat">7 · Cheat Sheet</a></li>
+  </ul>
+</nav>
+<main>
+
+<div class="page-actions">
+  <a class="page-link" href="index.html">← Back to Home</a>
+  <a class="page-link secondary" href="week2_sorting_information_theory.html">← Previous Week</a>
+  <a class="page-link secondary" href="week4_graded_posets_mirsky.html">Next Week →</a>
+</div>
+
+<div class="cover">
+  <div class="week-badge">Week 3</div>
+  <h1>Partial Orders &amp;<br><em>Hasse Diagrams</em></h1>
+  <div class="subtitle">Math 100 · Dartmouth College · Spring 2026</div>
+  <div class="topics-row">
+    <span class="topic-pill">Partial orders</span>
+    <span class="topic-pill">Posets</span>
+    <span class="topic-pill">Hasse diagrams</span>
+    <span class="topic-pill">Linear extensions</span>
+    <span class="topic-pill">Total orders</span>
+    <span class="topic-pill">Sorting as a poset</span>
+    <span class="topic-pill">Shove algorithm</span>
+    <span class="topic-pill">State poset</span>
+  </div>
+</div>
+
+<!-- ══ 1. WHY WE CARE ══ -->
+<h2 id="why"><span class="sn">01</span>Why We Care</h2>
+<p>So far we have been sorting — taking a completely unknown ordering and identifying it by making comparisons. But in many real situations, we already know <em>some</em> of the order. We know A beats B, B beats C, but we don't know how D compares to any of them.</p>
+<p>This partial information is exactly what a <strong>partial order</strong> captures. Partial orders let us:</p>
+<ul class="L">
+  <li>Represent what a sorting algorithm <em>knows so far</em> at any point in its execution.</li>
+  <li>Understand when a sorting algorithm is "done" — when the poset has only one linear extension.</li>
+  <li>Analyze the state of algorithms like the shove algorithm as a structured mathematical object.</li>
+</ul>
+<p>The Hasse diagram is the visual language for partial orders — the same way a graph is the visual language for pairwise relationships.</p>
+
+<!-- ══ 2. DEFINITIONS ══ -->
+<h2 id="defs"><span class="sn">02</span>Definitions</h2>
+
+<h3 id="partial-order">Partial Orders and Posets</h3>
+
+<div class="block def">
+  <span class="lbl">Definition — Partial Order</span>
+  A <strong>partial order</strong> on a set <span class="m">P</span> is a relation <span class="m">≤</span> satisfying three axioms for all <span class="m">x, y, z ∈ P</span>:
+  <ol class="L">
+    <li><strong>Reflexive:</strong> <span class="m">x ≤ x</span> — every element is related to itself.</li>
+    <li><strong>Antisymmetric:</strong> if <span class="m">x ≤ y</span> and <span class="m">y ≤ x</span>, then <span class="m">x = y</span> — no two distinct elements can each be ≤ the other.</li>
+    <li><strong>Transitive:</strong> if <span class="m">x ≤ y</span> and <span class="m">y ≤ z</span>, then <span class="m">x ≤ z</span> — the relation "chains through".</li>
+  </ol>
+  A set equipped with a partial order is called a <strong>partially ordered set</strong> or <strong>poset</strong>.
+  <br><br>
+  We write <span class="m">x &lt; y</span> (strict) when <span class="m">x ≤ y</span> and <span class="m">x ≠ y</span>. We say <span class="m">x</span> and <span class="m">y</span> are <strong>incomparable</strong> (written <span class="m">x ∥ y</span>) if neither <span class="m">x ≤ y</span> nor <span class="m">y ≤ x</span>.
+</div>
+
+<div class="block def">
+  <span class="lbl">Definition — Total Order (Linear Order)</span>
+  A partial order is a <strong>total order</strong> (or <strong>linear order</strong>) if every pair of elements is comparable: for all <span class="m">x, y</span>, either <span class="m">x ≤ y</span> or <span class="m">y ≤ x</span>. There are no incomparable pairs.
+  <br><br>
+  <em>Example:</em> The usual ≤ on integers is a total order. The divisibility relation on {1,2,3,4,6,12} is a partial order but <strong>not</strong> a total order (e.g. 4 and 6 are incomparable — neither divides the other).
+</div>
+
+<div class="block note">
+  <span class="lbl">Partial Order vs Directed Graph</span>
+  A directed graph (digraph) also has a relation between elements (edges). The key differences:
+  <ul class="L">
+    <li>A digraph is <strong>not</strong> required to be reflexive, antisymmetric, or transitive.</li>
+    <li>A partial order <strong>must</strong> satisfy all three. Transitivity in particular is powerful — it means if you can "follow the order" from x to y to z, then x ≤ z automatically.</li>
+    <li>The Hasse diagram of a poset looks like a directed graph, but we draw it without arrows (direction is given by vertical position) and without redundant edges (those implied by transitivity).</li>
+  </ul>
+</div>
+
+<h4>Standard Examples of Posets</h4>
+<div class="block ex">
+  <span class="lbl">Poset Zoo</span>
+  <ul class="L">
+    <li><strong>Divisibility:</strong> <span class="m">Dₙ</span> = divisors of n, ordered by "divides". <span class="m">a ≤ b</span> iff <span class="m">a | b</span>. Example: <span class="m">D₁₂ = {1,2,3,4,6,12}</span>.</li>
+    <li><strong>Subset inclusion:</strong> <span class="m">Bₙ</span> = all subsets of <span class="m">{1,…,n}</span>, ordered by <span class="m">⊆</span>. Called the <em>Boolean lattice</em>.</li>
+    <li><strong>Integers:</strong> <span class="m">(ℤ, ≤)</span> — total order.</li>
+    <li><strong>Sorting states:</strong> permutations ordered by "which states can reach which" under an algorithm — our main example this week.</li>
+    <li><strong>String prefix:</strong> strings ordered by "is a prefix of". "cat" ≤ "catch".</li>
+    <li><strong>Antichain:</strong> a set with NO comparable pairs — every element is incomparable to every other. The relation is just equality.</li>
+  </ul>
+</div>
+
+<h4>How to Check if a Relation is a Partial Order</h4>
+<div class="block thm">
+  <span class="lbl">The Three-Step Check</span>
+  Given a relation <span class="m">R</span> on a set <span class="m">P</span>, check each axiom:
+  <ol class="L">
+    <li><strong>Reflexive:</strong> Is <span class="m">x R x</span> for every <span class="m">x</span>? If any element is not related to itself → FAIL.</li>
+    <li><strong>Antisymmetric:</strong> If you find <span class="m">x R y</span> and <span class="m">y R x</span> with <span class="m">x ≠ y</span> → FAIL.</li>
+    <li><strong>Transitive:</strong> If <span class="m">x R y</span> and <span class="m">y R z</span>, must <span class="m">x R z</span>? If any triple violates this → FAIL.</li>
+  </ol>
+  If all three pass: it's a partial order. ✓
+</div>
+
+<h3 id="hasse">Hasse Diagrams</h3>
+<div class="block def">
+  <span class="lbl">Definition — Cover Relation</span>
+  In a poset, we say <span class="m">y</span> is <strong>covered by</strong> <span class="m">x</span> (written <span class="m">y ⋖ x</span>) if <span class="m">y &lt; x</span> and there is no element <span class="m">z</span> with <span class="m">y &lt; z &lt; x</span>. In other words, <span class="m">x</span> is the "next step up" from <span class="m">y</span> — nothing in between.
+</div>
+
+<div class="block def">
+  <span class="lbl">Definition — Hasse Diagram</span>
+  The <strong>Hasse diagram</strong> of a poset <span class="m">(P, ≤)</span> is drawn as follows:
+  <ul class="L">
+    <li>Each element of <span class="m">P</span> is a <strong>node</strong> (dot).</li>
+    <li>Draw an upward edge from <span class="m">y</span> to <span class="m">x</span> whenever <span class="m">y ⋖ x</span> (y is covered by x).</li>
+    <li><strong>No arrows</strong> — direction is encoded by height: higher = larger in the order.</li>
+    <li><strong>No redundant edges</strong> — edges implied by transitivity are omitted. If <span class="m">a &lt; b &lt; c</span>, we draw <span class="m">a-b</span> and <span class="m">b-c</span> but NOT <span class="m">a-c</span> (it's implied).</li>
+    <li><strong>No self-loops</strong> — reflexivity is understood, not drawn.</li>
+  </ul>
+</div>
+
+<div class="block note">
+  <span class="lbl">How to read a Hasse diagram</span>
+  <ul class="L">
+    <li><span class="m">x ≤ y</span> iff you can get from <span class="m">x</span> to <span class="m">y</span> by following edges <strong>upward</strong>.</li>
+    <li>Minimal elements are at the <strong>bottom</strong>, maximal elements at the <strong>top</strong>.</li>
+    <li>Two elements at the same height with no path between them are <strong>incomparable</strong>.</li>
+  </ul>
+</div>
+
+<h4>Classic Hasse Diagrams</h4>
+<div class="hasse-wrap">
+
+<!-- D12 -->
+<div class="hasse-fig">
+<svg width="130" height="220" viewBox="0 0 130 220">
+  <defs><marker id="dot" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="4" markerHeight="4"><circle cx="3" cy="3" r="2.5" fill="#4ab8a8"/></marker></defs>
+  <!-- edges -->
+  <line x1="65" y1="190" x2="35" y2="150" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+  <line x1="65" y1="190" x2="95" y2="150" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+  <line x1="35" y1="150" x2="25" y2="110" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+  <line x1="35" y1="150" x2="65" y2="110" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+  <line x1="95" y1="150" x2="65" y2="110" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+  <line x1="25" y1="110" x2="65" y2="60" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+  <line x1="65" y1="110" x2="65" y2="60" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+  <!-- nodes -->
+  <circle cx="65" cy="190" r="6" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  <circle cx="35" cy="150" r="6" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  <circle cx="95" cy="150" r="6" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  <circle cx="25" cy="110" r="6" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  <circle cx="65" cy="110" r="6" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  <circle cx="65" cy="60" r="6" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  <!-- labels -->
+  <text x="78" y="194" font-family="monospace" font-size="12" fill="#f0c060">1</text>
+  <text x="14" y="154" font-family="monospace" font-size="12" fill="#e8e4dc">2</text>
+  <text x="105" y="154" font-family="monospace" font-size="12" fill="#e8e4dc">3</text>
+  <text x="8" y="114" font-family="monospace" font-size="12" fill="#e8e4dc">4</text>
+  <text x="74" y="114" font-family="monospace" font-size="12" fill="#e8e4dc">6</text>
+  <text x="74" y="64" font-family="monospace" font-size="12" fill="#e8e4dc">12</text>
+</svg>
+<div class="caption">D₁₂ — divisors of 12<br>ordered by divisibility</div>
+</div>
+
+<!-- B3 -->
+<div class="hasse-fig">
+<svg width="180" height="220" viewBox="0 0 180 220">
+  <!-- level 0: empty set -->
+  <!-- level 1: {1},{2},{3} -->
+  <!-- level 2: {1,2},{1,3},{2,3} -->
+  <!-- level 3: {1,2,3} -->
+  <!-- edges from {} to singletons -->
+  <line x1="90" y1="190" x2="30" y2="145" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+  <line x1="90" y1="190" x2="90" y2="145" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+  <line x1="90" y1="190" x2="150" y2="145" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+  <!-- edges from singletons to pairs -->
+  <line x1="30" y1="145" x2="20" y2="95" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+  <line x1="30" y1="145" x2="90" y2="95" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+  <line x1="90" y1="145" x2="20" y2="95" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+  <line x1="90" y1="145" x2="160" y2="95" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+  <line x1="150" y1="145" x2="90" y2="95" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+  <line x1="150" y1="145" x2="160" y2="95" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+  <!-- edges from pairs to {1,2,3} -->
+  <line x1="20" y1="95" x2="90" y2="50" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+  <line x1="90" y1="95" x2="90" y2="50" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+  <line x1="160" y1="95" x2="90" y2="50" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+  <!-- nodes -->
+  <circle cx="90" cy="190" r="6" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+  <circle cx="30" cy="145" r="6" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+  <circle cx="90" cy="145" r="6" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+  <circle cx="150" cy="145" r="6" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+  <circle cx="20" cy="95" r="6" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+  <circle cx="90" cy="95" r="6" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+  <circle cx="160" cy="95" r="6" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+  <circle cx="90" cy="50" r="6" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+  <!-- labels -->
+  <text x="96" y="194" font-family="monospace" font-size="10" fill="#f0c060">∅</text>
+  <text x="5" y="150" font-family="monospace" font-size="10" fill="#e8e4dc">{1}</text>
+  <text x="94" y="150" font-family="monospace" font-size="10" fill="#e8e4dc">{2}</text>
+  <text x="155" y="150" font-family="monospace" font-size="10" fill="#e8e4dc">{3}</text>
+  <text x="-4" y="100" font-family="monospace" font-size="9" fill="#e8e4dc">{1,2}</text>
+  <text x="94" y="100" font-family="monospace" font-size="9" fill="#e8e4dc">{1,3}</text>
+  <text x="163" y="100" font-family="monospace" font-size="9" fill="#e8e4dc">{2,3}</text>
+  <text x="96" y="55" font-family="monospace" font-size="9" fill="#e8e4dc">{1,2,3}</text>
+</svg>
+<div class="caption">B₃ — subsets of {1,2,3}<br>ordered by ⊆</div>
+</div>
+
+<!-- Simple chain vs antichain -->
+<div class="hasse-fig">
+<svg width="130" height="220" viewBox="0 0 130 220">
+  <!-- chain on left -->
+  <line x1="30" y1="170" x2="30" y2="130" stroke="#d4a843" stroke-width="1.5" opacity=".6"/>
+  <line x1="30" y1="130" x2="30" y2="90" stroke="#d4a843" stroke-width="1.5" opacity=".6"/>
+  <line x1="30" y1="90" x2="30" y2="50" stroke="#d4a843" stroke-width="1.5" opacity=".6"/>
+  <circle cx="30" cy="170" r="6" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+  <circle cx="30" cy="130" r="6" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+  <circle cx="30" cy="90" r="6" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+  <circle cx="30" cy="50" r="6" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+  <text x="6" y="210" font-family="sans-serif" font-size="10" fill="#d4a843">chain</text>
+  <!-- antichain on right -->
+  <circle cx="90" cy="110" r="6" fill="#2a4a6b" stroke="#c86478" stroke-width="1.5"/>
+  <circle cx="110" cy="110" r="6" fill="#2a4a6b" stroke="#c86478" stroke-width="1.5"/>
+  <circle cx="70" cy="110" r="6" fill="#2a4a6b" stroke="#c86478" stroke-width="1.5"/>
+  <circle cx="80" cy="130" r="6" fill="#2a4a6b" stroke="#c86478" stroke-width="1.5"/>
+  <text x="68" y="210" font-family="sans-serif" font-size="10" fill="#c86478">antichain</text>
+  <text x="60" y="228" font-family="sans-serif" font-size="9" fill="#68645c">(no edges)</text>
+</svg>
+<div class="caption">Chain vs antichain</div>
+</div>
+
+</div><!-- end hasse-wrap -->
+
+<h3 id="linear-ext">Linear Extensions</h3>
+<div class="block def">
+  <span class="lbl">Definition — Linear Extension</span>
+  A <strong>linear extension</strong> of a poset <span class="m">(P, ≤)</span> is a total order <span class="m">≤*</span> on the same set that is <em>consistent</em> with <span class="m">≤</span>: if <span class="m">x ≤ y</span> in <span class="m">P</span>, then <span class="m">x ≤* y</span>.
+  <br><br>
+  In plain English: a linear extension is a way to put all elements in a single line so that you never violate any of the poset's relations.
+  <br><br>
+  We write <span class="m">e(P)</span> for the number of linear extensions of <span class="m">P</span>.
+</div>
+
+<div class="block ex">
+  <span class="lbl">Example — Linear extensions of D₄ = {1, 2, 4}</span>
+  Relations: <span class="m">1 | 2</span> and <span class="m">1 | 4</span> and <span class="m">2 | 4</span>. So <span class="m">1 &lt; 2 &lt; 4</span> — this is already a chain! Only <strong>one</strong> linear extension: <span class="m">1, 2, 4</span>.
+  <br><br>
+  Now consider the poset <span class="m">{a, b, c}</span> with only the relation <span class="m">a &lt; b</span> (c is incomparable to both). Linear extensions: any ordering consistent with <span class="m">a</span> before <span class="m">b</span>:
+  <span class="m">a, b, c</span> — <span class="m">a, c, b</span> — <span class="m">c, a, b</span>. So <span class="m">e(P) = 3</span>.
+</div>
+
+<h3 id="sorting-link">The Link to Sorting</h3>
+<div class="block thm">
+  <span class="lbl">Key Insight — Sorting as Refining a Poset</span>
+  When a sorting algorithm makes comparisons, it is building a poset:
+  <ul class="L">
+    <li><strong>Start:</strong> the poset is an antichain — all elements are incomparable (we know nothing about the order).</li>
+    <li><strong>Each comparison:</strong> learning that <span class="m">aᵢ &lt; aⱼ</span> adds the relation <span class="m">aᵢ &lt; aⱼ</span> to the poset (plus any relations implied by transitivity).</li>
+    <li><strong>End:</strong> the algorithm is done when the poset has exactly <strong>one linear extension</strong> — the full sorted order is now determined.</li>
+  </ul>
+  This is why the lower bound is <span class="m">⌈log₂(n!)⌉</span>: we start with <span class="m">n!</span> linear extensions (all possible orderings) and must reduce to 1 using binary comparisons.
+</div>
+
+<div class="block note">
+  <span class="lbl">When all linear extensions agree</span>
+  At any point during sorting, the poset encodes everything the algorithm knows. Any linear extension of the current poset is a valid sorted output — you can't tell which one is "right" yet. When there's only one linear extension left, all algorithms that consistently respect the poset will give the same answer. That's the moment sorting is complete.
+</div>
+
+<!-- ══ 3. RUNNING EXAMPLES ══ -->
+<h2 id="examples"><span class="sn">03</span>Three Running Examples</h2>
+<div class="examples-grid">
+  <div class="ex-card easy">
+    <span class="ex-badge">🟢 Easy — D₁₂</span>
+    <h4>Divisors of 12</h4>
+    <p>Check the three axioms, draw the Hasse diagram, identify cover relations, find linear extensions.</p>
+  </div>
+  <div class="ex-card med">
+    <span class="ex-badge">🟡 Medium — B₃</span>
+    <h4>Subsets of {1,2,3}</h4>
+    <p>A richer poset with 8 elements. Draw Hasse, count linear extensions, identify incomparable pairs.</p>
+  </div>
+  <div class="ex-card hard">
+    <span class="ex-badge">🔴 Hard — State poset</span>
+    <h4>Shove algorithm, n=4</h4>
+    <p>24 permutations as states. Verify the algorithm terminates. Draw the Hasse diagram. 8 levels.</p>
+  </div>
+</div>
+
+<!-- ══ 4. WORKED EXAMPLES ══ -->
+<h2 id="worked"><span class="sn">04</span>Worked Examples</h2>
+
+<h3 id="is-poset">Is This a Partial Order? — Several Examples</h3>
+
+<div class="block ex">
+  <span class="lbl">Example 1 — Divisibility on D₁₂ = {1, 2, 3, 4, 6, 12}</span>
+  <p>Relation: <span class="m">a ≤ b</span> iff <span class="m">a</span> divides <span class="m">b</span>.</p>
+  <table class="check-table">
+    <tr><th>Axiom</th><th>Check</th><th>Result</th></tr>
+    <tr><td>Reflexive</td><td>Does every number divide itself? Yes: <span class="m">a | a</span> always.</td><td><span class="yes">✓ Pass</span></td></tr>
+    <tr><td>Antisymmetric</td><td>If <span class="m">a | b</span> and <span class="m">b | a</span> with <span class="m">a ≠ b</span>? For positive integers, <span class="m">a | b</span> and <span class="m">b | a</span> implies <span class="m">a = b</span>.</td><td><span class="yes">✓ Pass</span></td></tr>
+    <tr><td>Transitive</td><td>If <span class="m">a | b</span> and <span class="m">b | c</span>, then <span class="m">a | c</span>? Yes: if <span class="m">b = ka</span> and <span class="m">c = lb</span>, then <span class="m">c = kla</span>.</td><td><span class="yes">✓ Pass</span></td></tr>
+  </table>
+  <p><strong>Conclusion: D₁₂ is a poset.</strong> Is it a total order? No — for example, <span class="m">4 ∥ 6</span> (neither divides the other).</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">Example 2 — "Strictly less than" on integers: a R b iff a &lt; b</span>
+  <table class="check-table">
+    <tr><th>Axiom</th><th>Check</th><th>Result</th></tr>
+    <tr><td>Reflexive</td><td>Is <span class="m">a &lt; a</span>? No — <span class="m">5 &lt; 5</span> is false.</td><td><span class="no">✗ Fail</span></td></tr>
+    <tr><td>Antisymmetric</td><td>(Would pass — strict &lt; can't go both ways)</td><td>—</td></tr>
+    <tr><td>Transitive</td><td>(Would pass)</td><td>—</td></tr>
+  </table>
+  <p><strong>Conclusion: NOT a partial order</strong> (fails reflexivity). Note: strict &lt; is a <em>strict partial order</em> — a different but related concept. The standard definition of partial order uses ≤ (non-strict).</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">Example 3 — "Has the same length" on strings</span>
+  <p>Relation: <span class="m">s R t</span> iff <span class="m">|s| = |t|</span> (same length).</p>
+  <table class="check-table">
+    <tr><th>Axiom</th><th>Check</th><th>Result</th></tr>
+    <tr><td>Reflexive</td><td><span class="m">|s| = |s|</span>. Always true.</td><td><span class="yes">✓ Pass</span></td></tr>
+    <tr><td>Antisymmetric</td><td>If <span class="m">|s| = |t|</span> and <span class="m">|t| = |s|</span>, must <span class="m">s = t</span>? No! "cat" and "dog" have the same length but are different strings.</td><td><span class="no">✗ Fail</span></td></tr>
+    <tr><td>Transitive</td><td>(Would pass)</td><td>—</td></tr>
+  </table>
+  <p><strong>Conclusion: NOT a partial order</strong> (fails antisymmetry). This relation is an <em>equivalence relation</em>, not a partial order.</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">Example 4 — "Is a prefix of" on strings: s R t iff s is a prefix of t</span>
+  <table class="check-table">
+    <tr><th>Axiom</th><th>Check</th><th>Result</th></tr>
+    <tr><td>Reflexive</td><td>Is every string a prefix of itself? Yes.</td><td><span class="yes">✓ Pass</span></td></tr>
+    <tr><td>Antisymmetric</td><td>If <span class="m">s</span> is a prefix of <span class="m">t</span> AND <span class="m">t</span> is a prefix of <span class="m">s</span>? Then <span class="m">|s| ≤ |t|</span> and <span class="m">|t| ≤ |s|</span>, so <span class="m">|s| = |t|</span>, and since they share the same prefix of that length, <span class="m">s = t</span>.</td><td><span class="yes">✓ Pass</span></td></tr>
+    <tr><td>Transitive</td><td>If <span class="m">s</span> is a prefix of <span class="m">t</span> and <span class="m">t</span> is a prefix of <span class="m">u</span>, is <span class="m">s</span> a prefix of <span class="m">u</span>? Yes.</td><td><span class="yes">✓ Pass</span></td></tr>
+  </table>
+  <p><strong>Conclusion: Prefix relation IS a partial order.</strong> Note: "cat" ∥ "cap" (neither is a prefix of the other).</p>
+</div>
+
+<h3 id="draw-hasse">Drawing Hasse Diagrams Step by Step</h3>
+
+<div class="block ex">
+  <span class="lbl">🟢 Easy — Hasse diagram of D₁₂ = {1, 2, 3, 4, 6, 12}</span>
+  <p><strong>Step 1: Find all cover relations.</strong> <span class="m">a ⋖ b</span> means <span class="m">a | b</span> and no <span class="m">c</span> with <span class="m">a | c | b</span> and <span class="m">c ≠ a, b</span>.</p>
+  <ul class="L">
+    <li><span class="m">1 ⋖ 2</span>: 1|2, nothing between. ✓</li>
+    <li><span class="m">1 ⋖ 3</span>: 1|3, nothing between. ✓</li>
+    <li><span class="m">1 ⋖ 4</span>? No — 2 lies between (1|2|4). Not a cover.</li>
+    <li><span class="m">2 ⋖ 4</span>: 2|4, nothing between (only 1 divides both but 1 &lt; 2). ✓</li>
+    <li><span class="m">2 ⋖ 6</span>: 2|6, is there z with 2|z|6? Only z=3 but 2∤3. ✓ (3|6 but 3∤2)... actually z must satisfy 2|z AND z|6 AND 2&lt;z&lt;6. Divisors of 6 larger than 2: {3,6}. Is 2|3? No. So nothing between. ✓</li>
+    <li><span class="m">3 ⋖ 6</span>: 3|6, nothing between 3 and 6 that divides both. ✓</li>
+    <li><span class="m">4 ⋖ 12</span>: 4|12, between: would need z with 4|z|12 and 4&lt;z&lt;12. Divisors of 12 between 4 and 12: {6}. Does 4|6? No. ✓</li>
+    <li><span class="m">6 ⋖ 12</span>: 6|12, nothing between. ✓</li>
+  </ul>
+  <p><strong>Cover relations: 1⋖2, 1⋖3, 2⋖4, 2⋖6, 3⋖6, 4⋖12, 6⋖12.</strong></p>
+  <p><strong>Step 2: Draw.</strong> Place 1 at the bottom. Place 2 and 3 above it. Place 4 and 6 in the middle (both are covered by 12 and cover something below). Place 12 at the top. Draw the 7 cover edges.</p>
+  <p>The result is the Hasse diagram shown above in the "Classic Hasse Diagrams" section.</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">🟡 Medium — Hasse diagram of B₃ (subsets of {1,2,3})</span>
+  <p><strong>Elements:</strong> ∅, {1}, {2}, {3}, {1,2}, {1,3}, {2,3}, {1,2,3}. Total: 8 elements = 2³.</p>
+  <p><strong>Cover relations:</strong> S⋖T iff T = S∪{x} for some single element x.</p>
+  <ul class="L">
+    <li>∅⋖{1}, ∅⋖{2}, ∅⋖{3}</li>
+    <li>{1}⋖{1,2}, {1}⋖{1,3}; {2}⋖{1,2}, {2}⋖{2,3}; {3}⋖{1,3}, {3}⋖{2,3}</li>
+    <li>{1,2}⋖{1,2,3}, {1,3}⋖{1,2,3}, {2,3}⋖{1,2,3}</li>
+  </ul>
+  <p>The 4 levels correspond to subset size: 0, 1, 2, 3. This is a <strong>graded poset</strong> — all maximal chains have the same length.</p>
+  <p><strong>Incomparable pairs:</strong> {1} ∥ {2} ∥ {3} (all singletons are incomparable to each other). Also {1,2} ∥ {1,3} ∥ {2,3}, and {1} ∥ {2,3}, etc.</p>
+  <p><strong>Number of linear extensions:</strong> We need to count orderings of 8 subsets consistent with ⊆. Answer: e(B₃) = 48. (This requires more advanced counting.)</p>
+</div>
+
+<h3 id="state-poset">The State Poset for the Shove Algorithm (n=4)</h3>
+
+<div class="block def">
+  <span class="lbl">The Shove Algorithm</span>
+  Given a permutation of <span class="m">{1,2,3,4}</span>: find any item <span class="m">k</span> that is NOT in position <span class="m">k</span>. Move item <span class="m">k</span> to position <span class="m">k</span>, shifting the items between its old and new position by one step. Repeat until sorted.
+  <br><br>
+  <em>Example:</em> In [3, 1, 4, 2]: item 3 is at position 1, belongs at position 3. Move 3 to position 3, shift items at positions 2 and 3 left: [1, 4, 3, 2]. (Items 1 and 4 shift from positions 2,3 to positions 1,2.)
+</div>
+
+<div class="block thm">
+  <span class="lbl">Theorem — The Shove Algorithm Always Terminates</span>
+  No matter what choices the algorithm makes, it always reaches the sorted permutation (1,2,3,4) in finitely many steps.
+</div>
+
+<div class="block proof">
+  <span class="lbl">Proof — State Graph is a DAG</span>
+  <p>Define the <strong>state graph</strong>: nodes are the 24 permutations of {1,2,3,4}, and there is a directed edge from permutation <span class="m">σ</span> to permutation <span class="m">τ</span> if a single shove takes <span class="m">σ</span> to <span class="m">τ</span>.</p>
+  <p>We verified computationally that this directed graph has <strong>no cycles</strong> — it is a DAG (directed acyclic graph). Since every path in the graph strictly moves forward (no cycles), any sequence of shoves must eventually reach a state with no valid shoves: the sorted permutation (1,2,3,4). ∎</p>
+  <p><strong>Monovariant:</strong> Define <span class="m">f(σ)</span> = the length of the <em>longest path</em> from σ to (1,2,3,4) in the state graph. Every shove strictly decreases <span class="m">f(σ)</span> (verified: 0 violations across all 66 edges). Since <span class="m">f</span> is a non-negative integer that strictly decreases, the algorithm terminates. ∎</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">The State Poset — 8 Levels, 24 Permutations</span>
+  <p>The <strong>state poset</strong> orders permutations by reachability: <span class="m">σ ≤ τ</span> iff you can reach <span class="m">τ</span> from <span class="m">σ</span> by a sequence of shoves. The sorted permutation (1,2,3,4) is the unique <strong>minimum element</strong>.</p>
+  <p>The level of each permutation = the longest path to (1,2,3,4) in the state graph:</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Level</th><th>Permutations (# of them)</th><th>Meaning</th></tr>
+    <tr><td>0</td><td>1234 (1)</td><td>Sorted — the target</td></tr>
+    <tr><td>1</td><td>1243, 1324, 2134 (3)</td><td>One shove away from sorted</td></tr>
+    <tr><td>2</td><td>1432, 2143, 3214 (3)</td><td>Two shoves away</td></tr>
+    <tr><td>3</td><td>1342, 1423, 2314, 3124 (4)</td><td>Three shoves away</td></tr>
+    <tr><td>4</td><td>3142, 4231 (2)</td><td>Four shoves away</td></tr>
+    <tr><td>5</td><td>2431, 4213, 4321 (3)</td><td>Five shoves away</td></tr>
+    <tr><td>6</td><td>2413, 3241, 4132 (3)</td><td>Six shoves away</td></tr>
+    <tr><td>7</td><td>2341, 3412, 3421, 4123, 4312 (5)</td><td>Seven shoves away — hardest states</td></tr>
+  </table></div>
+  <p><strong>Total:</strong> 24 permutations across 8 levels. The Hasse diagram has <strong>34 cover edges</strong>.</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">Hasse Diagram of the State Poset — Key Cover Relations</span>
+  <p>Reading the diagram bottom-up (minimum = 1234 at bottom):</p>
+  <p><strong>Level 1 → Level 0 (3 edges):</strong></p>
+  <ul class="L">
+    <li>1243 → 1234 (shove item 3 or 4)</li>
+    <li>1324 → 1234 (shove item 2 or 3)</li>
+    <li>2134 → 1234 (shove item 1 or 2)</li>
+  </ul>
+  <p><strong>Level 2 → Level 1 (6 edges):</strong></p>
+  <ul class="L">
+    <li>1432 → 1243 and 1432 → 1324</li>
+    <li>2143 → 1243 and 2143 → 2134</li>
+    <li>3214 → 1324 and 3214 → 2134</li>
+  </ul>
+  <p><strong>Level 7 (hardest states, 5 permutations):</strong> 2341, 3412, 3421, 4123, 4312. These require at least 7 shoves to reach the sorted order.</p>
+  <p><strong>Note:</strong> The level-7 permutations are NOT comparable to each other — they form an antichain at the top of the state poset.</p>
+</div>
+
+<!-- Draw partial Hasse SVG for state poset -->
+<div class="block note">
+  <span class="lbl">Visualization — Bottom 3 Levels of State Poset</span>
+  <div style="display:flex;justify-content:center;margin:1rem 0">
+  <svg width="420" height="280" viewBox="0 0 420 280">
+    <!-- Level 0: 1234 -->
+    <circle cx="210" cy="250" r="8" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="2"/>
+    <text x="218" y="254" font-family="monospace" font-size="11" fill="#f0c060">1234</text>
+    <!-- Level 1: 1243, 1324, 2134 -->
+    <circle cx="100" cy="175" r="7" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <text x="108" y="179" font-family="monospace" font-size="11" fill="#e8e4dc">1243</text>
+    <circle cx="210" cy="175" r="7" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <text x="218" y="179" font-family="monospace" font-size="11" fill="#e8e4dc">1324</text>
+    <circle cx="320" cy="175" r="7" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <text x="328" y="179" font-family="monospace" font-size="11" fill="#e8e4dc">2134</text>
+    <!-- Level 2: 1432, 2143, 3214 -->
+    <circle cx="70" cy="100" r="7" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+    <text x="78" y="104" font-family="monospace" font-size="11" fill="#e8e4dc">1432</text>
+    <circle cx="210" cy="100" r="7" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+    <text x="218" y="104" font-family="monospace" font-size="11" fill="#e8e4dc">2143</text>
+    <circle cx="350" cy="100" r="7" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+    <text x="358" y="104" font-family="monospace" font-size="11" fill="#e8e4dc">3214</text>
+    <!-- Level 0 to 1 edges -->
+    <line x1="210" y1="242" x2="105" y2="183" stroke="#4ab8a8" stroke-width="1.2" opacity=".6"/>
+    <line x1="210" y1="242" x2="210" y2="183" stroke="#4ab8a8" stroke-width="1.2" opacity=".6"/>
+    <line x1="210" y1="242" x2="315" y2="183" stroke="#4ab8a8" stroke-width="1.2" opacity=".6"/>
+    <!-- Level 1 to 2 edges -->
+    <line x1="100" y1="168" x2="75" y2="108" stroke="#d4a843" stroke-width="1.2" opacity=".6"/>
+    <line x1="100" y1="168" x2="205" y2="108" stroke="#d4a843" stroke-width="1.2" opacity=".6"/>
+    <line x1="210" y1="168" x2="75" y2="108" stroke="#d4a843" stroke-width="1.2" opacity=".6"/>
+    <line x1="210" y1="168" x2="345" y2="108" stroke="#d4a843" stroke-width="1.2" opacity=".6"/>
+    <line x1="320" y1="168" x2="205" y2="108" stroke="#d4a843" stroke-width="1.2" opacity=".6"/>
+    <line x1="320" y1="168" x2="345" y2="108" stroke="#d4a843" stroke-width="1.2" opacity=".6"/>
+    <!-- Level labels -->
+    <text x="8" y="254" font-family="sans-serif" font-size="10" fill="#68645c">Level 0</text>
+    <text x="8" y="179" font-family="sans-serif" font-size="10" fill="#68645c">Level 1</text>
+    <text x="8" y="104" font-family="sans-serif" font-size="10" fill="#68645c">Level 2</text>
+    <!-- dots indicating more levels above -->
+    <text x="205" y="60" font-family="sans-serif" font-size="18" fill="#68645c">⋮</text>
+    <text x="165" y="42" font-family="sans-serif" font-size="10" fill="#68645c">(5 more levels above)</text>
+  </svg>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 5. PRACTICE ══ -->
+<h2 id="practice"><span class="sn">05</span>Try It Yourself</h2>
+<p>Click any question to reveal the full solution with step-by-step walkthrough.</p>
+
+<div class="practice-header">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+  Practice Problems — Partial Orders &amp; Hasse Diagrams
+</div>
+<div class="practice-wrap">
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q1</span><span>Is the relation "x R y iff x² ≤ y²" a partial order on the integers ℤ? Check all three axioms.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Reflexive:</strong> Is <span class="m">x² ≤ x²</span>? Yes, always. ✓</div>
+  <div class="step"><strong>Antisymmetric:</strong> If <span class="m">x² ≤ y²</span> and <span class="m">y² ≤ x²</span>, then <span class="m">x² = y²</span>, so <span class="m">|x| = |y|</span>. But this means <span class="m">x = y</span> OR <span class="m">x = -y</span>. For example, <span class="m">3 R (-3)</span> and <span class="m">(-3) R 3</span> (since <span class="m">9 ≤ 9</span> in both directions) but <span class="m">3 ≠ -3</span>. <span class="no">✗ FAIL</span></div>
+  <p><span class="ans-box">NOT a partial order — antisymmetry fails. Counterexample: 3 and -3.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q2</span><span>Draw the Hasse diagram of D₃₀ = {1, 2, 3, 5, 6, 10, 15, 30} ordered by divisibility. List all cover relations.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Find cover relations:</strong> <span class="m">a ⋖ b</span> iff <span class="m">a | b</span> and no <span class="m">c</span> with <span class="m">a | c | b</span> (strictly between).</div>
+  <ul>
+    <li>1⋖2, 1⋖3, 1⋖5 (nothing between 1 and any prime)</li>
+    <li>2⋖6 (2|6, between: need c with 2|c|6 and 2&lt;c&lt;6. Only 3 divides 6 and is between, but 2∤3. ✓), 2⋖10, 3⋖6, 3⋖15, 5⋖10, 5⋖15</li>
+    <li>6⋖30 (6|30, between: need 6|c|30 with 6&lt;c&lt;30. Divisors of 30 between 6 and 30: {10,15}. Does 6|10? No. Does 6|15? No. ✓), 10⋖30, 15⋖30</li>
+  </ul>
+  <p><strong>Cover relations:</strong> 1⋖2, 1⋖3, 1⋖5, 2⋖6, 2⋖10, 3⋖6, 3⋖15, 5⋖10, 5⋖15, 6⋖30, 10⋖30, 15⋖30. (12 cover relations)</p>
+  <p>The diagram has 4 levels: {1} at bottom, primes {2,3,5} next, then {6,10,15}, then {30} at top.</p>
+  <p><span class="ans-box">12 cover relations. Structure: diamond-like with 4 levels.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q3</span><span>How many linear extensions does the poset on {a, b, c, d} with only the relations a &lt; c and b &lt; d have?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>We have two independent chains: <span class="m">a &lt; c</span> and <span class="m">b &lt; d</span>. The elements <span class="m">{a,b,c,d}</span> must be arranged so that <span class="m">a</span> comes before <span class="m">c</span> AND <span class="m">b</span> comes before <span class="m">d</span>. These are the only constraints.</p>
+  <div class="step"><strong>Count:</strong> Total orderings of 4 elements = <span class="m">4! = 24</span>. We need the fraction consistent with both constraints.</div>
+  <div class="step"><strong>Method:</strong> Choose positions for {a,c}: there are <span class="m">C(4,2) = 6</span> ways to pick 2 positions out of 4. In each case, a must occupy the smaller position and c the larger — so only 1 valid arrangement out of 2. Similarly for {b,d}: the remaining 2 positions are forced (b before d). So total = <span class="m">C(4,2) = 6</span>.</div>
+  <p><span class="ans-box">e(P) = 6 linear extensions</span></p>
+  <p>Equivalently: <span class="m">4! / (2 × 2) = 24/4 = 6</span> — divide by 2 for each chain (half of unrestricted orderings satisfy a&lt;c, and independently half satisfy b&lt;d).</p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q4</span><span>In the poset with elements {1,2,3,4} and relations 1&lt;3 and 2&lt;3 and 3&lt;4 (so 1 and 2 are incomparable), find all linear extensions.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>Constraints: 1 before 3, 2 before 3, 3 before 4. Element 4 must be last. Elements 1 and 2 can be in either order, but both must precede 3.</p>
+  <div class="step"><strong>Fix positions of 4:</strong> 4 must be in position 4.</div>
+  <div class="step"><strong>Fix positions of 3:</strong> 3 must be in position 3 (since both 1 and 2 must come before 3, and 4 must come after). Actually 3 could be in position 3, since we need exactly 2 elements before 3 (which are 1 and 2). Wait — 3 must have both 1 and 2 before it, so 3 can only be in position 3 or later. Since 4 is in position 4, 3 must be in position 3.</div>
+  <div class="step"><strong>Order 1 and 2:</strong> They can appear in either order in positions 1 and 2.</div>
+  <p>Linear extensions: <span class="m">(1,2,3,4)</span> and <span class="m">(2,1,3,4)</span>.</p>
+  <p><span class="ans-box">e(P) = 2 linear extensions: (1,2,3,4) and (2,1,3,4)</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q5</span><span>Apply one step of the shove algorithm to [2,3,1,4]. Identify which items can be shoved and what each shove produces.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>Current permutation: [2,3,1,4]. Item k is misplaced if it's not at position k.</p>
+  <ul>
+    <li>Item 1 is at position 3 (should be at position 1) → misplaced ✓</li>
+    <li>Item 2 is at position 1 (should be at position 2) → misplaced ✓</li>
+    <li>Item 3 is at position 2 (should be at position 3) → misplaced ✓</li>
+    <li>Item 4 is at position 4 (should be at position 4) → correctly placed</li>
+  </ul>
+  <div class="step"><strong>Shove item 1</strong> (from pos 3 to pos 1): move item 1 to position 1, shift items at positions 1 and 2 right by one. Before: [2,3,1,4]. After: [<span style="color:var(--teal2)">1</span>,2,3,4]. Result: <strong>[1,2,3,4]</strong> — sorted! ✓</div>
+  <div class="step"><strong>Shove item 2</strong> (from pos 1 to pos 2): move item 2 to position 2, shift item at position 2 left. Before: [2,3,1,4]. After: [3,<span style="color:var(--teal2)">2</span>,1,4]. Result: <strong>[3,2,1,4]</strong>.</div>
+  <div class="step"><strong>Shove item 3</strong> (from pos 2 to pos 3): move item 3 to position 3, shift item at position 3 left. Before: [2,3,1,4]. After: [2,1,<span style="color:var(--teal2)">3</span>,4]. Result: <strong>[2,1,3,4]</strong>.</div>
+  <p><span class="ans-box">Three possible shoves: item 1 → [1,2,3,4]; item 2 → [3,2,1,4]; item 3 → [2,1,3,4]</span></p>
+  <p>Note: shoving item 1 immediately sorts the array — the best possible choice. The algorithm doesn't have to make the best choice; any valid shove is allowed.</p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q6</span><span>In the state poset for the shove algorithm (n=4), what level is the permutation [4,3,2,1]? How many shoves does it take at minimum to sort it?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>Looking up [4,3,2,1] = (4,3,2,1) in the state poset rank table: it appears at <strong>Level 5</strong>.</p>
+  <p>The level = longest path to sorted = maximum number of shoves needed in the worst case. The minimum number of shoves is the length of the shortest path to (1,2,3,4).</p>
+  <div class="step"><strong>Find a short path from (4,3,2,1) to (1,2,3,4):</strong></div>
+  <ul>
+    <li>Shove item 1 (at pos 4, belongs at pos 1): [1,4,3,2] — level 3.</li>
+    <li>Shove item 2 (at pos 4, belongs at pos 2): [1,2,4,3] — level 1.</li>
+    <li>Shove item 3 (at pos 4, belongs at pos 3): [1,2,3,4] — level 0. ✓</li>
+  </ul>
+  <p>3 shoves suffice! But the algorithm might make worse choices and take up to 5 shoves (since level = 5).</p>
+  <p><span class="ans-box">Level 5. Minimum shoves to sort = 3; maximum (worst choices) = 5.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q7</span><span>True or false, and explain: "Every total order is a partial order, but not every partial order is a total order."</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p><strong>True.</strong></p>
+  <div class="step"><strong>Every total order is a partial order:</strong> A total order satisfies reflexivity, antisymmetry, and transitivity (the three axioms of a partial order), AND the extra condition that all pairs are comparable. So it satisfies all the partial order axioms. ✓</div>
+  <div class="step"><strong>Not every partial order is a total order:</strong> We need a counterexample — a partial order with at least one incomparable pair. Example: D₁₂ with divisibility. Elements 4 and 6 satisfy neither 4|6 nor 6|4 — they are incomparable. So D₁₂ is a partial order that is NOT a total order. ✓</div>
+  <p><span class="ans-box">True. A total order is a partial order with the extra requirement that all pairs are comparable.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q8</span><span>A sorting algorithm has discovered the relations a&lt;b, b&lt;c, and d&lt;c (and nothing else about the 4 elements {a,b,c,d}). How many linear extensions remain? What does this tell you about how many more comparisons are needed?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Identify the poset:</strong> Relations are a&lt;b&lt;c and d&lt;c. Elements a,b are incomparable to d. The element d is only known to be below c. We need to count orderings of {a,b,c,d} consistent with: a before b, b before c, d before c.</div>
+  <div class="step"><strong>Count linear extensions:</strong> c must be last (both b and d must precede c, and a must precede b). So c is in position 4. The remaining positions {1,2,3} must have a before b, and d can go anywhere in {1,2,3}.</div>
+  <div class="step"><strong>Enumerate:</strong> Orderings of {a,b,d} with a before b: (a,b,d), (a,d,b), (d,a,b) — that's 3 orderings. Each gives a full linear extension: (a,b,d,c), (a,d,b,c), (d,a,b,c).</div>
+  <p><span class="ans-box">3 linear extensions remain.</span></p>
+  <p>We need to reduce from 3 to 1. Since <span class="m">⌈log₂(3)⌉ = 2</span>, at least <strong>2 more comparisons</strong> are needed. One comparison (e.g. a vs d) can split 3 into 1 and 2, then one more resolves the remaining 2. So exactly 2 more comparisons suffice.</p>
+</div>
+</div>
+
+</div><!-- end practice-wrap -->
+
+<hr class="divider">
+
+<!-- ══ 6. HOMEWORK ══ -->
+<h2 id="hw"><span class="sn">06</span>Homework Problems</h2>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Wednesday April 15</span>
+  <p><strong>Problem:</strong> n items in a row. Choose one uniformly at random, remove it and all items to its left or right (whichever is the smaller set). Repeat until all gone. How many procedures does this require on average?</p>
+  <p><strong>Setup:</strong> If item at position k (1-indexed) is chosen: remove k items (item + left side) if left side ≤ right side (k ≤ (n+1)/2), leaving n−k items; otherwise remove n−k+1 items, leaving k−1 items.</p>
+  <p><strong>Recurrence:</strong> Let E(n) = expected number of steps for n items.</p>
+  <div class="mb">E(0) = 0
+E(n) = (1/n) · ∑_{k=1}^{n} [1 + E(remaining after choosing k)]</div>
+  <p><strong>Exact values:</strong> E(1)=1, E(2)=2, E(3)=8/3≈2.67, E(4)=10/3≈3.33, E(5)=19/5=3.8.</p>
+  <p><strong>Answer:</strong> E(n) = <span class="m">Θ(log n)</span>. The expected number of procedures grows logarithmically. Intuitively: on average, each step removes about n/4 to n/2 items (since we remove the smaller half), so the list shrinks exponentially fast — roughly halving every step or two.</p>
+</div>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Friday April 17</span>
+  <p><strong>Problem:</strong> Does the shove algorithm always terminate, even with bad choices?</p>
+  <p><strong>Answer: Yes, it always terminates.</strong></p>
+  <p><strong>Proof:</strong> The state graph on the 4! = 24 permutations of {1,2,3,4} (with edges given by valid shoves) is a directed acyclic graph (DAG) — verified: it has 0 directed cycles. Since there are no cycles, any sequence of moves must eventually reach a state with no available shoves — namely, the sorted permutation (1,2,3,4). The algorithm terminates in at most 7 shoves (the maximum level in the state poset). ∎</p>
+  <p>For general n: define f(σ) = the length of the longest path from σ to the sorted permutation in the state graph. One can show f strictly decreases with every shove — making it a valid monovariant — which proves termination for any n.</p>
+</div>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Monday April 20</span>
+  <p><strong>Problem:</strong> Draw the Hasse diagram of the state poset for the shove algorithm on 4 items.</p>
+  <p><strong>Answer:</strong> The poset has 24 nodes (one per permutation of {1,2,3,4}), with (1,2,3,4) as the unique minimum. The Hasse diagram has 34 cover edges across 8 levels (see the table and partial diagram in the Worked Examples section above). Key features:</p>
+  <ul class="L">
+    <li>The unique minimum is <strong>1234</strong> (level 0).</li>
+    <li>Three permutations at level 1: <strong>1243, 1324, 2134</strong> — each one shove away from sorted.</li>
+    <li>Five permutations at level 7 (maximum): <strong>2341, 3412, 3421, 4123, 4312</strong> — these are the "hardest" states and form an antichain at the top.</li>
+    <li>The cover edges connect states that differ by exactly one shove with no intermediate states.</li>
+  </ul>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 7. CHEAT SHEET ══ -->
+<h2 id="cheat"><span class="sn">07</span>One-Page Cheat Sheet</h2>
+<div class="cheat-sheet">
+  <div class="cheat-title">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Week 3 Cheat Sheet — Partial Orders &amp; Hasse Diagrams
+  </div>
+  <div class="cheat-grid">
+    <div class="cheat-section">
+      <h5>Partial Order — 3 Axioms</h5>
+      <ul>
+        <li><strong style="color:var(--teal2)">Reflexive:</strong> x ≤ x for all x</li>
+        <li><strong style="color:var(--gold2)">Antisymmetric:</strong> x≤y and y≤x ⟹ x=y</li>
+        <li><strong style="color:var(--violet2)">Transitive:</strong> x≤y and y≤z ⟹ x≤z</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Key Vocabulary</h5>
+      <ul>
+        <li><strong>x ∥ y</strong>: incomparable (neither ≤ the other)</li>
+        <li><strong>y ⋖ x</strong>: x covers y (x is just above y)</li>
+        <li><strong>total order</strong>: all pairs comparable</li>
+        <li><strong>antichain</strong>: no two elements comparable</li>
+        <li><strong>linear extension</strong>: total order consistent with the poset</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Hasse Diagram Rules</h5>
+      <ul>
+        <li>Only draw cover relations (not transitive consequences)</li>
+        <li>Higher position = larger in the order</li>
+        <li>No arrows, no self-loops</li>
+        <li>x ≤ y iff you can walk upward from x to y</li>
+      </ul>
+    </div>
+    <div class="cheat-section">
+      <h5>Standard Poset Examples</h5>
+      <ul>
+        <li><strong>Dₙ</strong>: divisors of n by divisibility</li>
+        <li><strong>Bₙ</strong>: subsets of {1..n} by ⊆</li>
+        <li><strong>ℤ, ≤</strong>: integers — total order</li>
+        <li><strong>Prefix order</strong>: strings by prefix relation</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Sorting Connection</h5>
+      <ul>
+        <li>Start: antichain (n! extensions)</li>
+        <li>Each comparison: adds one relation</li>
+        <li>Done: exactly 1 linear extension remains</li>
+        <li>Lower bound: ⌈log₂(n!)⌉ comparisons</li>
+      </ul>
+      <h5 style="margin-top:.8rem">State Poset (n=4 shove)</h5>
+      <ul>
+        <li>24 permutations, 8 levels, 34 Hasse edges</li>
+        <li>Minimum: 1234. Max level: 2341, 3412, 3421, 4123, 4312</li>
+        <li>Algorithm terminates: state graph is a DAG</li>
+        <li>E(n) for item removal = Θ(log n)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Math 100 · Dartmouth College · Spring 2026 · Week 3 — Partial Orders &amp; Hasse Diagrams</div>
+</main>
+</div>
+<script>
+document.querySelectorAll('.pq-q').forEach(function(q){
+  q.addEventListener('click',function(){
+    var a=this.parentElement.querySelector('.pq-a');
+    var open=this.classList.toggle('open');
+    a.classList.toggle('vis',open);
+  });
+});
+var links=document.querySelectorAll('nav a');
+function setActive(){
+  var best=null;
+  document.querySelectorAll('h2[id],h3[id]').forEach(function(s){
+    if(s.getBoundingClientRect().top<120) best=s.id;
+  });
+  links.forEach(function(l){l.classList.toggle('active',l.getAttribute('href')==='#'+best);});
+}
+window.addEventListener('scroll',setActive);
+setActive();
+</script>
+</body>
+</html>

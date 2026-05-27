@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 4 — Graded Posets, Width, Height &amp; Mirsky</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1117;--bg2:#161820;--bg3:#1e2028;--bg4:#252730;--border:#2e3040;--ink:#e8e4dc;--ink2:#a8a49c;--ink3:#68645c;--gold:#d4a843;--gold2:#f0c060;--teal:#4ab8a8;--teal2:#6dd4c4;--rose:#c86478;--rose2:#e08090;--violet:#9878c8;--violet2:#b898e0;--green:#5a9e6a;--green2:#7ac88a;--orange:#d4824a;--orange2:#f0a060;--mono:'JetBrains Mono',monospace;--serif:'Source Serif 4',Georgia,serif;--display:'Playfair Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--serif);background:var(--bg);color:var(--ink);line-height:1.8;font-size:16.5px}
+.shell{display:flex;min-height:100vh}
+nav{width:248px;min-width:248px;background:var(--bg2);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;padding:1.6rem 0;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.nav-logo{padding:0 1.2rem 1.2rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.nav-logo .course{font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3)}
+.nav-logo .title{font-family:var(--display);font-size:13px;color:var(--gold);margin-top:.25rem;line-height:1.3}
+nav ul{list-style:none}
+.nav-section{font-family:var(--sans);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);padding:.9rem 1.2rem .2rem}
+nav a{display:block;font-family:var(--sans);font-size:12px;color:var(--ink2);text-decoration:none;padding:.3rem 1.2rem;line-height:1.4;border-left:2px solid transparent;transition:all .15s}
+nav a:hover{color:var(--ink);background:var(--bg3)}
+nav a.active{color:var(--gold);border-left-color:var(--gold);background:var(--bg3)}
+main{flex:1;max-width:860px;padding:3.5rem 4rem}
+.cover{margin-bottom:3.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border)}
+.week-badge{display:inline-block;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.3);border-radius:3px;padding:.25rem .7rem;margin-bottom:1rem}
+.cover h1{font-family:var(--display);font-size:2.3rem;font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:.6rem}
+.cover h1 em{color:var(--gold);font-style:italic}
+.cover .subtitle{font-family:var(--sans);font-size:.9rem;color:var(--ink2);font-weight:300}
+.topics-row{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1.4rem}
+.topic-pill{font-family:var(--sans);font-size:11px;font-weight:500;padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);color:var(--ink2)}
+h2{font-family:var(--display);font-size:1.55rem;font-weight:600;color:var(--ink);margin:3.5rem 0 1.2rem;scroll-margin-top:2rem;display:flex;align-items:center;gap:.7rem}
+h2 .sn{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);padding:.25rem .55rem;border-radius:3px;flex-shrink:0}
+h3{font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--teal);margin:2rem 0 .65rem;scroll-margin-top:2rem;letter-spacing:.01em}
+h4{font-family:var(--sans);font-size:.9rem;font-weight:600;color:var(--ink2);margin:1.4rem 0 .4rem}
+p{margin-bottom:.9rem}
+.block{margin:1.2rem 0;padding:1rem 1.2rem;border-radius:6px}
+.def{background:rgba(74,184,168,.07);border-left:3px solid var(--teal)}
+.thm{background:rgba(212,168,67,.07);border-left:3px solid var(--gold)}
+.proof{background:var(--bg3);border-left:3px solid var(--border)}
+.ex{background:rgba(154,120,200,.07);border-left:3px solid var(--violet)}
+.note{background:var(--bg3);border-left:3px solid var(--border);font-size:.92rem;color:var(--ink2)}
+.hw{background:rgba(200,100,120,.07);border-left:3px solid var(--rose)}
+.warn{background:rgba(212,130,74,.07);border-left:3px solid var(--orange)}
+.warn .lbl{color:var(--orange)}
+.lbl{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:.4rem}
+.def .lbl{color:var(--teal)}.thm .lbl{color:var(--gold)}.proof .lbl{color:var(--ink3)}.ex .lbl{color:var(--violet)}.hw .lbl{color:var(--rose)}.note .lbl{color:var(--ink3)}.warn .lbl{color:var(--orange)}
+.m{font-family:var(--mono);font-size:.83em;background:var(--bg4);color:var(--gold2);padding:.12em .38em;border-radius:3px;white-space:nowrap}
+.mb{display:block;font-family:var(--mono);font-size:.86em;background:var(--bg3);color:var(--teal2);padding:.65rem 1rem;border-radius:4px;margin:.7rem 0;border:1px solid var(--border);overflow-x:auto;white-space:pre}
+ul.L,ol.L{padding-left:1.4rem;margin:.5rem 0 .8rem}
+ul.L li,ol.L li{margin-bottom:.35rem}
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:.87rem;font-family:var(--sans)}
+th{background:var(--bg3);color:var(--ink2);font-weight:600;padding:.5rem .8rem;text-align:left;border-bottom:1px solid var(--border);font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
+td{padding:.42rem .8rem;border-bottom:1px solid var(--bg3);vertical-align:top;color:var(--ink2)}
+tr:last-child td{border-bottom:none}
+td:first-child{color:var(--ink);font-weight:500}
+.yes{color:var(--green2);font-weight:600}.no{color:var(--rose2);font-weight:600}
+.examples-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:1.2rem 0}
+.ex-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem}
+.ex-card .ex-badge{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.5rem;display:block}
+.ex-card.easy .ex-badge{color:var(--green)}.ex-card.med .ex-badge{color:var(--gold)}.ex-card.hard .ex-badge{color:var(--rose)}
+.ex-card h4{margin:0 0 .4rem;font-size:.85rem;color:var(--ink)}.ex-card p{font-size:.83rem;color:var(--ink2);margin-bottom:0}
+.arc{background:var(--bg2);border:1px solid var(--gold);border-radius:8px;padding:1.2rem 1.4rem;margin:1.5rem 0}
+.arc-title{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;display:flex;align-items:center;gap:.4rem}
+.arc-steps{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem;font-family:var(--sans);font-size:.85rem}
+.arc-step{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.3rem .7rem;color:var(--ink)}
+.arc-arrow{color:var(--gold);font-size:1.1rem}
+.hasse-wrap{display:flex;flex-wrap:wrap;gap:2rem;margin:1.5rem 0;align-items:flex-start}
+.hasse-fig{text-align:center}
+.hasse-fig svg{display:block;margin:0 auto}
+.hasse-fig .caption{font-family:var(--sans);font-size:11px;color:var(--ink3);margin-top:.5rem}
+.trace-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.82em;margin:.8rem 0}
+.trace-table th{background:var(--bg3);color:var(--teal2);padding:.4rem .7rem;text-align:center;border-bottom:1px solid var(--border);font-weight:600;letter-spacing:.06em}
+.trace-table td{padding:.35rem .7rem;border-bottom:1px solid var(--bg3);text-align:center;color:var(--ink2)}
+.trace-table tr:last-child td{border-bottom:none}
+.trace-table .hl{color:var(--gold2);font-weight:600}
+.shape-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin:1.2rem 0}
+.shape-card{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.8rem;text-align:center}
+.shape-card .shape-name{font-family:var(--sans);font-size:.78rem;font-weight:600;color:var(--teal2);margin-bottom:.4rem;display:block}
+.shape-card .shape-formula{font-family:var(--mono);font-size:.78em;color:var(--gold2);margin-bottom:.3rem;display:block}
+.shape-card .shape-count{font-family:var(--sans);font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:.2rem;display:block}
+.shape-card .shape-why{font-family:var(--sans);font-size:.72rem;color:var(--ink3)}
+.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+.practice-header{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#2a3a5e,#1e4a3a);padding:.6rem 1.1rem;border-radius:6px 6px 0 0;display:flex;align-items:center;gap:.5rem}
+.practice-wrap{border:1px solid var(--border);border-radius:0 0 6px 6px;overflow:hidden;margin-bottom:2rem}
+.pq{border-bottom:1px solid var(--border)}.pq:last-child{border-bottom:none}
+.pq-q{font-family:var(--sans);font-size:.875rem;font-weight:500;color:var(--ink);padding:.75rem 1.1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;user-select:none;transition:background .12s}
+.pq-q:hover{background:var(--bg3)}
+.pq-q .qn{font-size:9.5px;font-weight:700;letter-spacing:.1em;color:var(--teal);min-width:1.8rem;padding-top:.1rem;flex-shrink:0}
+.pq-q .arr{font-size:11px;color:var(--ink3);transition:transform .18s;flex-shrink:0;padding-top:.1rem}
+.pq-q.open .arr{transform:rotate(180deg)}
+.pq-a{display:none;padding:.2rem 1.1rem .9rem;border-top:1px dashed var(--border);background:var(--bg2)}
+.pq-a.vis{display:block}
+.pq-a .al{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green2);margin-bottom:.5rem;display:block;padding-top:.55rem}
+.pq-a p{font-size:.875rem;font-family:var(--sans);color:var(--ink2);margin-bottom:.45rem;line-height:1.65}
+.pq-a .m{font-size:.8em}
+.pq-a ul,.pq-a ol{padding-left:1.3rem;margin:.3rem 0 .45rem;font-size:.875rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a li{margin-bottom:.25rem}
+.pq-a .step{background:var(--bg3);border-left:2px solid var(--teal);padding:.5rem .8rem;border-radius:0 4px 4px 0;margin:.4rem 0;font-size:.85rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a .step strong{color:var(--teal2)}
+.ans-box{background:rgba(90,158,106,.1);border:1px solid rgba(90,158,106,.3);border-radius:4px;padding:.4rem .8rem;font-family:var(--mono);font-size:.82em;color:var(--green2);margin:.4rem 0;display:inline-block}
+.cheat-sheet{background:var(--bg2);border:1px solid var(--gold);border-radius:8px;padding:1.5rem;margin:2rem 0}
+.cheat-title{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem}
+.cheat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.cheat-section h5{font-family:var(--sans);font-size:.8rem;font-weight:700;color:var(--teal2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.cheat-section p,.cheat-section li{font-family:var(--sans);font-size:.8rem;color:var(--ink2);line-height:1.5;margin-bottom:.25rem}
+.cheat-section ul{padding-left:1.1rem;margin:.25rem 0}
+
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-bottom: 1.6rem;
+}
+.page-link {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--gold);
+  border: 1px solid rgba(212,168,67,.75);
+  border-radius: 4px;
+  padding: .38rem .75rem;
+  text-decoration: none;
+  transition: transform .15s, background .15s, border-color .15s;
+}
+.page-link:hover {
+  transform: translateY(-1px);
+  background: var(--gold2);
+  text-decoration: none;
+}
+.page-link.secondary {
+  color: var(--ink2);
+  background: transparent;
+  border-color: var(--border);
+}
+.page-link.secondary:hover {
+  color: var(--ink);
+  border-color: rgba(212,168,67,.55);
+  background: var(--bg3);
+}
+.page-link.disabled,
+.page-link.disabled:hover {
+  color: var(--ink3);
+  background: transparent;
+  border-color: var(--border);
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:var(--sans);font-size:11px;color:var(--ink3)}
+@media(max-width:960px){nav{display:none}main{padding:2rem 1.5rem}}
+@media(max-width:660px){.examples-grid,.cheat-grid,.shape-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav>
+  <div class="nav-logo">
+    <div class="course">Math 100 · Spring 2026</div>
+    <div class="title">Week 4 — Graded Posets, Width &amp; Mirsky</div>
+  </div>
+  <ul>
+    <li class="nav-section">Sections</li>
+    <li><a href="#why">1 · Why We Care</a></li>
+    <li><a href="#defs">2 · Definitions</a></li>
+    <li><a href="#graded">↳ Graded Posets</a></li>
+    <li><a href="#hw-width">↳ Height &amp; Width</a></li>
+    <li><a href="#convex">↳ Convex Subsets</a></li>
+    <li><a href="#kendall">↳ Kendall Tau</a></li>
+    <li><a href="#examples">3 · Running Examples</a></li>
+    <li><a href="#worked">4 · Worked Examples</a></li>
+    <li><a href="#is-graded">↳ Is It Graded?</a></li>
+    <li><a href="#mirsky">↳ Mirsky's Theorem</a></li>
+    <li><a href="#erdos">↳ Erdős–Szekeres</a></li>
+    <li><a href="#labellings">↳ Counting Labellings</a></li>
+    <li><a href="#paint">↳ Paint Problem</a></li>
+    <li><a href="#practice">5 · Try It Yourself</a></li>
+    <li><a href="#hw">6 · Homework</a></li>
+    <li><a href="#cheat">7 · Cheat Sheet</a></li>
+  </ul>
+</nav>
+<main>
+
+<div class="page-actions">
+  <a class="page-link" href="index.html">← Back to Home</a>
+  <a class="page-link secondary" href="week3_partial_orders_hasse_diagrams.html">← Previous Week</a>
+  <a class="page-link secondary" href="week5_poset_shapes_permutahedron.html">Next Week →</a>
+</div>
+
+
+<div class="cover">
+  <div class="week-badge">Week 4</div>
+  <h1>Graded Posets, Width &amp;<br><em>Mirsky's Theorem</em></h1>
+  <div class="subtitle">Math 100 · Dartmouth College · Spring 2026</div>
+  <div class="topics-row">
+    <span class="topic-pill">Graded posets</span>
+    <span class="topic-pill">Rank functions</span>
+    <span class="topic-pill">Height &amp; width</span>
+    <span class="topic-pill">Antichains</span>
+    <span class="topic-pill">Mirsky's theorem</span>
+    <span class="topic-pill">Erdős–Szekeres</span>
+    <span class="topic-pill">Counting labellings</span>
+    <span class="topic-pill">Convex subsets</span>
+    <span class="topic-pill">Kendall tau</span>
+    <span class="topic-pill">Paint problem</span>
+  </div>
+</div>
+
+<!-- ══ 1. WHY WE CARE ══ -->
+<h2 id="why"><span class="sn">01</span>Why We Care</h2>
+<p>This week ties together three big ideas into one elegant logical thread:</p>
+
+<div class="arc">
+  <div class="arc-title">🔗 The central arc of Week 4</div>
+  <div class="arc-steps">
+    <span class="arc-step">Erdős–Szekeres<br><small style="color:var(--ink3)">sequences &amp; subsequences</small></span>
+    <span class="arc-arrow">→</span>
+    <span class="arc-step">|P| ≤ h(P)·w(P)<br><small style="color:var(--ink3)">size bounded by height × width</small></span>
+    <span class="arc-arrow">→</span>
+    <span class="arc-step">Mirsky's Theorem<br><small style="color:var(--ink3)">decompose P into antichains</small></span>
+  </div>
+</div>
+
+<p>Along the way we introduce graded posets (posets with a clean level structure), convex subsets (the poset analogue of intervals on the real line), and Kendall tau distance (measuring how "far apart" two permutations are). The week also introduces the paint problem — a beautiful probability result hiding inside a Taylor series.</p>
+
+<!-- ══ 2. DEFINITIONS ══ -->
+<h2 id="defs"><span class="sn">02</span>Definitions</h2>
+
+<h3 id="graded">Graded Posets and Rank Functions</h3>
+
+<div class="block def">
+  <span class="lbl">Definition — Graded Poset (or Ranked Poset)</span>
+  A finite poset <span class="m">P</span> is <strong>graded</strong> (or <strong>ranked</strong>) if there exists a function <span class="m">rk : P → ℤ≥0</span> — called a <strong>rank function</strong> — satisfying all three conditions:
+  <ol class="L">
+    <li><span class="m">rk(x) = 0</span> whenever <span class="m">x</span> is minimal in <span class="m">P</span>.</li>
+    <li><span class="m">y ⋖ x  ⟹  rk(x) = rk(y) + 1</span> — every cover step increases rank by exactly 1.</li>
+    <li>All maximal elements share the same rank <span class="m">h(P) − 1</span>.</li>
+  </ol>
+</div>
+
+<div class="block warn">
+  <span class="lbl">Why condition (iii) is essential</span>
+  Without condition (iii), the disjoint union of a 2-chain {a&lt;b} and a 3-chain {c&lt;d&lt;e} would satisfy (i) and (ii): rk(a)=rk(c)=0, rk(b)=rk(d)=1, rk(e)=2. But b is maximal at rank 1 and e is maximal at rank 2 — <strong>different ranks</strong>. This poset has maximal chains of different lengths (2 and 3), which intuitively means it has no clean level structure.
+  <br><br>
+  Condition (iii) forces all maximal chains to have length exactly <span class="m">h(P)</span>, making the equivalence with the level-partition definition clean.
+</div>
+
+<div class="block thm">
+  <span class="lbl">Equivalent Condition — All maximal chains have equal length</span>
+  A poset <span class="m">P</span> is graded if and only if all maximal chains have the same length.
+  <br><br>
+  <em>Clean consequence:</em> In a graded poset, every maximal chain has length exactly <span class="m">h(P)</span>.
+</div>
+
+<h4>Standard graded examples</h4>
+<div class="block ex">
+  <span class="lbl">Standard Graded Posets</span>
+  <ul class="L">
+    <li><strong>Bₙ</strong> (subsets of {1,…,n} by ⊆): <span class="m">rk(S) = |S|</span>, with <span class="m">h = n+1</span> levels.</li>
+    <li><strong>Dₙ</strong> (divisors of n by divisibility): <span class="m">rk(d) = Ω(d)</span> = number of prime factors of d counted with multiplicity. E.g. in D₁₂: rk(1)=0, rk(2)=rk(3)=1, rk(4)=rk(6)=2, rk(12)=3.</li>
+    <li><strong>Any chain [n]</strong>: <span class="m">rk(i) = i − 1</span>.</li>
+  </ul>
+</div>
+
+<h4>How to test "Is this poset graded?" — two reliable tests</h4>
+<div class="block note">
+  <span class="lbl">Test A — Maximal chains</span>
+  Compute the length of <em>every</em> maximal chain. If they are all equal, the poset is graded; if not, it is not.
+  <br><br>
+  <strong>Shortcut:</strong> Find the shortest and longest maximal chain. If they differ → not graded. If equal, you can stop.
+</div>
+
+<div class="block note">
+  <span class="lbl">Test B — Try a rank function (detect conflicts)</span>
+  Pick any minimal element, set rk = 0. Walk up the cover relations, assigning <span class="m">rk(x) = rk(y) + 1</span> for each cover <span class="m">y ⋖ x</span>. If you ever assign two <strong>conflicting</strong> values to the same element, the poset is not graded. Otherwise it is, and you have built the rank function.
+  <br><br>
+  A <em>conflict</em> means: element z receives rank k from one path and rank k' ≠ k from another path.
+</div>
+
+<h4>What is special about graded posets?</h4>
+<div class="block thm">
+  <span class="lbl">Special Properties of Graded Posets</span>
+  <ul class="L">
+    <li><strong>Clean level structure:</strong> Elements partition into "levels" <span class="m">P_0, P_1, …, P_h</span> where <span class="m">P_k = {x : rk(x) = k}</span>. All cover edges go between consecutive levels.</li>
+    <li><strong>Each level is an antichain:</strong> If <span class="m">x, y ∈ P_k</span> with <span class="m">x &lt; y</span>, then <span class="m">rk(y) > rk(x)</span> — but both have rank k, contradiction. So no two elements in the same level are comparable.</li>
+    <li><strong>Rank generating function:</strong> The polynomial <span class="m">F(q) = ∑_k |P_k| · qᵏ</span> often has beautiful algebraic properties.</li>
+    <li><strong>Height = max rank:</strong> <span class="m">h(P) = max rk(x) + 1</span> = number of levels.</li>
+  </ul>
+</div>
+
+<h4>Examples quick reference</h4>
+<div class="tbl-wrap"><table>
+  <tr><th>Poset</th><th>Graded?</th><th>Rank function / Why</th></tr>
+  <tr><td>Chain [n] = {1&lt;2&lt;…&lt;n}</td><td><span class="yes">✓ Yes</span></td><td>rk(i) = i−1. One maximal chain.</td></tr>
+  <tr><td>Antichain {a,b,c}</td><td><span class="yes">✓ Yes</span></td><td>All minimal → all rk=0. One level.</td></tr>
+  <tr><td>Bₙ (subsets by ⊆)</td><td><span class="yes">✓ Yes</span></td><td>rk(S) = |S|, h = n+1 levels.</td></tr>
+  <tr><td>Dₙ (divisors by |)</td><td><span class="yes">✓ Yes</span></td><td>rk(d) = Ω(d) (prime factors with multiplicity).</td></tr>
+  <tr><td>{a⋖b, a⋖c, b⋖e, c⋖d, d⋖e}</td><td><span class="no">✗ No</span></td><td>Conflict: rk(e)=2 via b, rk(e)=3 via d.</td></tr>
+  <tr><td>2-chain ∪ 3-chain (disjoint)</td><td><span class="no">✗ No</span></td><td>Maximal elements at ranks 1 and 2 — condition (iii) fails.</td></tr>
+</table></div>
+
+<h3 id="hw-width">Height, Width, and Antichains</h3>
+
+<div class="block def">
+  <span class="lbl">Definitions — Height, Width, Chain, Antichain</span>
+  <ul class="L">
+    <li>A <strong>chain</strong> in <span class="m">P</span> is a subset of pairwise comparable elements.</li>
+    <li>An <strong>antichain</strong> in <span class="m">P</span> is a subset of pairwise incomparable elements.</li>
+    <li>The <strong>height</strong> <span class="m">h(P)</span> = size of the longest chain in <span class="m">P</span>.</li>
+    <li>The <strong>width</strong> <span class="m">w(P)</span> = size of the largest antichain in <span class="m">P</span>.</li>
+  </ul>
+  <strong>Note on height convention:</strong> height counts elements, not edges. A chain with 4 elements has height 4, not 3.
+</div>
+
+<h3 id="convex">Convex Subsets</h3>
+
+<div class="block def">
+  <span class="lbl">Definition — Convex Subset (Order-Convex / Interval)</span>
+  A subset <span class="m">C ⊆ P</span> is <strong>convex</strong> (also called <em>order-convex</em> or an <em>interval</em>) if: whenever <span class="m">x, y ∈ C</span> and <span class="m">z ∈ P</span> satisfies <span class="m">x ≤ z ≤ y</span>, then <span class="m">z ∈ C</span>.
+  <br><br>
+  <em>Plain English:</em> C is convex if it contains everything "between" any two of its elements.
+  <br><br>
+  This matches the real-line case: convex subsets of <span class="m">(ℤ, ≤)</span> are intervals like <span class="m">{3,4,5,6}</span>, never <span class="m">{3,5}</span> (the 4 in between is missing).
+</div>
+
+<div class="block ex">
+  <span class="lbl">Convex and Non-Convex Examples in D₁₂</span>
+  <ul class="L">
+    <li><span class="m">{2, 4, 6, 12}</span> in D₁₂: Is it convex? Check all pairs. Between 2 and 12: elements z with 2|z|12 are {4, 6} — both in the set. ✓ Between 2 and 4: nothing between. ✓ Between 2 and 6: nothing between (3 is not above 2 in D₁₂ since 2∤3). ✓ <span class="yes">Convex.</span></li>
+    <li><span class="m">{2, 12}</span> in D₁₂: Between 2 and 12 lies 4 (since 2|4|12), but 4 ∉ {2,12}. <span class="no">Not convex.</span></li>
+    <li><span class="m">{b, c}</span> in the V-poset (a&lt;b, a&lt;c): b and c are incomparable, so there is no z with b≤z≤c or c≤z≤b. The condition is vacuously satisfied. <span class="yes">Convex.</span></li>
+    <li>In any chain, convex subsets are exactly the contiguous intervals.</li>
+  </ul>
+</div>
+
+<h3 id="kendall">Kendall Tau Distance</h3>
+
+<div class="block def">
+  <span class="lbl">Definition — Kendall Tau Distance</span>
+  For two permutations <span class="m">σ, π</span> of <span class="m">{1,2,…,n}</span>, the <strong>Kendall tau distance</strong> <span class="m">τ(σ,π)</span> is the number of pairs <span class="m">{i,j} ⊆ {1,…,n}</span> on which <span class="m">σ</span> and <span class="m">π</span> disagree about which element comes first.
+</div>
+
+<div class="block thm">
+  <span class="lbl">Three Equivalent Viewpoints</span>
+  <ol class="L">
+    <li><strong>Inversions:</strong> <span class="m">τ(σ, id) = #{(i,j) : i &lt; j,\ σ(i) &gt; σ(j)}</span> = number of inversions of <span class="m">σ</span>.</li>
+    <li><strong>Adjacent transpositions:</strong> <span class="m">τ(σ, π)</span> equals the minimum number of adjacent swaps needed to turn <span class="m">σ</span> into <span class="m">π</span>. So <strong>bubble sort uses exactly <span class="m">τ(σ, id)</span> swaps</strong>.</li>
+    <li><strong>Permutahedron distance:</strong> Vertices of the permutahedron <span class="m">Πₙ</span> are permutations; an edge connects <span class="m">σ</span> and <span class="m">π</span> iff <span class="m">τ(σ,π) = 1</span>. So <span class="m">τ</span> is the graph distance on the 1-skeleton of <span class="m">Πₙ</span>.</li>
+  </ol>
+</div>
+
+<div class="block ex">
+  <span class="lbl">Example — Computing τ(3142, id)</span>
+  <p>σ = [3,1,4,2]. Count pairs (i,j) with i&lt;j and σ(i) &gt; σ(j):</p>
+  <ul class="L">
+    <li>(1,2): σ(1)=3 &gt; σ(2)=1 ✓ — inversion</li>
+    <li>(1,3): σ(1)=3 &lt; σ(3)=4 ✗</li>
+    <li>(1,4): σ(1)=3 &gt; σ(4)=2 ✓ — inversion</li>
+    <li>(2,3): σ(2)=1 &lt; σ(3)=4 ✗</li>
+    <li>(2,4): σ(2)=1 &lt; σ(4)=2 ✗</li>
+    <li>(3,4): σ(3)=4 &gt; σ(4)=2 ✓ — inversion</li>
+  </ul>
+  <p><span class="m">τ(3142, id) = 3</span>. Bubble sort would use exactly 3 swaps to sort [3,1,4,2].</p>
+</div>
+
+<!-- ══ 3. RUNNING EXAMPLES ══ -->
+<h2 id="examples"><span class="sn">03</span>Three Running Examples</h2>
+<div class="examples-grid">
+  <div class="ex-card easy">
+    <span class="ex-badge">🟢 Easy — D₁₂</span>
+    <h4>Is D₁₂ graded? Apply Mirsky.</h4>
+    <p>Check graded, find Mirsky decomposition, verify |P| ≤ h·w, count labellings.</p>
+  </div>
+  <div class="ex-card med">
+    <span class="ex-badge">🟡 Medium — Sequence [3,1,4,2,5]</span>
+    <h4>Erdős–Szekeres walkthrough</h4>
+    <p>Build the poset, compute (u,d) pairs, apply pigeonhole, find the monotone subsequence.</p>
+  </div>
+  <div class="ex-card hard">
+    <span class="ex-badge">🔴 Hard — Paint problem</span>
+    <h4>Derive E[N] = e</h4>
+    <p>Full proof: simplex volume, tail sum formula, Taylor series connection.</p>
+  </div>
+</div>
+
+<!-- ══ 4. WORKED EXAMPLES ══ -->
+<h2 id="worked"><span class="sn">04</span>Worked Examples</h2>
+
+<h3 id="is-graded">Is This Poset Graded? — Full Walkthroughs</h3>
+
+<div class="block ex">
+  <span class="lbl">🟢 Worked Example 1 — D₁₂ = {1,2,3,4,6,12}: graded</span>
+  <p><strong>Test A:</strong> All maximal chains: 1&lt;2&lt;4&lt;12, 1&lt;2&lt;6&lt;12, 1&lt;3&lt;6&lt;12 — all length 4. ✓ Graded.</p>
+  <p><strong>Test B — cover-by-cover verification:</strong> Define rk(d) = Ω(d) (prime factors with multiplicity).</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Cover</th><th>Ω(top) − Ω(bottom)</th><th>Δrk</th></tr>
+    <tr><td>1 ⋖ 2</td><td>Ω(2)−Ω(1) = 1−0</td><td>1 ✓</td></tr>
+    <tr><td>1 ⋖ 3</td><td>Ω(3)−Ω(1) = 1−0</td><td>1 ✓</td></tr>
+    <tr><td>2 ⋖ 4</td><td>Ω(4)−Ω(2) = 2−1</td><td>1 ✓</td></tr>
+    <tr><td>2 ⋖ 6</td><td>Ω(6)−Ω(2) = 2−1</td><td>1 ✓</td></tr>
+    <tr><td>3 ⋖ 6</td><td>Ω(6)−Ω(3) = 2−1</td><td>1 ✓</td></tr>
+    <tr><td>4 ⋖ 12</td><td>Ω(12)−Ω(4) = 3−2</td><td>1 ✓</td></tr>
+    <tr><td>6 ⋖ 12</td><td>Ω(12)−Ω(6) = 3−2</td><td>1 ✓</td></tr>
+  </table></div>
+  <p>Every cover lifts rank by exactly 1. Minimal element 1 has rank 0. <strong>Graded with h = 4 levels.</strong></p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">🟡 Worked Example 2 — Build rank by hand: P = {a,b,c,d,e,f}</span>
+  <p><strong>Cover relations:</strong> a⋖b, a⋖c, b⋖d, c⋖d, d⋖e, d⋖f</p>
+  <p><strong>Apply Test B</strong> starting from minimal element a:</p>
+  <ul class="L">
+    <li>rk(a) = 0 (minimal).</li>
+    <li>rk(b) = rk(a)+1 = 1 (via a⋖b).</li>
+    <li>rk(c) = rk(a)+1 = 1 (via a⋖c).</li>
+    <li>rk(d): from b⋖d → want rk(d)=2; from c⋖d → also want rk(d)=2. <strong>No conflict.</strong> rk(d) = 2.</li>
+    <li>rk(e) = rk(d)+1 = 3 (via d⋖e).</li>
+    <li>rk(f) = rk(d)+1 = 3 (via d⋖f).</li>
+  </ul>
+  <p>Every cover relation lifts rank by exactly 1. All maximal elements (e and f) share rank 3 = h(P)−1. <span class="yes"><strong>Graded with h = 4.</strong></span></p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">🔴 Worked Example 3 — Non-graded: detect the conflict. P = {a,b,c,d,e}</span>
+  <p><strong>Cover relations:</strong> a⋖b, a⋖c, b⋖e, c⋖d, d⋖e</p>
+  <p><strong>Test A:</strong></p>
+  <ul class="L">
+    <li>Maximal chain a&lt;b&lt;e: length 3.</li>
+    <li>Maximal chain a&lt;c&lt;d&lt;e: length 4.</li>
+  </ul>
+  <p>Different lengths → <span class="no"><strong>not graded.</strong></span></p>
+  <p><strong>Test B — the conflict:</strong></p>
+  <ul class="L">
+    <li>rk(a) = 0. rk(b) = 1, rk(c) = 1, rk(d) = 2.</li>
+    <li>Element e: from b⋖e → want rk(e) = <strong>2</strong>; from d⋖e → want rk(e) = <strong>3</strong>.</li>
+    <li><strong>Conflict!</strong> e would need rank 2 and rank 3 simultaneously. Not graded. ✗</li>
+  </ul>
+  <div style="display:flex;justify-content:center;margin:.8rem 0">
+  <svg width="160" height="190" viewBox="0 0 160 190">
+    <!-- covers: a<b, a<c, b<e, c<d, d<e -->
+    <line x1="80" y1="170" x2="40" y2="110" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+    <line x1="80" y1="170" x2="100" y2="110" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+    <line x1="40" y1="110" x2="80" y2="30" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+    <line x1="100" y1="110" x2="120" y2="70" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+    <line x1="120" y1="70" x2="80" y2="30" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+    <!-- nodes -->
+    <circle cx="80" cy="170" r="16" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="40" cy="110" r="16" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="100" cy="110" r="16" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="120" cy="70" r="16" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="80" cy="30" r="16" fill="#1e2028" stroke="#c86478" stroke-width="2"/>
+    <!-- labels -->
+    <text x="80" y="174" font-family="monospace" font-size="12" fill="#f0c060" text-anchor="middle" dominant-baseline="middle">a</text>
+    <text x="40" y="114" font-family="monospace" font-size="12" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">b</text>
+    <text x="100" y="114" font-family="monospace" font-size="12" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">c</text>
+    <text x="120" y="74" font-family="monospace" font-size="12" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">d</text>
+    <text x="80" y="34" font-family="monospace" font-size="12" fill="#e08090" text-anchor="middle" dominant-baseline="middle">e</text>
+    <!-- conflict annotation -->
+    <text x="98" y="22" font-family="sans-serif" font-size="9" fill="#c86478">conflict!</text>
+  </svg>
+  </div>
+</div>
+
+<div class="block ex">
+  <span class="lbl">🔴 Worked Example 4 — "Almost graded but not": P = {1,2,3,4,5,6}</span>
+  <p><strong>Cover relations:</strong> 1⋖2, 2⋖3, 1⋖4, 4⋖5, 5⋖3, 1⋖6, 6⋖3</p>
+  <p><strong>Test A — maximal chains ending at 3:</strong></p>
+  <ul class="L">
+    <li>1 &lt; 2 &lt; 3: length 3</li>
+    <li>1 &lt; 4 &lt; 5 &lt; 3: length 4</li>
+    <li>1 &lt; 6 &lt; 3: length 3</li>
+  </ul>
+  <p>Lengths differ → <span class="no"><strong>not graded.</strong></span></p>
+  <p><strong>Test B — the conflict:</strong> rk(1)=0, rk(2)=rk(4)=rk(6)=1, rk(5)=2.</p>
+  <ul class="L">
+    <li>Element 3: from 2⋖3 → want rk(3)=2; from 6⋖3 → want rk(3)=2 (consistent so far).</li>
+    <li>From 5⋖3 → want rk(3) = rk(5)+1 = <strong>3</strong>. <strong>Conflict!</strong> Already assigned rk(3)=2. ✗</li>
+  </ul>
+  <p>This is a tricky case — element 3 looks "almost reachable" from two paths at the same rank (2 and 6 both at rank 1), but the third path through 5 adds an extra step. The conflict confirms: not graded.</p>
+</div>
+
+<h3 id="mirsky">Mirsky's Theorem: Decomposing P into Antichains</h3>
+
+<div class="block thm">
+  <span class="lbl">Mirsky's Theorem</span>
+  Every finite poset <span class="m">P</span> can be partitioned into exactly <span class="m">h(P)</span> antichains <span class="m">A₁, A₂, …, A_{h(P)}</span> by setting:
+  <div class="mb">Aₖ  =  {x ∈ P : length of the longest chain ending at x equals k}</div>
+  Moreover, this partition has the property that each <span class="m">|Aₖ| ≤ w(P)</span>, and therefore:
+  <div class="mb">|P|  =  |A₁| + |A₂| + … + |A_{h(P)}|  ≤  h(P) · w(P)</div>
+</div>
+
+<div class="block proof">
+  <span class="lbl">Proof — Three steps</span>
+  <p><strong>Step 1: The Aₖ partition P.</strong> Every element x has a well-defined "longest chain ending at x" of some length k. So x belongs to exactly one Aₖ, and together they cover all of P.</p>
+  <p><strong>Step 2: Each Aₖ is an antichain.</strong> Suppose x, y ∈ Aₖ with x &lt; y. Let C be a longest chain ending at x, with length k. Extending C by appending y gives a chain of length k+1 ending at y. But y ∈ Aₖ means the longest chain ending at y has length k — contradiction. Therefore no two elements of Aₖ are comparable. ∎</p>
+  <p><strong>Step 3: Bound |P|.</strong> There are h(P) antichains, each of size at most w(P). So:
+  <div class="mb">|P|  =  ∑_{k=1}^{h(P)} |Aₖ|  ≤  h(P) · w(P)  ∎</div></p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">🟢 Mirsky decomposition of D₁₂</span>
+  <p>Compute rank = length of longest chain ending at each element:</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Element</th><th>Longest chain ending here</th><th>Length (rank)</th><th>Mirsky level</th></tr>
+    <tr><td>1</td><td>(1)</td><td>1</td><td>A₁</td></tr>
+    <tr><td>2</td><td>(1,2)</td><td>2</td><td>A₂</td></tr>
+    <tr><td>3</td><td>(1,3)</td><td>2</td><td>A₂</td></tr>
+    <tr><td>4</td><td>(1,2,4)</td><td>3</td><td>A₃</td></tr>
+    <tr><td>6</td><td>(1,2,6) or (1,3,6)</td><td>3</td><td>A₃</td></tr>
+    <tr><td>12</td><td>(1,2,4,12) etc.</td><td>4</td><td>A₄</td></tr>
+  </table></div>
+  <p><strong>Mirsky antichains:</strong> <span class="m">A₁ = {1}</span>, <span class="m">A₂ = {2,3}</span>, <span class="m">A₃ = {4,6}</span>, <span class="m">A₄ = {12}</span>.</p>
+  <p>Verify: <span class="m">h(D₁₂) = 4</span>, <span class="m">w(D₁₂) = 2</span>, <span class="m">|P| = 6 ≤ 4×2 = 8</span>. ✓</p>
+</div>
+
+<h3 id="erdos">Erdős–Szekeres Lemma: Full Walkthrough</h3>
+
+<div class="block thm">
+  <span class="lbl">Lemma (Erdős–Szekeres, 1935)</span>
+  Every sequence of <span class="m">rs + 1</span> distinct real numbers contains either an <strong>increasing subsequence of length at least r+1</strong> or a <strong>decreasing subsequence of length at least s+1</strong>.
+  <br><br>
+  <em>Equivalently:</em> any sequence of length strictly greater than <span class="m">rs</span> contains an increasing subsequence of length &gt; r or a decreasing subsequence of length &gt; s.
+  <br><br>
+  <em>Special case r = s = n:</em> any sequence of <span class="m">n² + 1</span> distinct reals has a monotone subsequence of length at least <span class="m">n + 1</span>.
+</div>
+
+<div class="block note">
+  <span class="lbl">Connection to |P| ≤ h·w</span>
+  Define a poset P on the sequence: <span class="m">aᵢ ≤_P aⱼ</span> iff <span class="m">i ≤ j</span> AND <span class="m">aᵢ ≤ aⱼ</span>. Then:
+  <ul class="L">
+    <li>Chains in P = increasing subsequences. So <span class="m">h(P)</span> = LIS length.</li>
+    <li>Antichains in P = decreasing subsequences. So <span class="m">w(P)</span> = LDS length.</li>
+    <li>The Erdős–Szekeres lemma is precisely <span class="m">|P| ≤ h · w</span> applied here: if |P| = rs+1 ≤ h·w, then h &gt; r or w &gt; s.</li>
+  </ul>
+</div>
+
+<div class="block proof">
+  <span class="lbl">Pigeonhole Proof via (u,d) pairs</span>
+  <p>For each element <span class="m">aᵢ</span>, define:</p>
+  <ul class="L">
+    <li><span class="m">uᵢ</span> = length of the longest <em>increasing</em> subsequence ending at <span class="m">aᵢ</span></li>
+    <li><span class="m">dᵢ</span> = length of the longest <em>decreasing</em> subsequence ending at <span class="m">aᵢ</span></li>
+  </ul>
+  <p><strong>Claim: all pairs (uᵢ, dᵢ) are distinct.</strong></p>
+  <p>If i &lt; j and aᵢ &lt; aⱼ: any increasing subseq ending at aᵢ extends to one ending at aⱼ, so uⱼ &gt; uᵢ — pairs differ in first coordinate. If i &lt; j and aᵢ &gt; aⱼ: similarly dⱼ &gt; dᵢ. Either way <span class="m">(uᵢ, dᵢ) ≠ (uⱼ, dⱼ)</span>.</p>
+  <p><strong>Pigeonhole:</strong> We have rs+1 distinct pairs. If all uᵢ ≤ r and all dᵢ ≤ s, only rs pairs from {1,…,r}×{1,…,s} are available — contradiction. So some uᵢ ≥ r+1 or some dᵢ ≥ s+1. ∎</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">🟡 Full walkthrough — sequence [3, 1, 4, 2, 5], r=s=2</span>
+  <p>n = 5 = 2·2+1. Guarantees LIS ≥ 3 OR LDS ≥ 3.</p>
+  <table class="trace-table">
+    <tr><th>i</th><th>aᵢ</th><th>uᵢ</th><th>dᵢ</th><th>(u,d)</th></tr>
+    <tr><td>1</td><td>3</td><td>1</td><td>1</td><td class="hl">(1,1)</td></tr>
+    <tr><td>2</td><td>1</td><td>1</td><td>2 — (3,1)</td><td class="hl">(1,2)</td></tr>
+    <tr><td>3</td><td>4</td><td>2 — (1,4) or (3,4)</td><td>1</td><td class="hl">(2,1)</td></tr>
+    <tr><td>4</td><td>2</td><td>2 — (1,2)</td><td>2 — (3,2) or (4,2)</td><td class="hl">(2,2)</td></tr>
+    <tr><td>5</td><td>5</td><td>3 — (1,2,5)</td><td>1</td><td class="hl">(3,1)</td></tr>
+  </table>
+  <p>All 5 pairs distinct ✓. Since u₅=3 ≥ r+1=3: LIS of length 3 confirmed. Example: <strong>1, 2, 5</strong> or <strong>1, 4, 5</strong>.</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">🔴 Worked example with repeats — S = [3,1,4,1,5,9,2,6,5,3,5]</span>
+  <p>Length = 11 &gt; 3·3 = 9, so S contains an increasing subsequence of length 4 or a decreasing subsequence of length 4.</p>
+  <p><em>Note: S has repeated values. Treat them as distinct by position (perturb each by a tiny amount based on index). The lemma still gives a monotone subsequence of length 4 after tie-breaking.</em></p>
+  <p><strong>An increasing subsequence of length 4: 1, 4, 5, 9</strong> (at positions 2, 3, 5, 6). ✓</p>
+  <p>Check: all indices increasing (2&lt;3&lt;5&lt;6), all values strictly increasing (1&lt;4&lt;5&lt;9). ✓</p>
+</div>
+
+<h4>Try it Yourself — Erdős–Szekeres</h4>
+<div class="block ex">
+  <span class="lbl">Practice Problems</span>
+  <ol class="L">
+    <li><strong>Prove</strong> that any sequence of 17 distinct reals contains an increasing or decreasing subsequence of length 5. <em>(Answer: 17 = 4·4+1, use r=s=4.)</em></li>
+    <li><strong>Find</strong> a sequence of length 9 with no increasing or decreasing subsequence of length 4. <em>(Answer: [3,2,1,6,5,4,9,8,7] — three decreasing blocks. Max LIS = Max LDS = 3.)</em></li>
+    <li><strong>Show:</strong> every sequence of n²+1 distinct reals has an increasing or decreasing subsequence of length n+1. <em>(Answer: apply E-S with r=s=n.)</em></li>
+    <li><strong>Spell out</strong> the bijection "poset P on the sequence" ↔ chains/antichains ↔ inc/dec subsequences, and confirm h(P)·w(P) ≥ |P| gives Erdős–Szekeres. <em>(Answer: aᵢ ≤_P aⱼ iff i≤j and aᵢ≤aⱼ. Chains = inc subseqs, antichains = dec subseqs. h(P)=LIS, w(P)=LDS. Then rs+1 ≤ h·w forces h&gt;r or w&gt;s.)</em></li>
+  </ol>
+</div>
+
+<h3 id="labellings">Counting Labellings</h3>
+
+<div class="block def">
+  <span class="lbl">Definition — Labelled Poset</span>
+  A <strong>labelled poset</strong> is a poset whose elements are the numbers <span class="m">{1, 2, …, n}</span>. The Hasse diagram has a specific shape (the unlabelled structure), but the labels are assigned to the nodes.
+  <br><br>
+  Two labellings of the same shape are considered the <strong>same</strong> if an automorphism of the diagram maps one to the other.
+</div>
+
+<div class="block thm">
+  <span class="lbl">Theorem — Labelling Count</span>
+  The number of distinct labelled posets having a given shape <span class="m">P</span> on <span class="m">n</span> elements is:
+  <div class="mb">number of labellings  =  n! / |Aut(P)|</div>
+  where <span class="m">|Aut(P)|</span> is the size of the automorphism group of <span class="m">P</span> — the number of order-preserving bijections from <span class="m">P</span> to itself.
+  <br><br>
+  <em>Why?</em> The symmetric group <span class="m">Sₙ</span> acts on labellings by permuting labels. Two labellings are equivalent iff some automorphism of <span class="m">P</span> relates them. The number of distinct labellings = number of orbits = <span class="m">|Sₙ| / |Aut(P)| = n!/|Aut(P)|</span>.
+</div>
+
+<h4>Examples — labelling counts for different shapes</h4>
+<div class="shape-grid">
+
+<div class="shape-card">
+  <span class="shape-name">Chain (n=4)</span>
+  <svg width="40" height="80" viewBox="0 0 40 80" style="margin:4px auto">
+    <line x1="20" y1="70" x2="20" y2="10" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+    <circle cx="20" cy="70" r="4" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="20" cy="50" r="4" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="20" cy="30" r="4" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="20" cy="10" r="4" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  </svg>
+  <span class="shape-formula">4!/1</span>
+  <span class="shape-count">24</span>
+  <span class="shape-why">|Aut|=1, only identity preserves order</span>
+</div>
+
+<div class="shape-card">
+  <span class="shape-name">Antichain (n=4)</span>
+  <svg width="80" height="40" viewBox="0 0 80 40" style="margin:4px auto">
+    <circle cx="10" cy="20" r="4" fill="#2a4a6b" stroke="#c86478" stroke-width="1.5"/>
+    <circle cx="30" cy="20" r="4" fill="#2a4a6b" stroke="#c86478" stroke-width="1.5"/>
+    <circle cx="50" cy="20" r="4" fill="#2a4a6b" stroke="#c86478" stroke-width="1.5"/>
+    <circle cx="70" cy="20" r="4" fill="#2a4a6b" stroke="#c86478" stroke-width="1.5"/>
+  </svg>
+  <span class="shape-formula">4!/24</span>
+  <span class="shape-count">1</span>
+  <span class="shape-why">|Aut|=4!, all permutations are automorphisms</span>
+</div>
+
+<div class="shape-card">
+  <span class="shape-name">V-shape (n=3)<br>1 above 2</span>
+  <svg width="60" height="70" viewBox="0 0 60 70" style="margin:4px auto">
+    <line x1="30" y1="15" x2="10" y2="55" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+    <line x1="30" y1="15" x2="50" y2="55" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+    <circle cx="30" cy="15" r="4" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+    <circle cx="10" cy="55" r="4" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+    <circle cx="50" cy="55" r="4" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+  </svg>
+  <span class="shape-formula">3!/2</span>
+  <span class="shape-count">3</span>
+  <span class="shape-why">|Aut|=2, swap the 2 bottom elements</span>
+</div>
+
+<div class="shape-card">
+  <span class="shape-name">Λ-shape (n=3)<br>2 above 1</span>
+  <svg width="60" height="70" viewBox="0 0 60 70" style="margin:4px auto">
+    <line x1="10" y1="15" x2="30" y2="55" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+    <line x1="50" y1="15" x2="30" y2="55" stroke="#9878c8" stroke-width="1.5" opacity=".6"/>
+    <circle cx="10" cy="15" r="4" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+    <circle cx="50" cy="15" r="4" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+    <circle cx="30" cy="55" r="4" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+  </svg>
+  <span class="shape-formula">3!/2</span>
+  <span class="shape-count">3</span>
+  <span class="shape-why">|Aut|=2, swap the 2 top elements</span>
+</div>
+
+<div class="shape-card">
+  <span class="shape-name">Diamond (n=4)</span>
+  <svg width="60" height="90" viewBox="0 0 60 90" style="margin:4px auto">
+    <line x1="30" y1="80" x2="10" y2="45" stroke="#d4a843" stroke-width="1.5" opacity=".6"/>
+    <line x1="30" y1="80" x2="50" y2="45" stroke="#d4a843" stroke-width="1.5" opacity=".6"/>
+    <line x1="10" y1="45" x2="30" y2="10" stroke="#d4a843" stroke-width="1.5" opacity=".6"/>
+    <line x1="50" y1="45" x2="30" y2="10" stroke="#d4a843" stroke-width="1.5" opacity=".6"/>
+    <circle cx="30" cy="80" r="4" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <circle cx="10" cy="45" r="4" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <circle cx="50" cy="45" r="4" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <circle cx="30" cy="10" r="4" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+  </svg>
+  <span class="shape-formula">4!/2</span>
+  <span class="shape-count">12</span>
+  <span class="shape-why">|Aut|=2, swap the 2 middle elements</span>
+</div>
+
+<div class="shape-card">
+  <span class="shape-name">2+2 (n=4)<br>two 2-chains</span>
+  <svg width="70" height="70" viewBox="0 0 70 70" style="margin:4px auto">
+    <line x1="20" y1="60" x2="20" y2="10" stroke="#d4a843" stroke-width="1.5" opacity=".6"/>
+    <line x1="50" y1="60" x2="50" y2="10" stroke="#d4a843" stroke-width="1.5" opacity=".6"/>
+    <circle cx="20" cy="60" r="4" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <circle cx="20" cy="10" r="4" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <circle cx="50" cy="60" r="4" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <circle cx="50" cy="10" r="4" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+  </svg>
+  <span class="shape-formula">4!/2</span>
+  <span class="shape-count">12</span>
+  <span class="shape-why">|Aut|=2, swap the two chains</span>
+</div>
+
+<div class="shape-card">
+  <span class="shape-name">Y-shape (n=4)<br>3 above 1</span>
+  <svg width="80" height="70" viewBox="0 0 80 70" style="margin:4px auto">
+    <line x1="40" y1="60" x2="10" y2="15" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+    <line x1="40" y1="60" x2="40" y2="15" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+    <line x1="40" y1="60" x2="70" y2="15" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+    <circle cx="40" cy="60" r="4" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="10" cy="15" r="4" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="40" cy="15" r="4" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="70" cy="15" r="4" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  </svg>
+  <span class="shape-formula">4!/6</span>
+  <span class="shape-count">4</span>
+  <span class="shape-why">|Aut|=3!=6, permute 3 top elements freely</span>
+</div>
+
+</div><!-- end shape-grid -->
+
+<div class="block note">
+  <span class="lbl">How to find |Aut(P)|</span>
+  An automorphism of P is an order-preserving bijection P→P. To find them:
+  <ul class="L">
+    <li>Elements with the same "structural role" in the Hasse diagram can be swapped.</li>
+    <li>The top and bottom elements (if unique) are always fixed.</li>
+    <li>Elements at the same level that have identical upward and downward neighborhoods can be swapped.</li>
+    <li>For many posets, |Aut| = k! where k elements are "structurally identical."</li>
+  </ul>
+</div>
+
+<h3 id="paint">The Paint Dispenser Problem — Full Proof</h3>
+
+<div class="block hw">
+  <span class="lbl">HW April 23 — The Problem</span>
+  A paint machine dispenses a Uniform[0,1] amount of paint per push. An electric eye stops it when the can (capacity 1 gallon) is full. What is the expected number of button pushes?
+</div>
+
+<div class="block thm">
+  <span class="lbl">Theorem</span>
+  The expected number of pushes is exactly <span class="m">e ≈ 2.71828</span>.
+</div>
+
+<div class="block proof">
+  <span class="lbl">Full Proof — Three key steps</span>
+
+  <p><strong>Setup.</strong> Let <span class="m">U₁, U₂, …</span> be i.i.d. Uniform[0,1] random variables (the amounts dispensed). Define <span class="m">N = min{k : U₁ + U₂ + ··· + Uₖ ≥ 1}</span> — the number of pushes needed.</p>
+
+  <p><strong>Step 1: Compute Pr(N &gt; k).</strong></p>
+  <p><span class="m">Pr(N &gt; k) = Pr(U₁ + ··· + Uₖ &lt; 1)</span> — we need more than k pushes iff the first k dispensings didn't fill the can.</p>
+  <p>This probability equals the <strong>volume of the standard k-simplex</strong>:</p>
+  <div class="mb">Pr(N > k)  =  Vol{(x₁,…,xₖ) : xᵢ ≥ 0,  x₁+···+xₖ &lt; 1}  =  1/k!</div>
+  <p><em>Proof of the volume formula by induction:</em></p>
+  <ul class="L">
+    <li><strong>Base k=1:</strong> Vol{x : 0 ≤ x &lt; 1} = 1 = 1/1!. ✓</li>
+    <li><strong>Inductive step:</strong> Fix xₖ = t ∈ [0,1]. The remaining (k−1)-simplex has volume (1−t)^{k−1}/(k−1)!. Integrate over t:</li>
+  </ul>
+  <div class="mb">Vol_k  =  ∫₀¹  (1−t)^{k−1} / (k−1)!  dt
+       =  [−(1−t)^k / (k·(k−1)!)]₀¹
+       =  0 − (−1/k!)
+       =  1/k!   ✓</div>
+
+  <p><strong>Step 2: Use the tail sum formula.</strong></p>
+  <p>For any non-negative integer-valued random variable N:</p>
+  <div class="mb">E[N]  =  ∑_{k=0}^∞  Pr(N > k)</div>
+  <p><em>Why?</em> <span class="m">N = ∑_{k=0}^∞ 𝟙[N > k]</span>, so <span class="m">E[N] = ∑_{k=0}^∞ Pr(N > k)</span> by linearity.</p>
+
+  <p><strong>Step 3: Substitute and recognize the Taylor series.</strong></p>
+  <div class="mb">E[N]  =  ∑_{k=0}^∞  1/k!
+       =  1/0! + 1/1! + 1/2! + 1/3! + ···
+       =  1 + 1 + 1/2 + 1/6 + ···
+       =  e   ∎</div>
+  <p>The last equality is the Taylor series of <span class="m">eˣ</span> evaluated at <span class="m">x=1</span>.</p>
+</div>
+
+<div class="block note">
+  <span class="lbl">Why does this make intuitive sense?</span>
+  The expected value is just above 2 — you almost always need at least 2 pushes (since 1 uniform random variable is less than 1 with probability 1, meaning 1 push is never enough). With 2 pushes you fill the can about 50% of the time. The extra probability of needing 3, 4, … pushes adds up exactly to e−2 ≈ 0.718.
+  <br><br>
+  The connection to Pr(N=1)=0 is immediate: a single Uniform[0,1] variable is strictly less than 1 with probability 1, so you always need at least 2 pushes.
+</div>
+
+<div class="block note">
+  <span class="lbl">De Finetti's Theorem — Mentioned in lecture</span>
+  An infinite sequence of random variables is <strong>exchangeable</strong> — meaning the joint distribution is unchanged by any finite permutation of the indices — if and only if the variables are <strong>conditionally independent given some latent random variable</strong>. In other words, exchangeable sequences are always i.i.d. mixtures.
+  <br><br>
+  The connection to this week: when sampling random linear extensions of a poset uniformly, the resulting sequence of elements has exchangeability properties that depend on the poset structure. De Finetti's theorem gives a structural decomposition of such distributions.
+</div>
+
+<hr class="divider">
+
+<!-- ══ 5. PRACTICE ══ -->
+<h2 id="practice"><span class="sn">05</span>Try It Yourself</h2>
+<p>Click any question to reveal the full solution.</p>
+
+<div class="practice-header">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+  Practice Problems — Graded Posets, Mirsky, Erdős–Szekeres, Labellings
+</div>
+<div class="practice-wrap">
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q1</span><span>Is the poset B₄ (all subsets of {1,2,3,4} ordered by ⊆) graded? If so, give the rank function and the sizes of each level.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Test: all maximal chains have the same length.</strong> Every maximal chain goes from ∅ to {1,2,3,4} by adding one element at each step. Since we add 4 elements total, every maximal chain has length 5 (5 elements: ∅, {a}, {a,b}, {a,b,c}, {1,2,3,4}). All maximal chains have length 5. <span class="yes">B₄ IS graded.</span></div>
+  <div class="step"><strong>Rank function:</strong> rk(S) = |S|. This satisfies rk(∅)=0 (minimal element) and every cover adds one element, increasing rank by 1. ✓</div>
+  <div class="step"><strong>Level sizes:</strong> |P_k| = C(4,k) = number of k-element subsets.
+  <br>P₀: 1 subset (∅), P₁: 4 subsets, P₂: 6 subsets, P₃: 4 subsets, P₄: 1 subset ({1,2,3,4})</div>
+  <p><span class="ans-box">Graded ✓. Rank = subset size. Level sizes: 1, 4, 6, 4, 1.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q2</span><span>Compute the Mirsky decomposition of B₃ (subsets of {1,2,3} by ⊆). Verify |P| ≤ h·w.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Rank = longest chain ending at S = |S|.</strong> Same as the graded rank.</div>
+  <div class="step"><strong>Mirsky levels:</strong>
+  <br>A₁ = {∅} (rank 1... wait, we count elements in the chain, so chain ending at ∅ has length 1)
+  <br>More carefully: length of longest chain ENDING at S = |S| + 1.
+  <br>A₁ = {∅}, A₂ = {{1},{2},{3}}, A₃ = {{1,2},{1,3},{2,3}}, A₄ = {{1,2,3}}</div>
+  <div class="step"><strong>Check:</strong> h(B₃) = 4 (longest chain ∅⊂{1}⊂{1,2}⊂{1,2,3} has 4 elements). w(B₃) = 3 (largest antichain: {{1,2},{1,3},{2,3}} — no two comparable). |P| = 8.</div>
+  <p><span class="ans-box">|P| = 8 ≤ h·w = 4·3 = 12. ✓ The bound is not tight here.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q3</span><span>Apply Erdős–Szekeres to the sequence [5, 2, 8, 1, 7, 3, 6, 4] with r=2, s=3. What does the theorem guarantee? Verify by computing all (u,d) pairs and finding the actual subsequences.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Check the theorem applies.</strong> We have <span class="m">n=8</span> elements, <span class="m">r=2, s=3</span>, so <span class="m">rs+1 = 7 ≤ 8</span>. ✓ The theorem guarantees: an <strong>increasing subsequence of length at least r+1=3</strong>, OR a <strong>decreasing subsequence of length at least s+1=4</strong>.</div>
+  <div class="step"><strong>Compute (u(i), d(i)) for each element:</strong></div>
+  <table class="trace-table">
+    <tr><th>i</th><th>aᵢ</th><th>u(i)</th><th>d(i)</th><th>(u,d)</th></tr>
+    <tr><td>1</td><td>5</td><td>1</td><td>1</td><td class="hl">(1,1)</td></tr>
+    <tr><td>2</td><td>2</td><td>1</td><td>2</td><td class="hl">(1,2)</td></tr>
+    <tr><td>3</td><td>8</td><td>2</td><td>1</td><td class="hl">(2,1)</td></tr>
+    <tr><td>4</td><td>1</td><td>1</td><td>3</td><td class="hl">(1,3)</td></tr>
+    <tr><td>5</td><td>7</td><td>2</td><td>2</td><td class="hl">(2,2)</td></tr>
+    <tr><td>6</td><td>3</td><td>2</td><td>3</td><td class="hl">(2,3)</td></tr>
+    <tr><td>7</td><td>6</td><td>3</td><td>3</td><td class="hl">(3,3)</td></tr>
+    <tr><td>8</td><td>4</td><td>3</td><td>4</td><td class="hl">(3,4)</td></tr>
+  </table>
+  <div class="step"><strong>All 8 pairs are distinct. ✓</strong> Since <span class="m">u(8)=3 ≥ r+1=3</span> AND <span class="m">d(8)=4 ≥ s+1=4</span>, both conditions of the theorem are satisfied simultaneously.</div>
+  <div class="step"><strong>Find the subsequences:</strong>
+  <br>LIS (length 3): trace back from position 8 via u-parents → [2, 3, 6]. Check: 2&lt;3&lt;6 ✓
+  <br>LDS (length 4): trace back from position 8 via d-parents → [8, 7, 6, 4]. Check: 8&gt;7&gt;6&gt;4 ✓</div>
+  <p><span class="ans-box">Guaranteed: LIS ≥ 3 or LDS ≥ 4. Both hold: LIS = [2,3,6] (length 3), LDS = [8,7,6,4] (length 4).</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q4</span><span>How many labellings does the "fence" poset on 4 elements have? The fence has cover relations: a⋖b, c⋖b, c⋖d (so b has two elements below it, d is a second top element).</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Find |Aut(P)|.</strong> An automorphism must preserve all cover relations. The cover relations are a⋖b, c⋖b, c⋖d. Element b is covered by both a and c; d is covered only by c. Is there any non-identity automorphism? If we try to swap a and d: a covers b (via a⋖b) but d covers d... wait, d is above c, not below. Let's be careful: a is a minimal element below b only; d is a maximal element above c only; c covers both b and d. No symmetry maps a to d while preserving the structure (a is below b, d is above c — completely different roles). |Aut(P)| = 1.</div>
+  <div class="step"><strong>Labellings = 4!/1 = 24.</strong></div>
+  <p><span class="ans-box">24 labellings — the fence has a trivial automorphism group.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q5</span><span>Prove that |P| ≤ h(P)·w(P) for every finite poset P. (This is HW April 22.)</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>We prove this using the Mirsky decomposition.</p>
+  <div class="step"><strong>Define:</strong> For each <span class="m">x ∈ P</span>, let <span class="m">rk(x)</span> = length of the longest chain ending at <span class="m">x</span>. Note <span class="m">rk(x) ∈ {1,…,h(P)}</span>.</div>
+  <div class="step"><strong>Partition P:</strong> Let <span class="m">Aₖ = {x ∈ P : rk(x) = k}</span> for k = 1,…,h(P). These sets partition P.</div>
+  <div class="step"><strong>Each Aₖ is an antichain:</strong> Suppose x, y ∈ Aₖ with x &lt; y. The longest chain ending at x has length k; appending y gives a chain of length k+1 ending at y. But rk(y) = k — contradiction. So no two elements of Aₖ are comparable. ✓</div>
+  <div class="step"><strong>Bound the size:</strong> Since each Aₖ is an antichain, |Aₖ| ≤ w(P). Summing over all h(P) levels: |P| = ∑|Aₖ| ≤ h(P)·w(P). ∎</div>
+  <p><span class="ans-box">|P| ≤ h(P)·w(P). Proof via Mirsky decomposition — partition P into h(P) antichains of size ≤ w(P).</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q6</span><span>Compute τ(σ, id) for σ = [4,1,3,2] using all three viewpoints: inversions, bubble sort swaps, and permutahedron distance.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Viewpoint 1 — Inversions:</strong> Count pairs (i,j) with i&lt;j and σ(i)&gt;σ(j):
+  <br>(1,2): 4&gt;1 ✓; (1,3): 4&gt;3 ✓; (1,4): 4&gt;2 ✓; (2,3): 1&lt;3 ✗; (2,4): 1&lt;2 ✗; (3,4): 3&gt;2 ✓.
+  <br>Total: <strong>4 inversions</strong>.</div>
+  <div class="step"><strong>Viewpoint 2 — Bubble sort:</strong> Each pass swaps adjacent elements that are out of order. Trace [4,1,3,2]:
+  <br>Pass 1: 4↔1→[1,4,3,2]; 4↔3→[1,3,4,2]; 4↔2→[1,3,2,4]. (3 swaps)
+  <br>Pass 2: 3↔2→[1,2,3,4]. (1 swap)
+  <br>Total: <strong>4 swaps</strong>. ✓</div>
+  <div class="step"><strong>Viewpoint 3 — Permutahedron:</strong> τ = graph distance = minimum steps on the permutahedron's 1-skeleton from [4,1,3,2] to [1,2,3,4]. This equals the number of inversions = <strong>4 steps</strong>. ✓</div>
+  <p><span class="ans-box">τ([4,1,3,2], id) = 4. Confirmed by all three viewpoints.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q7</span><span>In D₁₂, is the subset {1, 2, 6} convex? Is {4, 6, 12} convex? Justify both answers.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>{1, 2, 6}:</strong> Check all pairs x,y in the set — is everything between them also in the set?
+  <br>Pair (1,6): elements z with 1|z|6 in D₁₂: z ∈ {2, 3, 6}. But 3 ∉ {1,2,6}! So 3 is between 1 and 6 but missing. <span class="no">NOT convex.</span></div>
+  <div class="step"><strong>{4, 6, 12}:</strong> Check all pairs:
+  <br>Pair (4,12): z with 4|z|12: z ∈ {12}... actually need 4|z and z|12 and 4&lt;z&lt;12. That's z ∈ {}, since no divisor of 12 strictly between 4 and 12 is divisible by 4 (6 is not divisible by 4). ✓
+  <br>Pair (6,12): z with 6|z|12 and 6&lt;z&lt;12: none in D₁₂. ✓
+  <br>Pair (4,6): 4 and 6 are incomparable (4∤6 and 6∤4), so the condition x≤z≤y is vacuous. ✓
+  <br><span class="yes">Convex. ✓</span></div>
+  <p><span class="ans-box">{1,2,6}: NOT convex (missing 3). {4,6,12}: convex.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q8</span><span>What is Pr(N = 2) for the paint problem — the probability you need exactly 2 pushes?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Pr(N = 2) = Pr(N &gt; 1) − Pr(N &gt; 2).</strong></div>
+  <div class="step"><strong>Pr(N &gt; 1) = 1/1! = 1.</strong> After 1 push, U₁ &lt; 1 always (Uniform[0,1] is strictly less than 1 with probability 1). So you always need at least 2 pushes.</div>
+  <div class="step"><strong>Pr(N &gt; 2) = 1/2! = 1/2.</strong> After 2 pushes, U₁+U₂ &lt; 1 with probability 1/2 (the 2-simplex has volume 1/2).</div>
+  <div class="step"><strong>Pr(N = 2) = 1 − 1/2 = 1/2.</strong></div>
+  <p>Alternatively: Pr(N=2) = Pr(U₁ &lt; 1 and U₁+U₂ ≥ 1) = Pr(U₂ ≥ 1−U₁). Integrating: ∫₀¹ Pr(U₂ ≥ 1−u) du = ∫₀¹ u du = 1/2. ✓</p>
+  <p><span class="ans-box">Pr(N = 2) = 1/2. There's a 50% chance exactly 2 pushes are needed.</span></p>
+</div>
+</div>
+
+</div><!-- end practice-wrap -->
+
+<hr class="divider">
+
+<!-- ══ 6. HOMEWORK ══ -->
+<h2 id="hw"><span class="sn">06</span>Homework Problems</h2>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Wednesday April 22</span>
+  <p><strong>Problem:</strong> Show that |P| ≤ h(P)·w(P) for every finite poset P.</p>
+  <p><strong>Proof (Mirsky decomposition):</strong> Define rk(x) = length of longest chain ending at x. Partition P into antichains Aₖ = {x : rk(x) = k}. Each Aₖ is an antichain (if x,y ∈ Aₖ with x &lt; y, the chain ending at x extends to give a longer chain ending at y, contradicting rk(y) = k). There are h(P) antichains, each of size ≤ w(P). So |P| = Σ|Aₖ| ≤ h(P)·w(P). ∎</p>
+  <p>See Q5 in the practice problems above for the full detailed proof.</p>
+</div>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Thursday April 23 (Guess)</span>
+  <p><strong>Problem:</strong> Guess the expected number of button pushes for the paint dispenser.</p>
+  <p><strong>Answer:</strong> <span class="m">e ≈ 2.718</span>. See the full derivation in the Worked Examples section. The key insight: Pr(N &gt; k) = 1/k! (simplex volume), and E[N] = Σ Pr(N &gt; k) = Σ 1/k! = e.</p>
+</div>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Monday April 27 (Derive or Simulate)</span>
+  <p><strong>For math majors:</strong> Derive the exact answer E[N] = e using the hint from Thursday's class.</p>
+  <p><strong>Proof strategy:</strong>
+  <ol class="L">
+    <li>Show Pr(N &gt; k) = Pr(U₁+···+Uₖ &lt; 1) = Vol(k-simplex) = 1/k! (by induction on k using Fubini).</li>
+    <li>Apply the tail-sum identity E[N] = Σ_{k≥0} Pr(N &gt; k) = Σ 1/k! = e.</li>
+  </ol>
+  The full proof is in the Worked Examples section above.</p>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 7. CHEAT SHEET ══ -->
+<h2 id="cheat"><span class="sn">07</span>One-Page Cheat Sheet</h2>
+<div class="cheat-sheet">
+  <div class="cheat-title">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Week 4 Cheat Sheet
+  </div>
+  <div class="cheat-grid">
+    <div class="cheat-section">
+      <h5>Graded Posets</h5>
+      <ul>
+        <li><strong>3 conditions:</strong> (i) rk(minimal)=0; (ii) covers +1; (iii) all maximal elements same rank h(P)−1</li>
+        <li>Condition (iii) is essential — prevents disjoint chains of different lengths</li>
+        <li>Equivalent: all maximal chains same length</li>
+        <li>Test A: check all maximal chains equal length</li>
+        <li>Test B: assign ranks, detect conflicts</li>
+        <li>Each rank level is an antichain</li>
+        <li>Bₙ: rk(S)=|S|. Dₙ: rk(d)=Ω(d). Chain: rk(i)=i−1</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Mirsky Theorem &amp; |P| ≤ h·w</h5>
+      <ul>
+        <li>Aₖ = {x : longest chain ending at x has length k}</li>
+        <li>Aₖ is always an antichain</li>
+        <li>h(P) antichains, each size ≤ w(P)</li>
+        <li>Therefore: |P| ≤ h(P)·w(P)</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Erdős–Szekeres</h5>
+      <ul>
+        <li><strong>Statement:</strong> rs+1 distinct reals ⟹ inc subseq of length r+1 OR dec of length s+1</li>
+        <li><strong>Proof:</strong> pigeonhole on (uᵢ,dᵢ) pairs — all distinct</li>
+        <li><strong>Special case r=s=n:</strong> n²+1 reals → monotone subseq of length n+1</li>
+        <li><strong>Equivalent</strong> to |P| ≤ h·w on the sequence-poset</li>
+        <li>Tight example: [3,2,1,6,5,4,9,8,7] — length 9, no mono subseq of length 4</li>
+      </ul>
+    </div>
+    <div class="cheat-section">
+      <h5>Counting Labellings</h5>
+      <ul>
+        <li>Formula: n! / |Aut(P)|</li>
+        <li>Chain: 24 / 1 = 24</li>
+        <li>Antichain: 24 / 24 = 1</li>
+        <li>Diamond: 24 / 2 = 12</li>
+        <li>Y-shape: 24 / 6 = 4</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Convex Subsets</h5>
+      <ul>
+        <li>C ⊆ P is convex if x,y ∈ C, x≤z≤y ⟹ z ∈ C</li>
+        <li>= "order interval" = poset version of real interval</li>
+        <li>{2,4,6,12} in D₁₂: convex ✓</li>
+        <li>{2,12} in D₁₂: not convex (missing 4,6) ✗</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Kendall Tau &amp; Paint Problem</h5>
+      <ul>
+        <li>τ(σ,π) = disagreeing pairs = min adjacent swaps</li>
+        <li>τ(σ,id) = inversions of σ = bubble sort swaps</li>
+        <li>τ = graph distance on permutahedron Πₙ</li>
+        <li>Paint problem: E[pushes] = e</li>
+        <li>Key: Pr(N &gt; k) = 1/k!, so E[N] = Σ1/k! = e</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Math 100 · Dartmouth College · Spring 2026 · Week 4 — Graded Posets, Width, Height &amp; Mirsky's Theorem</div>
+</main>
+</div>
+<script>
+document.querySelectorAll('.pq-q').forEach(function(q){
+  q.addEventListener('click',function(){
+    var a=this.parentElement.querySelector('.pq-a');
+    var open=this.classList.toggle('open');
+    a.classList.toggle('vis',open);
+  });
+});
+var links=document.querySelectorAll('nav a');
+function setActive(){
+  var best=null;
+  document.querySelectorAll('h2[id],h3[id]').forEach(function(s){
+    if(s.getBoundingClientRect().top<120) best=s.id;
+  });
+  links.forEach(function(l){l.classList.toggle('active',l.getAttribute('href')==='#'+best);});
+}
+window.addEventListener('scroll',setActive);
+setActive();
+</script>
+</body>
+</html>

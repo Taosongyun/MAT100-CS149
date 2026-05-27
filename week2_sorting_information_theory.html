@@ -105,6 +105,61 @@ td:first-child{color:var(--ink);font-weight:500}
 .cheat-table td{padding:.28rem .5rem;border-bottom:1px solid var(--bg3);color:var(--ink2)}
 .cheat-table td:first-child{color:var(--gold2)}
 .cheat-table tr:last-child td{border-bottom:none}
+
+/* ── Page navigation buttons ── */
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-bottom: 1.4rem;
+}
+.sidebar-actions {
+  padding: 0 1.2rem 1rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: .7rem;
+}
+.page-link {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--gold);
+  border: 1px solid rgba(212,168,67,.55);
+  border-radius: 4px;
+  padding: .34rem .7rem;
+  text-decoration: none;
+  line-height: 1.35;
+}
+.page-link:hover {
+  background: var(--gold2);
+  color: var(--bg);
+  text-decoration: none;
+}
+.page-link.secondary {
+  color: var(--ink2);
+  background: transparent;
+  border: 1px solid var(--border);
+}
+.page-link.secondary:hover {
+  color: var(--ink);
+  background: var(--bg3);
+  border-color: rgba(212,168,67,.45);
+}
+.page-link.disabled,
+.page-link[aria-disabled="true"] {
+  color: var(--ink3);
+  background: transparent;
+  border-color: var(--border);
+  cursor: not-allowed;
+  opacity: .75;
+}
+.sidebar-actions .page-link {
+  display: block;
+  margin-bottom: .45rem;
+  text-align: left;
+}
+
 .footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:var(--sans);font-size:11px;color:var(--ink3)}
 @media(max-width:960px){nav{display:none}main{padding:2rem 1.5rem}}
 @media(max-width:660px){.examples-grid,.cheat-grid{grid-template-columns:1fr}}
@@ -120,7 +175,7 @@ td:first-child{color:var(--ink);font-weight:500}
   <div class="sidebar-actions">
     <a class="page-link" href="index.html">← Home</a>
     <a class="page-link secondary" href="week1_permutations_cycles_fixed_points.html">← Previous</a>
-    <a class="page-link secondary" href="#" aria-disabled="true" onclick="return false;">Next — Soon</a>
+    <a class="page-link secondary" href="week3_partial_orders_hasse_diagrams.html">Next →</a>
   </div>
   <ul>
     <li class="nav-section">Sections</li>
@@ -147,7 +202,7 @@ td:first-child{color:var(--ink);font-weight:500}
 <div class="page-actions">
   <a class="page-link" href="index.html">← Back to Home</a>
   <a class="page-link secondary" href="week1_permutations_cycles_fixed_points.html">← Previous Week</a>
-  <a class="page-link secondary" href="#" aria-disabled="true" onclick="return false;">Next Week — Coming Soon</a>
+  <a class="page-link secondary" href="week3_partial_orders_hasse_diagrams.html">Next Week →</a>
 </div>
 
 <div class="cover">
