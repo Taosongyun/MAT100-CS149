@@ -64,6 +64,10 @@ main { flex: 1; max-width: 980px; padding: 3.5rem 4rem; }
 .cover h1 { font-family: var(--display); font-size: 2.75rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .75rem; }
 .cover h1 em { color: var(--gold); font-style: italic; }
 .cover .subtitle { font-family: var(--sans); font-size: .92rem; color: var(--ink2); font-weight: 300; letter-spacing: .02em; max-width: 760px; }
+.author-line { font-family: var(--sans); font-size: 11px; color: var(--ink3); margin-top: .75rem; letter-spacing: .03em; }
+.official-link { background: rgba(212,168,67,.07); border-left: 3px solid var(--gold); }
+.official-link .label { color: var(--gold); }
+.official-link a { font-family: var(--sans); font-size: 12px; font-weight: 600; }
 .topics-row { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.4rem; }
 .topic-pill { font-family: var(--sans); font-size: 11px; font-weight: 500; padding: .28rem .7rem; border-radius: 20px; border: 1px solid var(--border); color: var(--ink2); }
 h2 { font-family: var(--display); font-size: 1.6rem; font-weight: 600; color: var(--ink); margin: 3.2rem 0 1.2rem; scroll-margin-top: 2rem; display: flex; align-items: center; gap: .7rem; }
@@ -123,6 +127,7 @@ ul.L li { margin-bottom: .35rem; }
     <div class="subtitle">
       Topics in Probability. A course-note website for study summaries, proof walkthroughs, homework review, midterm preparation, and office-hour-style explanations.
     </div>
+    <div class="author-line">Study notes prepared by Sonny Tao.</div>
     <div class="topics-row">
       <span class="topic-pill">Permutations</span>
       <span class="topic-pill">Probability</span>
@@ -131,6 +136,8 @@ ul.L li { margin-bottom: .35rem; }
       <span class="topic-pill">Random processes</span>
       <span class="topic-pill">Counting</span>
       <span class="topic-pill">Algorithms</span>
+      <span class="topic-pill">Posets</span>
+      <span class="topic-pill">Permutahedra</span>
     </div>
   </section>
 
@@ -142,7 +149,15 @@ ul.L li { margin-bottom: .35rem; }
         This site is for <strong>MATH 100 / COSC 149.2 and COSC 49.02</strong>, <em>Topics in Probability: Permutations, Probability, and Sorting</em>, taught by <strong>Peter Winkler</strong>.
       </p>
       <p>
-        The course studies probabilistic and combinatorial structures behind permutations, cycles, sorting procedures, random processes, and related algorithmic questions. The pages here are intended as review-oriented study materials rather than official course documents.
+        The course studies probabilistic and combinatorial structures behind permutations, cycles, sorting procedures, random processes, posets, and related algorithmic questions. The pages here are intended as review-oriented study materials rather than official course documents.
+      </p>
+    </div>
+
+    <div class="block official-link">
+      <span class="label">Official Course Website</span>
+      <p>
+        For authoritative course information, assignments, schedule details, and official materials, use the Dartmouth course page:
+        <a href="https://math.dartmouth.edu/~m100s26/">MATH 100 Spring 2026 official website</a>.
       </p>
     </div>
   </section>
@@ -171,52 +186,52 @@ ul.L li { margin-bottom: .35rem; }
         <div>
           <span class="badge">Week 1 <span class="status">Available</span></span>
           <h3>Permutations, Cycles &amp; Fixed Points</h3>
-          <p>Cycle notation, fixed points, derangements, long cycles, and the 100 Prisoners problem.</p>
+          <p>Cycle notation, fixed points, derangements, long-cycle probability, the Game of 13, and the 100 Prisoners cycle-following strategy.</p>
         </div>
         <a class="button" href="week1_permutations_cycles_fixed_points.html">Open Week 1</a>
       </article>
 
       <article class="week-card">
         <div>
-          <span class="badge">Week 2 <span class="status planned">Planned</span></span>
-          <h3>Counting &amp; Inclusion-Exclusion</h3>
-          <p>Binomial coefficients, constrained counting, double-counting, and inclusion-exclusion arguments.</p>
+          <span class="badge">Week 2 <span class="status">Available</span></span>
+          <h3>Sorting Algorithms &amp; Information Theory</h3>
+          <p>Comparison sorting, Big O / Ω / Θ notation, decision-tree lower bounds, insertion, selection, bubble, merge, quick sort, and coin weighing.</p>
         </div>
-        <a class="button secondary" href="#">Coming Soon</a>
+        <a class="button" href="week2_sorting_information_theory.html">Open Week 2</a>
       </article>
 
       <article class="week-card">
         <div>
-          <span class="badge">Week 3 <span class="status planned">Planned</span></span>
-          <h3>Random Variables &amp; Expectation</h3>
-          <p>Indicator variables, linearity of expectation, variance, covariance, and useful distributions.</p>
+          <span class="badge">Week 3 <span class="status">Available</span></span>
+          <h3>Partial Orders &amp; Hasse Diagrams</h3>
+          <p>Posets, partial versus total orders, cover relations, Hasse diagrams, linear extensions, sorting as a poset, and the shove algorithm state poset.</p>
         </div>
-        <a class="button secondary" href="#">Coming Soon</a>
+        <a class="button" href="week3_partial_orders_hasse_diagrams.html">Open Week 3</a>
       </article>
 
       <article class="week-card">
         <div>
-          <span class="badge">Week 4 <span class="status planned">Planned</span></span>
-          <h3>Sorting Basics</h3>
-          <p>Comparison sorting, decision trees, lower bounds, MergeSort, QuickSort, and average-case reasoning.</p>
+          <span class="badge">Week 4 <span class="status">Available</span></span>
+          <h3>Graded Posets, Width &amp; Mirsky</h3>
+          <p>Rank functions, graded posets, height, width, antichains, convex subsets, Kendall tau distance, Mirsky's theorem, and Erdős–Szekeres.</p>
         </div>
-        <a class="button secondary" href="#">Coming Soon</a>
+        <a class="button" href="week4_graded_posets_mirsky.html">Open Week 4</a>
       </article>
 
       <article class="week-card">
         <div>
-          <span class="badge">Week 5 <span class="status planned">Planned</span></span>
-          <h3>Random Permutations</h3>
-          <p>Uniform permutations, cycle structure, records, inversions, and asymptotic behavior.</p>
+          <span class="badge">Week 5 <span class="status">Available</span></span>
+          <h3>Poset Shapes, Permutahedron &amp; 1/3–2/3</h3>
+          <p>Sixteen 4-element poset shapes, labelling counts, graded-level equivalence, convex subsets, permutahedra, order polytopes, chain polytopes, and the 1/3–2/3 conjecture.</p>
         </div>
-        <a class="button secondary" href="#">Coming Soon</a>
+        <a class="button" href="week5_poset_shapes_permutahedron.html">Open Week 5</a>
       </article>
 
       <article class="week-card">
         <div>
           <span class="badge">Week 6 <span class="status planned">Planned</span></span>
-          <h3>Recurrences &amp; Generating Functions</h3>
-          <p>Recursive counting, probability recurrences, generating functions, and closed-form derivations.</p>
+          <h3>Coming Soon</h3>
+          <p>New weekly content will be added here after review and cleanup.</p>
         </div>
         <a class="button secondary" href="#">Coming Soon</a>
       </article>
@@ -224,8 +239,8 @@ ul.L li { margin-bottom: .35rem; }
       <article class="week-card">
         <div>
           <span class="badge">Week 7 <span class="status planned">Planned</span></span>
-          <h3>Random Walks &amp; Stopping</h3>
-          <p>Simple random walks, gambler's ruin, hitting times, stopping rules, and expectation tricks.</p>
+          <h3>Coming Soon</h3>
+          <p>New weekly content will be added here after review and cleanup.</p>
         </div>
         <a class="button secondary" href="#">Coming Soon</a>
       </article>
@@ -233,8 +248,8 @@ ul.L li { margin-bottom: .35rem; }
       <article class="week-card">
         <div>
           <span class="badge">Week 8 <span class="status planned">Planned</span></span>
-          <h3>Probabilistic Method</h3>
-          <p>Existence proofs, union bounds, expectation arguments, and randomized construction ideas.</p>
+          <h3>Coming Soon</h3>
+          <p>New weekly content will be added here after review and cleanup.</p>
         </div>
         <a class="button secondary" href="#">Coming Soon</a>
       </article>
@@ -242,8 +257,8 @@ ul.L li { margin-bottom: .35rem; }
       <article class="week-card">
         <div>
           <span class="badge">Week 9 <span class="status planned">Planned</span></span>
-          <h3>Advanced Sorting &amp; Algorithms</h3>
-          <p>Randomized algorithms, hashing-style ideas, algorithmic probability, and refined sorting analyses.</p>
+          <h3>Coming Soon</h3>
+          <p>New weekly content will be added here after review and cleanup.</p>
         </div>
         <a class="button secondary" href="#">Coming Soon</a>
       </article>
@@ -251,8 +266,8 @@ ul.L li { margin-bottom: .35rem; }
       <article class="week-card">
         <div>
           <span class="badge">Week 10 <span class="status planned">Planned</span></span>
-          <h3>Review &amp; Exam Problems</h3>
-          <p>Midterm-style questions, office-hour clarifications, common mistakes, and final review summaries.</p>
+          <h3>Coming Soon</h3>
+          <p>New weekly content will be added here after review and cleanup.</p>
         </div>
         <a class="button secondary" href="#">Coming Soon</a>
       </article>
@@ -265,7 +280,7 @@ ul.L li { margin-bottom: .35rem; }
       <li>Use the ten week buttons as the main navigation system.</li>
       <li>Read the disclaimer before treating any proof or formula as final.</li>
       <li>Compare each explanation with the official lecture notes, homework statements, and course materials.</li>
-      <li>When a weekly page is added, keep its link relative, for example <span class="m">week2_counting_inclusion_exclusion.html</span>.</li>
+      <li>When a weekly page is added, keep its link relative, for example <span class="m">week6_comparability_graphs_dimension.html</span>.</li>
     </ul>
 
     <div class="block note">
@@ -275,7 +290,7 @@ ul.L li { margin-bottom: .35rem; }
   </section>
 
   <div class="footer">
-    MATH 100 / COSC 149.2 / COSC 49.02 · Topics in Probability · Permutations, Probability, and Sorting · Peter Winkler · Hosted with GitHub Pages
+    MATH 100 / COSC 149.2 / COSC 49.02 · Topics in Probability · Permutations, Probability, and Sorting · Peter Winkler · Study notes by Sonny Tao · Hosted with GitHub Pages
   </div>
 </main>
 </div>
