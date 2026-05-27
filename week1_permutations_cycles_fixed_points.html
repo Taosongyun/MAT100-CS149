@@ -170,8 +170,15 @@ td:first-child { color: var(--ink); font-weight: 500; }
 .perm-bot .perm-cell { color: var(--gold2); }
 
 
-/* ── Home button ── */
-.home-link {
+
+/* ── Page navigation buttons ── */
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-bottom: 1.3rem;
+}
+.page-link {
   display: inline-flex;
   align-items: center;
   gap: .45rem;
@@ -186,19 +193,33 @@ td:first-child { color: var(--ink); font-weight: 500; }
   border-radius: 4px;
   padding: .42rem .78rem;
   text-decoration: none;
-  margin-bottom: 1.3rem;
-  transition: transform .15s, background .15s;
+  transition: transform .15s, background .15s, border-color .15s, color .15s;
 }
-.home-link:hover {
+.page-link:hover {
   background: var(--gold2);
   text-decoration: none;
   transform: translateY(-1px);
 }
-.home-link.sidebar {
-  margin: .2rem 1.2rem 1rem;
-  justify-content: center;
-  color: var(--bg);
+.page-link.secondary {
+  color: var(--ink2);
+  background: transparent;
+  border-color: var(--border);
 }
+.page-link.secondary:hover {
+  color: var(--ink);
+  background: var(--bg3);
+  border-color: rgba(212,168,67,.45);
+}
+.sidebar-actions {
+  display: grid;
+  gap: .45rem;
+  padding: .2rem 1.2rem 1rem;
+}
+.sidebar-actions .page-link {
+  justify-content: center;
+  padding: .36rem .65rem;
+}
+
 
 /* ── Footer ── */
 .footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-family: var(--sans); font-size: 11px; color: var(--ink3); }
@@ -216,7 +237,10 @@ td:first-child { color: var(--ink); font-weight: 500; }
     <div class="course">Math 100 · Spring 2026</div>
     <div class="title">Week 1 — Permutations, Cycles &amp; Fixed Points</div>
   </div>
-  <a class="home-link sidebar" href="index.html">← Home</a>
+  <div class="sidebar-actions">
+    <a class="page-link" href="index.html">← Home</a>
+    <a class="page-link secondary" href="week2_sorting_information_theory.html">Next Week →</a>
+  </div>
   <ul>
     <li class="nav-section">Sections</li>
     <li><a href="#why">1 · Why We Care</a></li>
@@ -237,7 +261,10 @@ td:first-child { color: var(--ink); font-weight: 500; }
 <!-- ══ MAIN ══ -->
 <main>
 
-<a class="home-link" href="index.html">← Back to Home</a>
+<div class="page-actions">
+  <a class="page-link" href="index.html">← Back to Home</a>
+  <a class="page-link secondary" href="week2_sorting_information_theory.html">Next Week →</a>
+</div>
 
 <!-- Cover -->
 <div class="cover">

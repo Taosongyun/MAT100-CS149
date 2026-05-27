@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 2 — Sorting Algorithms &amp; Information Theory</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f1117; --bg2:#161820; --bg3:#1e2028; --bg4:#252730;
+  --border:#2e3040; --ink:#e8e4dc; --ink2:#a8a49c; --ink3:#68645c;
+  --gold:#d4a843; --gold2:#f0c060; --teal:#4ab8a8; --teal2:#6dd4c4;
+  --rose:#c86478; --rose2:#e08090; --violet:#9878c8; --violet2:#b898e0;
+  --green:#5a9e6a; --green2:#7ac88a; --orange:#d4824a; --orange2:#f0a060;
+  --mono:'JetBrains Mono',monospace; --serif:'Source Serif 4',Georgia,serif;
+  --display:'Playfair Display',Georgia,serif; --sans:'DM Sans',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--serif);background:var(--bg);color:var(--ink);line-height:1.8;font-size:16.5px}
+.shell{display:flex;min-height:100vh}
+nav{width:248px;min-width:248px;background:var(--bg2);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;padding:1.6rem 0;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.nav-logo{padding:0 1.2rem 1.2rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.nav-logo .course{font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3)}
+.nav-logo .title{font-family:var(--display);font-size:13px;color:var(--gold);margin-top:.25rem;line-height:1.3}
+nav ul{list-style:none}
+.nav-section{font-family:var(--sans);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);padding:.9rem 1.2rem .2rem}
+nav a{display:block;font-family:var(--sans);font-size:12px;color:var(--ink2);text-decoration:none;padding:.3rem 1.2rem;line-height:1.4;border-left:2px solid transparent;transition:all .15s}
+nav a:hover{color:var(--ink);background:var(--bg3)}
+nav a.active{color:var(--gold);border-left-color:var(--gold);background:var(--bg3)}
+main{flex:1;max-width:840px;padding:3.5rem 4rem}
+.cover{margin-bottom:3.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border)}
+.week-badge{display:inline-block;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.3);border-radius:3px;padding:.25rem .7rem;margin-bottom:1rem}
+.cover h1{font-family:var(--display);font-size:2.3rem;font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:.6rem}
+.cover h1 em{color:var(--gold);font-style:italic}
+.cover .subtitle{font-family:var(--sans);font-size:.9rem;color:var(--ink2);font-weight:300}
+.topics-row{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1.4rem}
+.topic-pill{font-family:var(--sans);font-size:11px;font-weight:500;padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);color:var(--ink2)}
+h2{font-family:var(--display);font-size:1.55rem;font-weight:600;color:var(--ink);margin:3.5rem 0 1.2rem;scroll-margin-top:2rem;display:flex;align-items:center;gap:.7rem}
+h2 .sn{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);padding:.25rem .55rem;border-radius:3px;flex-shrink:0}
+h3{font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--teal);margin:2rem 0 .65rem;scroll-margin-top:2rem;letter-spacing:.01em}
+h4{font-family:var(--sans);font-size:.9rem;font-weight:600;color:var(--ink2);margin:1.4rem 0 .4rem}
+p{margin-bottom:.9rem}
+.block{margin:1.2rem 0;padding:1rem 1.2rem;border-radius:6px}
+.def{background:rgba(74,184,168,.07);border-left:3px solid var(--teal)}
+.thm{background:rgba(212,168,67,.07);border-left:3px solid var(--gold)}
+.proof{background:var(--bg3);border-left:3px solid var(--border)}
+.ex{background:rgba(154,120,200,.07);border-left:3px solid var(--violet)}
+.note{background:var(--bg3);border-left:3px solid var(--border);font-size:.92rem;color:var(--ink2)}
+.hw{background:rgba(200,100,120,.07);border-left:3px solid var(--rose)}
+.warn{background:rgba(212,130,74,.07);border-left:3px solid var(--orange)}
+.lbl{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:.4rem}
+.def .lbl{color:var(--teal)}.thm .lbl{color:var(--gold)}.proof .lbl{color:var(--ink3)}.ex .lbl{color:var(--violet)}.hw .lbl{color:var(--rose)}.note .lbl{color:var(--ink3)}.warn .lbl{color:var(--orange)}
+.m{font-family:var(--mono);font-size:.83em;background:var(--bg4);color:var(--gold2);padding:.12em .38em;border-radius:3px;white-space:nowrap}
+.mb{display:block;font-family:var(--mono);font-size:.86em;background:var(--bg3);color:var(--teal2);padding:.65rem 1rem;border-radius:4px;margin:.7rem 0;border:1px solid var(--border);overflow-x:auto;white-space:pre}
+ul.L,ol.L{padding-left:1.4rem;margin:.5rem 0 .8rem}
+ul.L li,ol.L li{margin-bottom:.35rem}
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:.87rem;font-family:var(--sans)}
+th{background:var(--bg3);color:var(--ink2);font-weight:600;padding:.5rem .8rem;text-align:left;border-bottom:1px solid var(--border);font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
+td{padding:.42rem .8rem;border-bottom:1px solid var(--bg3);vertical-align:top;color:var(--ink2)}
+tr:last-child td{border-bottom:none}
+td:first-child{color:var(--ink);font-weight:500}
+.examples-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:1.2rem 0}
+.ex-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem}
+.ex-card .ex-badge{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.5rem;display:block}
+.ex-card.easy .ex-badge{color:var(--green)}.ex-card.med .ex-badge{color:var(--gold)}.ex-card.hard .ex-badge{color:var(--rose)}
+.ex-card h4{margin:0 0 .4rem;font-size:.85rem;color:var(--ink)}.ex-card p{font-size:.83rem;color:var(--ink2);margin-bottom:0}
+.algo-block{background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin:1.5rem 0;overflow:hidden}
+.algo-header{font-family:var(--sans);font-size:.88rem;font-weight:600;color:var(--ink);background:var(--bg4);padding:.65rem 1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.algo-header .algo-badge{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .5rem;border-radius:3px}
+.algo-body{padding:1rem}
+.step-trace{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.6rem .9rem;margin:.5rem 0;font-family:var(--mono);font-size:.8em;color:var(--ink2)}
+.step-trace .step-label{color:var(--teal2);font-weight:500;display:block;margin-bottom:.2rem;font-size:.85em}
+.step-trace .arr{color:var(--gold2)}
+.step-trace .highlight{color:var(--rose2)}
+.step-trace .done{color:var(--green2)}
+.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+.practice-header{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#2a3a5e,#1e4a3a);padding:.6rem 1.1rem;border-radius:6px 6px 0 0;display:flex;align-items:center;gap:.5rem}
+.practice-wrap{border:1px solid var(--border);border-radius:0 0 6px 6px;overflow:hidden;margin-bottom:2rem}
+.pq{border-bottom:1px solid var(--border)}.pq:last-child{border-bottom:none}
+.pq-q{font-family:var(--sans);font-size:.875rem;font-weight:500;color:var(--ink);padding:.75rem 1.1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;user-select:none;transition:background .12s}
+.pq-q:hover{background:var(--bg3)}
+.pq-q .qn{font-size:9.5px;font-weight:700;letter-spacing:.1em;color:var(--teal);min-width:1.8rem;padding-top:.1rem;flex-shrink:0}
+.pq-q .arr{font-size:11px;color:var(--ink3);transition:transform .18s;flex-shrink:0;padding-top:.1rem}
+.pq-q.open .arr{transform:rotate(180deg)}
+.pq-a{display:none;padding:.2rem 1.1rem .9rem;border-top:1px dashed var(--border);background:var(--bg2)}
+.pq-a.vis{display:block}
+.pq-a .al{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green2);margin-bottom:.5rem;display:block;padding-top:.55rem}
+.pq-a p{font-size:.875rem;font-family:var(--sans);color:var(--ink2);margin-bottom:.45rem;line-height:1.65}
+.pq-a .m{font-size:.8em}
+.pq-a ul,.pq-a ol{padding-left:1.3rem;margin:.3rem 0 .45rem;font-size:.875rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a li{margin-bottom:.25rem}
+.pq-a .step{background:var(--bg3);border-left:2px solid var(--teal);padding:.5rem .8rem;border-radius:0 4px 4px 0;margin:.4rem 0;font-size:.85rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a .step strong{color:var(--teal2)}
+.ans-box{background:rgba(90,158,106,.1);border:1px solid rgba(90,158,106,.3);border-radius:4px;padding:.4rem .8rem;font-family:var(--mono);font-size:.82em;color:var(--green2);margin:.4rem 0;display:inline-block}
+.cheat-sheet{background:var(--bg2);border:1px solid var(--gold);border-radius:8px;padding:1.5rem;margin:2rem 0}
+.cheat-title{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem}
+.cheat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.cheat-section h5{font-family:var(--sans);font-size:.8rem;font-weight:700;color:var(--teal2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.cheat-section p,.cheat-section li{font-family:var(--sans);font-size:.8rem;color:var(--ink2);line-height:1.5;margin-bottom:.25rem}
+.cheat-section ul{padding-left:1.1rem;margin:.25rem 0}
+.cheat-table{width:100%;border-collapse:collapse;font-size:.78rem;font-family:var(--mono)}
+.cheat-table th{color:var(--ink3);font-weight:600;padding:.3rem .5rem;text-align:left;border-bottom:1px solid var(--border);text-transform:uppercase;font-size:.72rem;letter-spacing:.06em}
+.cheat-table td{padding:.28rem .5rem;border-bottom:1px solid var(--bg3);color:var(--ink2)}
+.cheat-table td:first-child{color:var(--gold2)}
+.cheat-table tr:last-child td{border-bottom:none}
+.footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:var(--sans);font-size:11px;color:var(--ink3)}
+@media(max-width:960px){nav{display:none}main{padding:2rem 1.5rem}}
+@media(max-width:660px){.examples-grid,.cheat-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav>
+  <div class="nav-logo">
+    <div class="course">Math 100 · Spring 2026</div>
+    <div class="title">Week 2 — Sorting &amp; Information Theory</div>
+  </div>
+  <div class="sidebar-actions">
+    <a class="page-link" href="index.html">← Home</a>
+    <a class="page-link secondary" href="week1_permutations_cycles_fixed_points.html">← Previous</a>
+    <a class="page-link secondary" href="#" aria-disabled="true" onclick="return false;">Next — Soon</a>
+  </div>
+  <ul>
+    <li class="nav-section">Sections</li>
+    <li><a href="#why">1 · Why We Care</a></li>
+    <li><a href="#defs">2 · Definitions</a></li>
+    <li><a href="#perm-space">↳ Sorting &amp; Permutations</a></li>
+    <li><a href="#notation">↳ Big O, Ω, Θ</a></li>
+    <li><a href="#lower-bound">↳ Lower Bound</a></li>
+    <li><a href="#examples">3 · Running Examples</a></li>
+    <li><a href="#algorithms">4 · Sorting Algorithms</a></li>
+    <li><a href="#insertion">↳ Insertion Sort</a></li>
+    <li><a href="#selection">↳ Selection Sort</a></li>
+    <li><a href="#bubble">↳ Bubble Sort</a></li>
+    <li><a href="#merge">↳ Merge Sort</a></li>
+    <li><a href="#quick">↳ Quick Sort</a></li>
+    <li><a href="#coins">5 · Coin Weighing</a></li>
+    <li><a href="#practice">6 · Try It Yourself</a></li>
+    <li><a href="#hw">7 · Homework</a></li>
+    <li><a href="#cheat">8 · Cheat Sheet</a></li>
+  </ul>
+</nav>
+<main>
+
+<div class="page-actions">
+  <a class="page-link" href="index.html">← Back to Home</a>
+  <a class="page-link secondary" href="week1_permutations_cycles_fixed_points.html">← Previous Week</a>
+  <a class="page-link secondary" href="#" aria-disabled="true" onclick="return false;">Next Week — Coming Soon</a>
+</div>
+
+<div class="cover">
+  <div class="week-badge">Week 2</div>
+  <h1>Sorting Algorithms &amp;<br><em>Information Theory</em></h1>
+  <div class="subtitle">Math 100 · Dartmouth College · Spring 2026</div>
+  <div class="topics-row">
+    <span class="topic-pill">What is sorting?</span>
+    <span class="topic-pill">Big O / Ω / Θ</span>
+    <span class="topic-pill">Decision trees</span>
+    <span class="topic-pill">Lower bound</span>
+    <span class="topic-pill">Insertion sort</span>
+    <span class="topic-pill">Selection sort</span>
+    <span class="topic-pill">Bubble sort</span>
+    <span class="topic-pill">Merge sort</span>
+    <span class="topic-pill">Quick sort</span>
+    <span class="topic-pill">Coin weighing</span>
+  </div>
+</div>
+
+<!-- ══ 1. WHY WE CARE ══ -->
+<h2 id="why"><span class="sn">01</span>Why We Care</h2>
+<p>Sorting is one of the most fundamental tasks in computing — organizing a list, ranking candidates, ordering search results. But there are dozens of sorting algorithms. How do we know which one is best? And is there a limit to how fast <em>any</em> sorting algorithm can be?</p>
+<p>This week we answer those questions using ideas from Week 1. The key insight is this:</p>
+<div class="block thm">
+  <span class="lbl">The Central Idea</span>
+  Sorting an unknown list of <span class="m">n</span> elements means figuring out which of the <span class="m">n!</span> possible orderings you have. Every comparison gives you at most 1 bit of information. So you need at least <span class="m">log₂(n!)</span> comparisons — no matter how clever your algorithm is.
+</div>
+<p>This connects directly to Week 1: permutations aren't just abstract math objects — they are the <em>state space</em> of every sorting problem.</p>
+
+<!-- ══ 2. DEFINITIONS ══ -->
+<h2 id="defs"><span class="sn">02</span>Definitions</h2>
+
+<h3>What is Sorting?</h3>
+<div class="block def">
+  <span class="lbl">Definition — Sorting</span>
+  Given a sequence of <span class="m">n</span> elements <span class="m">a₁, a₂, …, aₙ</span> with a comparison operation (&lt;), <strong>sorting</strong> means rearranging them into a sequence <span class="m">aπ(1) ≤ aπ(2) ≤ … ≤ aπ(n)</span> for some permutation <span class="m">π</span>.
+  <br><br>
+  A <strong>comparison-based sorting algorithm</strong> learns about the input <em>only</em> by asking questions of the form "is <span class="m">aᵢ &lt; aⱼ</span>?" Each such question is called a <strong>comparison</strong>.
+</div>
+
+<div class="block def">
+  <span class="lbl">Definition — How to Prove a Sequence is Sorted</span>
+  To prove a sequence <span class="m">b₁, b₂, …, bₙ</span> is sorted, you must verify <strong>two things</strong>:
+  <ol class="L">
+    <li><strong>Order:</strong> <span class="m">b₁ ≤ b₂ ≤ … ≤ bₙ</span> — each element is ≤ the next.</li>
+    <li><strong>Same elements:</strong> <span class="m">{b₁,…,bₙ} = {a₁,…,aₙ}</span> as multisets — no elements were lost or added.</li>
+  </ol>
+  Both conditions are necessary. A sequence of all zeros is ordered but not a valid sort of [3,1,2].
+</div>
+
+<h3 id="perm-space">Sorting as Navigating Permutation Space</h3>
+<p>Here is the crucial link between sorting and permutations from Week 1.</p>
+<div class="block thm">
+  <span class="lbl">Key Connection</span>
+  When you start sorting, you don't know the order of the input. There are <span class="m">n!</span> possible orderings — that is, <span class="m">n!</span> permutations of <span class="m">{1,…,n}</span>, each a possible "true ranking" of your input.
+  <br><br>
+  Each comparison you make <strong>splits the remaining possibilities</strong>:
+  <ul class="L">
+    <li>Before any comparison: <span class="m">n!</span> possible orderings consistent with what you know.</li>
+    <li>After one comparison (is <span class="m">aᵢ &lt; aⱼ</span>?): at most <span class="m">n!/2</span> remain (roughly).</li>
+    <li>You are done when exactly <strong>1 ordering</strong> remains.</li>
+  </ul>
+  This means sorting is equivalent to <strong>identifying an unknown permutation</strong> by making binary queries.
+</div>
+<p>The maximum number of comparisons any algorithm can <em>ever</em> need is <span class="m">C(n,2) = n(n−1)/2</span> — just compare every pair. This is always sufficient because knowing every pairwise comparison uniquely determines the sorted order.</p>
+
+<h3 id="notation">Big O, Ω, and Θ Notation</h3>
+<p>We need a precise language for describing how fast algorithms grow. Think of <span class="m">T(n)</span> as the number of comparisons an algorithm makes on an input of size <span class="m">n</span>.</p>
+
+<div class="block def">
+  <span class="lbl">Definition — Big O (Upper Bound)</span>
+  We say <span class="m">T(n) = O(f(n))</span> if <span class="m">T(n)</span> grows <strong>at most</strong> as fast as <span class="m">f(n)</span>. Formally: there exist constants <span class="m">c &gt; 0</span> and <span class="m">N</span> such that <span class="m">T(n) ≤ c · f(n)</span> for all <span class="m">n &gt; N</span>.
+  <br><br>
+  <em>Plain English:</em> "T(n) is eventually bounded above by a constant multiple of f(n)."
+  <br><em>Example:</em> Insertion sort worst case: <span class="m">T(n) = n(n−1)/2 = O(n²)</span>.
+</div>
+
+<div class="block def">
+  <span class="lbl">Definition — Ω (Lower Bound)</span>
+  We say <span class="m">T(n) = Ω(f(n))</span> if <span class="m">T(n)</span> grows <strong>at least</strong> as fast as <span class="m">f(n)</span>. Formally: there exist constants <span class="m">c &gt; 0</span> and <span class="m">N</span> such that <span class="m">T(n) ≥ c · f(n)</span> for all <span class="m">n &gt; N</span>.
+  <br><br>
+  <em>Plain English:</em> "T(n) is eventually bounded below by a constant multiple of f(n)."
+  <br><em>Example:</em> Any sorting algorithm: <span class="m">T(n) = Ω(n log n)</span> in the worst case.
+</div>
+
+<div class="block def">
+  <span class="lbl">Definition — Θ (Tight Bound)</span>
+  We say <span class="m">T(n) = Θ(f(n))</span> if <span class="m">T(n)</span> is both <span class="m">O(f(n))</span> and <span class="m">Ω(f(n))</span>. That is:
+  <div class="mb">Θ(f(n))  =  O(f(n))  ∩  Ω(f(n))</div>
+  <em>Plain English:</em> "T(n) grows at exactly the same rate as f(n), up to constant factors."
+  <br><em>Example:</em> Merge sort: <span class="m">T(n) = Θ(n log n)</span> — both the best and worst cases are <span class="m">n log n</span>.
+</div>
+
+<div class="block note">
+  <span class="lbl">How to remember which is which</span>
+  <ul class="L">
+    <li><strong>O</strong> = "Oh, it's at most this bad" → <strong>upper</strong> bound → ceiling</li>
+    <li><strong>Ω</strong> = "Omega, it's at least this hard" → <strong>lower</strong> bound → floor</li>
+    <li><strong>Θ</strong> = "Theta, it's exactly this" → <strong>tight</strong> bound → sandwiched</li>
+  </ul>
+  A useful analogy: if T(n) is your salary, O is your maximum possible pay, Ω is your minimum guaranteed pay, and Θ means they're the same (fixed salary).
+</div>
+
+<h3 id="lower-bound">The Information-Theoretic Lower Bound</h3>
+<div class="block thm">
+  <span class="lbl">Theorem — Lower Bound on Comparisons</span>
+  Any correct comparison-based sorting algorithm must make at least <span class="m">⌈log₂(n!)⌉</span> comparisons in the worst case.
+</div>
+<div class="block proof">
+  <span class="lbl">Proof — Decision Tree Argument</span>
+  <p>Model any sorting algorithm as a <strong>binary decision tree</strong>:</p>
+  <ul class="L">
+    <li>Each <strong>internal node</strong> is a comparison: "is <span class="m">aᵢ &lt; aⱼ</span>?"</li>
+    <li>Each <strong>branch</strong> is an outcome: Yes (left) or No (right)</li>
+    <li>Each <strong>leaf</strong> is a conclusion: "the sorted order is <span class="m">π</span>"</li>
+  </ul>
+  <p>For the algorithm to be correct, it must be able to produce any of the <span class="m">n!</span> possible sorted orders. So the tree must have <strong>at least <span class="m">n!</span> leaves</strong>.</p>
+  <p>A binary tree of depth <span class="m">d</span> has at most <span class="m">2ᵈ</span> leaves. So we need <span class="m">2ᵈ ≥ n!</span>, which gives <span class="m">d ≥ log₂(n!)</span>, i.e. <span class="m">d ≥ ⌈log₂(n!)⌉</span>.</p>
+  <p>The depth of the tree = the number of comparisons in the worst case. ∎</p>
+</div>
+
+<div class="block note">
+  <span class="lbl">Concrete values</span>
+  <ul class="L">
+    <li><span class="m">n=4</span>: <span class="m">4!=24</span>, so at least <span class="m">⌈log₂(24)⌉ = 5</span> comparisons needed.</li>
+    <li><span class="m">n=8</span>: <span class="m">8!=40320</span>, so at least <span class="m">⌈log₂(40320)⌉ = 16</span> comparisons needed.</li>
+    <li><span class="m">n=16</span>: <span class="m">16!</span> is huge, so at least <span class="m">⌈log₂(16!)⌉ = 45</span> comparisons needed.</li>
+  </ul>
+</div>
+
+<!-- ══ 3. RUNNING EXAMPLES ══ -->
+<h2 id="examples"><span class="sn">03</span>Three Running Examples</h2>
+<div class="examples-grid">
+  <div class="ex-card easy">
+    <span class="ex-badge">🟢 Easy — n = 4</span>
+    <h4>Input: [3, 1, 4, 2]</h4>
+    <p>Trace every algorithm step-by-step. Best case uses [1,2,3,4], worst case uses [4,3,2,1].</p>
+  </div>
+  <div class="ex-card med">
+    <span class="ex-badge">🟡 Medium — n = 8</span>
+    <h4>Input: [5,3,8,1,9,2,7,4]</h4>
+    <p>Compare all algorithms. Best case [1..8], worst case [8..1]. Lower bound = 16 comparisons.</p>
+  </div>
+  <div class="ex-card hard">
+    <span class="ex-badge">🔴 Hard — n = 16</span>
+    <h4>Applying the lower bound</h4>
+    <p>Lower bound = 45 comparisons. See how each algorithm compares. Connect to coin weighing.</p>
+  </div>
+</div>
+
+<!-- ══ 4. SORTING ALGORITHMS ══ -->
+<h2 id="algorithms"><span class="sn">04</span>The Five Sorting Algorithms</h2>
+<p>For each algorithm we give: the idea in plain English, the best case walkthrough, the worst case walkthrough, and the comparison counts.</p>
+
+<!-- INSERTION SORT -->
+<h3 id="insertion">Insertion Sort</h3>
+<div class="block def">
+  <span class="lbl">The Idea</span>
+  Build a sorted portion from left to right. For each new element, <strong>insert it into its correct position</strong> in the already-sorted portion by shifting larger elements one step right.
+  <br><br>
+  Think of it like sorting a hand of playing cards: you pick up cards one at a time and slide each into the right spot among the ones you're already holding.
+</div>
+
+<div class="algo-block">
+  <div class="algo-header">
+    <span>🟢 Best Case — already sorted input [1, 2, 3, 4]</span>
+    <span class="algo-badge" style="background:rgba(90,158,106,.2);color:var(--green2)">3 comparisons</span>
+  </div>
+  <div class="algo-body">
+    <p style="font-family:var(--sans);font-size:.85rem;color:var(--ink2);margin-bottom:.8rem">Each new element only needs one comparison — it's already larger than the last element in the sorted portion.</p>
+    <div class="step-trace">
+      <span class="step-label">Start: sorted=[1], unsorted=[2,3,4]</span>
+      Insert 2: compare <span class="highlight">2 vs 1</span> → 2&gt;1, place after. sorted=[1,2] <span class="arr">→ 1 comparison</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Insert 3: compare 3 vs 2 → 3&gt;2, place after. sorted=[1,2,3]</span>
+      <span class="arr">→ 1 comparison</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Insert 4: compare 4 vs 3 → 4&gt;3, place after. sorted=[1,2,3,4]</span>
+      <span class="arr">→ 1 comparison</span>
+    </div>
+    <div class="step-trace"><span class="done">Total: 3 comparisons = n−1 ✓</span></div>
+  </div>
+</div>
+
+<div class="algo-block">
+  <div class="algo-header">
+    <span>🔴 Worst Case — reverse sorted input [4, 3, 2, 1]</span>
+    <span class="algo-badge" style="background:rgba(200,100,120,.2);color:var(--rose2)">6 comparisons</span>
+  </div>
+  <div class="algo-body">
+    <p style="font-family:var(--sans);font-size:.85rem;color:var(--ink2);margin-bottom:.8rem">Each new element must travel all the way to the front, comparing with every element in the sorted portion.</p>
+    <div class="step-trace">
+      <span class="step-label">Start: sorted=[4], unsorted=[3,2,1]</span>
+      Insert 3: compare <span class="highlight">3 vs 4</span> → 3&lt;4, shift 4 right. sorted=[3,4] <span class="arr">→ 1 comparison</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Insert 2: compare 2 vs 4 → shift, compare 2 vs 3 → shift. sorted=[2,3,4]</span>
+      <span class="arr">→ 2 comparisons</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Insert 1: compare 1 vs 4 → shift, 1 vs 3 → shift, 1 vs 2 → shift. sorted=[1,2,3,4]</span>
+      <span class="arr">→ 3 comparisons</span>
+    </div>
+    <div class="step-trace"><span class="done">Total: 1+2+3 = 6 comparisons = n(n−1)/2 ✓</span></div>
+  </div>
+</div>
+
+<div class="block note">
+  <span class="lbl">HW April 6 — Fixing Insertion Sort</span>
+  The problem with insertion sort's worst case is that <em>finding</em> the right position takes O(n) time even though the sorted portion is already sorted. We can use <strong>binary search</strong> to find the insertion position in O(log n) comparisons instead of O(n). This reduces the comparison count to O(n log n) worst case — while keeping the spirit of "insert into sorted portion."
+  <br><br>
+  With binary search to find position: for inserting the k-th element into a sorted list of k−1 elements, we need at most <span class="m">⌈log₂(k)⌉</span> comparisons. Total: <span class="m">∑_{k=2}^{n} ⌈log₂(k)⌉ = O(n log n)</span>.
+</div>
+
+<!-- SELECTION SORT -->
+<h3 id="selection">Selection Sort</h3>
+<div class="block def">
+  <span class="lbl">The Idea</span>
+  Repeatedly <strong>select the minimum</strong> of the unsorted portion and swap it to the front. After <span class="m">k</span> passes, the first <span class="m">k</span> elements are sorted and in their final positions.
+  <br><br>
+  Unlike insertion sort, selection sort always makes the same number of comparisons regardless of the input — it must scan the entire unsorted portion to find the minimum every time.
+</div>
+
+<div class="algo-block">
+  <div class="algo-header">
+    <span>🟢 Best &amp; Worst Case (same!) — [3, 1, 4, 2]</span>
+    <span class="algo-badge" style="background:rgba(212,168,67,.15);color:var(--gold2)">always 6 comparisons</span>
+  </div>
+  <div class="algo-body">
+    <p style="font-family:var(--sans);font-size:.85rem;color:var(--ink2);margin-bottom:.8rem">Selection sort always scans everything — it cannot stop early.</p>
+    <div class="step-trace">
+      <span class="step-label">Pass 1: find min of [3,1,4,2]</span>
+      3 vs 1 → min=1; 1 vs 4 → min=1; 1 vs 2 → min=1. <span class="highlight">Swap 1 to front.</span> [<span class="done">1</span>,3,4,2] <span class="arr">→ 3 comps</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Pass 2: find min of [3,4,2]</span>
+      3 vs 4 → min=3; 3 vs 2 → min=2. <span class="highlight">Swap 2.</span> [<span class="done">1,2</span>,4,3] <span class="arr">→ 2 comps</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Pass 3: find min of [4,3]</span>
+      4 vs 3 → min=3. <span class="highlight">Swap 3.</span> [<span class="done">1,2,3,4</span>] <span class="arr">→ 1 comp</span>
+    </div>
+    <div class="step-trace"><span class="done">Total: 3+2+1 = 6 comparisons = n(n−1)/2 ✓ (always)</span></div>
+  </div>
+</div>
+
+<!-- BUBBLE SORT -->
+<h3 id="bubble">Bubble Sort</h3>
+<div class="block def">
+  <span class="lbl">The Idea</span>
+  Repeatedly scan through the list, <strong>swapping adjacent elements</strong> that are out of order. After each full pass, the largest unsorted element "bubbles up" to its correct position at the end.
+  <br><br>
+  With <strong>early stopping</strong>: if a full pass makes no swaps, the list is already sorted — stop immediately. This gives bubble sort a good best case.
+</div>
+
+<div class="algo-block">
+  <div class="algo-header">
+    <span>🟢 Best Case — already sorted [1, 2, 3, 4]</span>
+    <span class="algo-badge" style="background:rgba(90,158,106,.2);color:var(--green2)">3 comparisons</span>
+  </div>
+  <div class="algo-body">
+    <div class="step-trace">
+      <span class="step-label">Pass 1: compare all adjacent pairs</span>
+      1 vs 2 → ok; 2 vs 3 → ok; 3 vs 4 → ok. <span class="done">No swaps → STOP.</span> [1,2,3,4] <span class="arr">→ 3 comps</span>
+    </div>
+    <div class="step-trace"><span class="done">Total: 3 comparisons = n−1 ✓</span></div>
+  </div>
+</div>
+
+<div class="algo-block">
+  <div class="algo-header">
+    <span>🔴 Worst Case — reverse sorted [4, 3, 2, 1]</span>
+    <span class="algo-badge" style="background:rgba(200,100,120,.2);color:var(--rose2)">6 comparisons</span>
+  </div>
+  <div class="algo-body">
+    <div class="step-trace">
+      <span class="step-label">Pass 1: scan [4,3,2,1]</span>
+      4 vs 3 → swap; 4 vs 2 → swap; 4 vs 1 → swap. Result: [3,2,1,<span class="done">4</span>] <span class="arr">→ 3 comps</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Pass 2: scan [3,2,1]</span>
+      3 vs 2 → swap; 3 vs 1 → swap. Result: [2,1,<span class="done">3,4</span>] <span class="arr">→ 2 comps</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Pass 3: scan [2,1]</span>
+      2 vs 1 → swap. Result: [<span class="done">1,2,3,4</span>] <span class="arr">→ 1 comp</span>
+    </div>
+    <div class="step-trace"><span class="done">Total: 3+2+1 = 6 comparisons = n(n−1)/2 ✓</span></div>
+  </div>
+</div>
+
+<!-- MERGE SORT -->
+<h3 id="merge">Merge Sort</h3>
+<div class="block def">
+  <span class="lbl">The Idea</span>
+  <strong>Divide and conquer</strong>: split the list in half, recursively sort each half, then <strong>merge</strong> the two sorted halves. Merging two sorted lists is efficient — just repeatedly take the smaller of the two front elements.
+  <br><br>
+  Merge sort always splits evenly (for <span class="m">n = 2^k</span>) and always recurses fully, so its comparison count doesn't vary much with the input.
+</div>
+
+<div class="algo-block">
+  <div class="algo-header">
+    <span>🟢 Best Case — [1, 2, 3, 4] (already sorted)</span>
+    <span class="algo-badge" style="background:rgba(90,158,106,.2);color:var(--green2)">4 comparisons</span>
+  </div>
+  <div class="algo-body">
+    <p style="font-family:var(--sans);font-size:.85rem;color:var(--ink2);margin-bottom:.8rem">Even on a sorted input, merge sort does all its recursive splits. But each merge is cheap — the smaller list exhausts quickly.</p>
+    <div class="step-trace">
+      <span class="step-label">Split: [1,2] and [3,4]</span>
+      Split further: [1],[2],[3],[4]
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Merge [1] + [2]: 1 vs 2 → take 1, append 2.</span>
+      Result: [1,2] <span class="arr">→ 1 comp</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Merge [3] + [4]: 3 vs 4 → take 3, append 4.</span>
+      Result: [3,4] <span class="arr">→ 1 comp</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Merge [1,2] + [3,4]: 1 vs 3 → take 1; 2 vs 3 → take 2; append 3,4.</span>
+      Result: [1,2,3,4] <span class="arr">→ 2 comps</span>
+    </div>
+    <div class="step-trace"><span class="done">Total: 1+1+2 = 4 comparisons ✓</span></div>
+  </div>
+</div>
+
+<div class="algo-block">
+  <div class="algo-header">
+    <span>🔴 Worst Case — [1, 3, 2, 4] (maximally interleaved)</span>
+    <span class="algo-badge" style="background:rgba(200,100,120,.2);color:var(--rose2)">5 comparisons</span>
+  </div>
+  <div class="algo-body">
+    <p style="font-family:var(--sans);font-size:.85rem;color:var(--ink2);margin-bottom:.8rem">The worst case for merge sort occurs when the two halves interleave perfectly — neither exhausts early, so every element is compared.</p>
+    <div class="step-trace">
+      <span class="step-label">Split: [1,3] and [2,4]. Split further: [1],[3],[2],[4]</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Merge [1]+[3]: 1 vs 3 → take 1, append 3. [1,3]</span>
+      <span class="arr">→ 1 comp</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Merge [2]+[4]: 2 vs 4 → take 2, append 4. [2,4]</span>
+      <span class="arr">→ 1 comp</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Merge [1,3]+[2,4]: 1 vs 2 → take 1; 3 vs 2 → take 2; 3 vs 4 → take 3; append 4.</span>
+      [1,2,3,4] <span class="arr">→ 3 comps (every element compared!)</span>
+    </div>
+    <div class="step-trace"><span class="done">Total: 1+1+3 = 5 comparisons ✓</span></div>
+  </div>
+</div>
+
+<div class="block note">
+  <span class="lbl">Why merge sort's best and worst cases are so close</span>
+  Unlike insertion or bubble sort, merge sort can't "skip work" on nice inputs. It always splits fully and always merges. The only variation is whether each merge step takes <span class="m">k</span> or <span class="m">2k−1</span> comparisons. For <span class="m">n=4</span>: best=4, worst=5. For <span class="m">n=16</span>: best=32, worst=49.
+</div>
+
+<!-- QUICK SORT -->
+<h3 id="quick">Quick Sort</h3>
+<div class="block def">
+  <span class="lbl">The Idea</span>
+  Pick a <strong>pivot</strong> element. Partition the list into: elements smaller than the pivot (left), and elements larger (right). Recursively sort each side. The pivot ends up in its final correct position after each partition step.
+  <br><br>
+  The efficiency depends entirely on pivot choice: a good pivot splits the list roughly in half (like merge sort). A bad pivot — always picking the smallest or largest — degenerates to O(n²).
+</div>
+
+<div class="algo-block">
+  <div class="algo-header">
+    <span>🟢 Best Case — balanced splits [2, 1, 4, 3] (pivot=first element)</span>
+    <span class="algo-badge" style="background:rgba(90,158,106,.2);color:var(--green2)">4 comparisons</span>
+  </div>
+  <div class="algo-body">
+    <div class="step-trace">
+      <span class="step-label">Pivot = 2. Compare all others vs 2: 1 vs 2 → left; 4 vs 2 → right; 3 vs 2 → right.</span>
+      Partition: [1] | 2 | [4,3] <span class="arr">→ 3 comps</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Left [1]: already single element, done. Right [4,3]: pivot=4. 3 vs 4 → left.</span>
+      Partition: [] | 4 | — wait, pivot is 4 so [3] | 4 | [] <span class="arr">→ 1 comp</span>
+    </div>
+    <div class="step-trace"><span class="done">Total: 3+1 = 4 comparisons ✓</span></div>
+  </div>
+</div>
+
+<div class="algo-block">
+  <div class="algo-header">
+    <span>🔴 Worst Case — already sorted [1, 2, 3, 4] (pivot=first element)</span>
+    <span class="algo-badge" style="background:rgba(200,100,120,.2);color:var(--rose2)">6 comparisons</span>
+  </div>
+  <div class="algo-body">
+    <p style="font-family:var(--sans);font-size:.85rem;color:var(--ink2);margin-bottom:.8rem">When the pivot is always the smallest element, the "left" partition is always empty. This is the worst case — the recursion has depth n−1 instead of log n.</p>
+    <div class="step-trace">
+      <span class="step-label">Pivot=1. Compare 2,3,4 vs 1: all go right. [] | 1 | [2,3,4]</span>
+      <span class="arr">→ 3 comps</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Pivot=2. Compare 3,4 vs 2: all go right. [] | 2 | [3,4]</span>
+      <span class="arr">→ 2 comps</span>
+    </div>
+    <div class="step-trace">
+      <span class="step-label">Pivot=3. Compare 4 vs 3: goes right. [] | 3 | [4]</span>
+      <span class="arr">→ 1 comp</span>
+    </div>
+    <div class="step-trace"><span class="done">Total: 3+2+1 = 6 = n(n−1)/2 comparisons ✓</span></div>
+  </div>
+</div>
+
+<div class="block warn">
+  <span class="lbl">Quick Sort Gotcha</span>
+  Quick sort's worst case occurs on <strong>already sorted or reverse sorted input</strong> when using a naive pivot (first or last element). This is the opposite of insertion sort! In practice, quick sort uses randomized pivot selection or the "median of three" strategy to avoid this.
+</div>
+
+<!-- Summary table -->
+<h3>Summary Comparison Table</h3>
+<div class="tbl-wrap"><table>
+  <tr><th>Algorithm</th><th>Best Case</th><th>Worst Case</th><th>Best Formula</th><th>Worst Formula</th><th>Notes</th></tr>
+  <tr><td>Insertion</td><td>n−1</td><td>n(n−1)/2</td><td>Θ(n)</td><td>Θ(n²)</td><td>Great on nearly-sorted input</td></tr>
+  <tr><td>Selection</td><td>n(n−1)/2</td><td>n(n−1)/2</td><td>Θ(n²)</td><td>Θ(n²)</td><td>Always the same — no early stop</td></tr>
+  <tr><td>Bubble</td><td>n−1</td><td>n(n−1)/2</td><td>Θ(n)</td><td>Θ(n²)</td><td>Needs early-stopping flag</td></tr>
+  <tr><td>Merge</td><td>(n/2)log₂n</td><td>n·log₂n−(n−1)</td><td>Θ(n log n)</td><td>Θ(n log n)</td><td>Most consistent; always Θ(n log n)</td></tr>
+  <tr><td>Quick</td><td>~n·log₂n</td><td>n(n−1)/2</td><td>Θ(n log n)</td><td>Θ(n²)</td><td>Worst case on sorted input (naive pivot)</td></tr>
+  <tr><td><em>Lower bound</em></td><td colspan="2">⌈log₂(n!)⌉ ≈ n·log₂n − n</td><td colspan="2">Ω(n log n)</td><td>No algorithm can beat this</td></tr>
+</table></div>
+
+<h3>Hard Example: n=16 — How Each Algorithm Compares to the Lower Bound</h3>
+<div class="block ex">
+  <span class="lbl">n=16 — Applying the lower bound</span>
+  <p>Lower bound: <span class="m">⌈log₂(16!)⌉ = 45</span> comparisons minimum.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Algorithm</th><th>n=16 Best</th><th>n=16 Worst</th><th>vs. Lower Bound (45)</th></tr>
+    <tr><td>Insertion sort</td><td>15</td><td>120</td><td>Best is below! (best case sorts in fewer than worst-case minimum)</td></tr>
+    <tr><td>Selection sort</td><td>120</td><td>120</td><td>2.7× worse than necessary</td></tr>
+    <tr><td>Bubble sort</td><td>15</td><td>120</td><td>Worst is 2.7× the lower bound</td></tr>
+    <tr><td>Merge sort</td><td>32</td><td>49</td><td>Worst is only 9% above the bound! ✓</td></tr>
+    <tr><td>Quick sort</td><td>~45</td><td>120</td><td>Best case matches the bound ✓</td></tr>
+  </table></div>
+  <p style="font-family:var(--sans);font-size:.85rem;color:var(--ink2);margin-top:.8rem">Key observation: only merge sort and quick sort (in their best case) are close to the theoretical minimum. Insertion, selection, and bubble sort are all Θ(n²) — far above the Θ(n log n) lower bound for large n.</p>
+</div>
+
+<!-- ══ 5. COIN WEIGHING ══ -->
+<h2 id="coins"><span class="sn">05</span>The Coin Weighing Problem</h2>
+
+<h3>The Setup</h3>
+<div class="block def">
+  <span class="lbl">Problem Statement</span>
+  You have <span class="m">n</span> coins. One is counterfeit and is either <strong>lighter or heavier</strong> than the genuine coins (you don't know which). You have a <strong>balance scale</strong> that tells you which side is heavier, or if they're equal. You may use exactly <span class="m">k</span> weighings. Identify the counterfeit coin and whether it is lighter or heavier.
+</div>
+
+<h3>Connection to Decision Trees</h3>
+<div class="block thm">
+  <span class="lbl">The Parallel with Sorting</span>
+  This is the same decision tree argument as sorting, but with <strong>base 3 instead of base 2</strong>:
+  <ul class="L">
+    <li>Each weighing has <strong>3 outcomes</strong>: left heavy, right heavy, balanced.</li>
+    <li><span class="m">k</span> weighings → decision tree of depth <span class="m">k</span> → at most <span class="m">3ᵏ</span> leaves.</li>
+    <li>With <span class="m">n</span> coins, each either lighter or heavier: <strong><span class="m">2n</span> possible outcomes</strong>.</li>
+    <li>Need: <span class="m">3ᵏ ≥ 2n</span>, i.e., <span class="m">n ≤ 3ᵏ/2</span>.</li>
+  </ul>
+  For <span class="m">k=3</span>: <span class="m">3³=27</span>, so we need <span class="m">2n ≤ 27</span>, i.e., <span class="m">n ≤ 13</span>. But — as we'll see — the actual bound is tighter: <span class="m">n ≤ 12</span>.
+</div>
+
+<h3>Walkthrough: 12 Coins, 3 Weighings</h3>
+<div class="block ex">
+  <span class="lbl">Step-by-step strategy</span>
+  <p>Label coins 1–12. Strategy: weigh 4 vs 4 first, set 4 aside.</p>
+
+  <p><strong>Weighing 1:</strong> Put coins {1,2,3,4} on the left, {5,6,7,8} on the right, {9,10,11,12} aside.</p>
+  <ul class="L">
+    <li>Each of the 3 outcomes leaves exactly <strong>8 possibilities</strong>:
+      <ul class="L">
+        <li><strong>Left heavy:</strong> one of {1,2,3,4} is heavy OR one of {5,6,7,8} is light → 8 cases</li>
+        <li><strong>Right heavy:</strong> one of {5,6,7,8} is heavy OR one of {1,2,3,4} is light → 8 cases</li>
+        <li><strong>Balanced:</strong> counterfeit is in {9,10,11,12}, light or heavy → 8 cases</li>
+      </ul>
+    </li>
+    <li>2 more weighings → <span class="m">3² = 9 ≥ 8</span> possibilities. ✓</li>
+  </ul>
+
+  <p><strong>Weighing 2 (suppose Weighing 1 was balanced):</strong> The counterfeit is in {9,10,11,12}. Weigh {9,10} vs {11,1} (using coin 1 as a known genuine coin).</p>
+  <ul class="L">
+    <li><strong>Balanced:</strong> counterfeit is coin 12. One more weighing: 12 vs any genuine → determine lighter or heavier.</li>
+    <li><strong>Left heavy:</strong> coin 9 or 10 is heavy, or coin 11 is light → 3 cases remain.</li>
+    <li><strong>Right heavy:</strong> coin 11 is heavy, or coin 9 or 10 is light → 3 cases remain.</li>
+  </ul>
+
+  <p><strong>Weighing 3 (suppose left heavy from Weighing 2):</strong> Possibilities: {9 heavy, 10 heavy, 11 light}. Weigh 9 vs 10.</p>
+  <ul class="L">
+    <li><strong>Left heavy:</strong> coin 9 is the counterfeit and it's heavy. ✓</li>
+    <li><strong>Right heavy:</strong> coin 10 is the counterfeit and it's heavy. ✓</li>
+    <li><strong>Balanced:</strong> coin 11 is the counterfeit and it's light. ✓</li>
+  </ul>
+  <p>The same logic works for all other branches of Weighing 1. The full strategy resolves all 24 cases in exactly 3 weighings.</p>
+</div>
+
+<h3>Why 13 Coins is Impossible (HW April 8)</h3>
+<div class="block proof">
+  <span class="lbl">Proof that 13 coins cannot be solved in 3 weighings</span>
+  <p>We must show that no matter how we design the first weighing, some branch leaves more than <span class="m">3² = 9</span> unresolved possibilities.</p>
+  <p>In the first weighing, suppose we put <span class="m">k</span> coins on each side and <span class="m">13−2k</span> aside. The three branches have:</p>
+  <ul class="L">
+    <li><strong>Left heavy:</strong> <span class="m">2k</span> possibilities (k left-heavy coins + k right-light coins)</li>
+    <li><strong>Right heavy:</strong> <span class="m">2k</span> possibilities</li>
+    <li><strong>Balanced:</strong> <span class="m">2(13−2k)</span> possibilities</li>
+  </ul>
+  <p>For the algorithm to succeed, <strong>all three branches</strong> must have at most 9 possibilities. Check every valid <span class="m">k</span>:</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>k (each side)</th><th>Left/Right branch</th><th>Balanced branch</th><th>Max branch</th><th>≤ 9?</th></tr>
+    <tr><td>1</td><td>2</td><td>22</td><td>22</td><td>✗ Fail</td></tr>
+    <tr><td>2</td><td>4</td><td>18</td><td>18</td><td>✗ Fail</td></tr>
+    <tr><td>3</td><td>6</td><td>14</td><td>14</td><td>✗ Fail</td></tr>
+    <tr><td>4</td><td>8</td><td>10</td><td>10</td><td>✗ Fail (barely!)</td></tr>
+    <tr><td>5</td><td>10</td><td>6</td><td>10</td><td>✗ Fail</td></tr>
+    <tr><td>6</td><td>12</td><td>2</td><td>12</td><td>✗ Fail</td></tr>
+  </table></div>
+  <p><strong>No value of k works.</strong> The best attempt is k=4 (weigh 4 vs 4, set 5 aside), but the balanced branch leaves 10 possibilities — one too many for 2 remaining weighings. Therefore, 13 coins is impossible. ∎</p>
+</div>
+
+<div class="block proof">
+  <span class="lbl">Why 14 coins is also impossible (easier argument)</span>
+  With 14 coins: <span class="m">2 × 14 = 28</span> possible outcomes, but <span class="m">3³ = 27</span> leaves. Even in the best possible case, the decision tree doesn't have enough leaves. No strategy can work. ∎
+</div>
+
+<h3>Generalization</h3>
+<div class="block thm">
+  <span class="lbl">Theorem — Maximum Coins with k Weighings</span>
+  The maximum number of coins that can be solved in exactly <span class="m">k</span> weighings is:
+  <div class="mb">max coins  =  (3ᵏ − 3) / 2</div>
+  <div class="tbl-wrap"><table>
+    <tr><th>Weighings k</th><th>3ᵏ</th><th>Max coins = (3ᵏ−3)/2</th><th>Naive bound 3ᵏ/2</th></tr>
+    <tr><td>1</td><td>3</td><td>0</td><td>1.5</td></tr>
+    <tr><td>2</td><td>9</td><td>3</td><td>4.5</td></tr>
+    <tr><td>3</td><td>27</td><td>12</td><td>13.5</td></tr>
+    <tr><td>4</td><td>81</td><td>39</td><td>40.5</td></tr>
+    <tr><td>5</td><td>243</td><td>120</td><td>121.5</td></tr>
+  </table></div>
+  <p style="font-family:var(--sans);font-size:.85rem;color:var(--ink2);margin-top:.8rem"><strong>Why (3ᵏ−3)/2 and not 3ᵏ/2?</strong> The first weighing must be symmetric (equal coins on each side). This forces the two heavy/light branches to have equal size <span class="m">2k</span>, and the balanced branch to have size <span class="m">2(n−2k)</span>. Maximizing n subject to all branches having size ≤ <span class="m">3^{k-1}</span> gives the formula above — the factor of 3 is subtracted because the first weighing "wastes" some tree capacity on maintaining symmetry.</p>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 6. PRACTICE ══ -->
+<h2 id="practice"><span class="sn">06</span>Try It Yourself</h2>
+<p>Click any question to reveal the full solution with step-by-step walkthrough.</p>
+
+<div class="practice-header">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+  Practice Problems — Sorting &amp; Information Theory
+</div>
+<div class="practice-wrap">
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q1</span><span>What is the information-theoretic lower bound on comparisons for sorting n=5 elements? Show your work.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Step 1:</strong> Count the number of possible orderings. <span class="m">5! = 5×4×3×2×1 = 120</span>.</div>
+  <div class="step"><strong>Step 2:</strong> A binary decision tree needs at least 120 leaves. A tree of depth d has at most <span class="m">2ᵈ</span> leaves. We need <span class="m">2ᵈ ≥ 120</span>.</div>
+  <div class="step"><strong>Step 3:</strong> Find the smallest d: <span class="m">2⁶ = 64 &lt; 120</span>, <span class="m">2⁷ = 128 ≥ 120</span>. So <span class="m">d = 7</span>.</div>
+  <p><span class="ans-box">Lower bound = ⌈log₂(120)⌉ = 7 comparisons</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q2</span><span>T(n) = 3n² + 2n + 1. Show that T(n) = O(n²) by finding explicit constants c and N.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>We need to find c &gt; 0 and N such that <span class="m">3n² + 2n + 1 ≤ c·n²</span> for all <span class="m">n &gt; N</span>.</p>
+  <div class="step"><strong>Strategy:</strong> bound the smaller terms. For <span class="m">n ≥ 1</span>: <span class="m">2n ≤ 2n²</span> and <span class="m">1 ≤ n²</span>. So:
+  <br><span class="m">3n² + 2n + 1 ≤ 3n² + 2n² + n² = 6n²</span></div>
+  <p><span class="ans-box">c = 6, N = 1 works: T(n) ≤ 6n² for all n ≥ 1</span></p>
+  <p>Many other choices of c and N are valid — the constants just need to exist.</p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q3</span><span>Trace insertion sort on [2, 4, 1, 3]. Count the exact number of comparisons at each step and give the total.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p><span class="m">σ(1)=2, σ(2)=4, σ(3)=1, σ(4)=3</span>. Sorted portion starts as [2].</p>
+  <div class="step"><strong>Insert 4:</strong> Compare 4 vs 2 → 4 &gt; 2, place after. Sorted: [2,4]. <strong>1 comparison.</strong></div>
+  <div class="step"><strong>Insert 1:</strong> Compare 1 vs 4 → 1 &lt; 4, shift. Compare 1 vs 2 → 1 &lt; 2, shift. Place 1 at front. Sorted: [1,2,4]. <strong>2 comparisons.</strong></div>
+  <div class="step"><strong>Insert 3:</strong> Compare 3 vs 4 → 3 &lt; 4, shift. Compare 3 vs 2 → 3 &gt; 2, place after 2. Sorted: [1,2,3,4]. <strong>2 comparisons.</strong></div>
+  <p><span class="ans-box">Total: 1 + 2 + 2 = 5 comparisons</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q4</span><span>Trace merge sort on [3, 1, 4, 2]. Show all splits and merges, and count comparisons at each merge step.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Split:</strong> [3,1,4,2] → [3,1] and [4,2] → [3],[1],[4],[2]</div>
+  <div class="step"><strong>Merge [3]+[1]:</strong> 3 vs 1 → take 1, append 3. Result: [1,3]. <strong>1 comparison.</strong></div>
+  <div class="step"><strong>Merge [4]+[2]:</strong> 4 vs 2 → take 2, append 4. Result: [2,4]. <strong>1 comparison.</strong></div>
+  <div class="step"><strong>Merge [1,3]+[2,4]:</strong>
+  <br>1 vs 2 → take 1.
+  <br>3 vs 2 → take 2.
+  <br>3 vs 4 → take 3.
+  <br>Append 4.
+  <br>Result: [1,2,3,4]. <strong>3 comparisons.</strong></div>
+  <p><span class="ans-box">Total: 1 + 1 + 3 = 5 comparisons</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q5</span><span>Selection sort always makes exactly n(n−1)/2 comparisons. Prove this.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>In selection sort, pass <span class="m">i</span> (for <span class="m">i = 1, 2, \ldots, n−1</span>) finds the minimum of the remaining <span class="m">n−i+1</span> unsorted elements. To find the minimum of a list of <span class="m">m</span> elements, you must compare all <span class="m">m</span> elements — there is no early stopping.</p>
+  <div class="step"><strong>Pass 1:</strong> scan n elements, make n−1 comparisons to find minimum.</div>
+  <div class="step"><strong>Pass 2:</strong> scan n−1 elements, make n−2 comparisons.</div>
+  <div class="step"><strong>Pass k:</strong> make n−k comparisons.</div>
+  <div class="step"><strong>Total:</strong> <span class="m">(n−1) + (n−2) + \cdots + 1 = \sum_{k=1}^{n-1} k = \frac{n(n-1)}{2}</span>.</div>
+  <p>This does not depend on the input — every element in the unsorted portion must be examined to guarantee we found the minimum. ∎</p>
+  <p><span class="ans-box">Total comparisons = n(n−1)/2, always</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q6</span><span>For n=16, the lower bound is 45 comparisons. Merge sort's worst case is 49. How far is this above the lower bound, in percentage terms? What does this tell us?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Compute excess:</strong> <span class="m">49 − 45 = 4</span> extra comparisons.</div>
+  <div class="step"><strong>Percentage above lower bound:</strong> <span class="m">4/45 × 100 ≈ 8.9\%</span>.</div>
+  <p>Merge sort's worst case is only about <strong>9% above the theoretical minimum</strong> for n=16. This tells us merge sort is nearly optimal — it's essentially as efficient as any comparison-based sorting algorithm could possibly be. As n grows, merge sort tracks the lower bound Θ(n log n) exactly.</p>
+  <p>Compare to selection sort: 120 comparisons vs 45 minimum — that's <span class="m">75/45 ≈ 167\%</span> above the lower bound. Selection sort wastes dramatically more work.</p>
+  <p><span class="ans-box">Merge sort worst case is ~9% above optimal; selection sort is ~167% above optimal</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q7</span><span>With a balance scale and 4 weighings, what is the maximum number of coins you can test (one counterfeit, lighter or heavier)? Use the formula and verify the logic.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Apply the formula:</strong> max coins <span class="m">= (3^k − 3)/2</span> with <span class="m">k = 4</span>:
+  <br><span class="m">(3^4 − 3)/2 = (81 − 3)/2 = 78/2 = 39</span> coins.</div>
+  <div class="step"><strong>Verify the logic:</strong> With 39 coins and 4 weighings:
+  <br>First weighing: put 13 coins on each side, 13 aside.
+  <br>Each branch (left heavy, right heavy, balanced) leaves at most <span class="m">2×13 = 26</span> or <span class="m">2×13 = 26</span> possibilities.
+  <br>With 3 remaining weighings: <span class="m">(3^3−3)/2 = 12</span>... wait, that's for 3 weighings.
+  <br>Actually: 3 remaining weighings can resolve <span class="m">(3^3−3)/2 = 12</span>... no.
+  <br>More carefully: 3 remaining weighings give <span class="m">3^3 = 27 ≥ 26</span> leaves. ✓</div>
+  <p><span class="ans-box">Maximum = 39 coins with 4 weighings</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q8</span><span>Quick sort with a first-element pivot is applied to [3,1,4,1,5,9,2,6]. (a) What is the first partition step? (b) Why is this input not the worst case?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>(a) First partition step:</strong> Pivot = 3 (first element). Compare every other element vs 3:
+  <br>1 &lt; 3 → left; 4 &gt; 3 → right; 1 &lt; 3 → left; 5 &gt; 3 → right; 9 &gt; 3 → right; 2 &lt; 3 → left; 6 &gt; 3 → right.
+  <br>Result: [1,1,2] | <strong>3</strong> | [4,5,9,6]. That's 7 comparisons.
+  <br>Left subarray has 3 elements, right has 4 — a reasonably balanced split.</div>
+  <div class="step"><strong>(b) Why not worst case:</strong> The worst case occurs when the pivot is always the smallest (or largest) element, creating a partition of [empty | pivot | everything else]. Here the pivot 3 splits the 8 elements into 3 and 4 — close to the ideal 4-4 split. Worst case would be input [1,2,3,4,5,6,7,8] where pivot=1 always lands first and creates maximally unbalanced splits.</div>
+  <p><span class="ans-box">(a) [1,1,2] | 3 | [4,5,9,6], 7 comparisons. (b) Not worst case — split is balanced.</span></p>
+</div>
+</div>
+
+</div><!-- end practice-wrap -->
+
+<hr class="divider">
+
+<!-- ══ 7. HOMEWORK ══ -->
+<h2 id="hw"><span class="sn">07</span>Homework Problems</h2>
+<div class="block hw">
+  <span class="lbl">HW — Due Monday April 6</span>
+  <p><strong>Problem:</strong> Fix insertion sort — keeping its spirit — so its worst-case running time is better than Θ(n²).</p>
+  <p><strong>Answer:</strong> Use <strong>binary search</strong> to find the insertion position. When inserting the k-th element into a sorted list of k−1 elements, binary search finds the correct position in <span class="m">⌈log₂(k)⌉</span> comparisons instead of up to k−1. The total comparison count becomes <span class="m">\sum_{k=2}^{n} ⌈log₂(k)⌉ = Θ(n \log n)</span> — matching merge sort's performance while keeping insertion sort's structure.</p>
+</div>
+<div class="block hw">
+  <span class="lbl">HW — Due Wednesday April 8</span>
+  <p><strong>Problem:</strong> Prove that the 12-coin problem cannot be solved with 14 coins, and cannot even be solved with 13 coins.</p>
+  <p><strong>14 coins:</strong> <span class="m">2 × 14 = 28 &gt; 27 = 3³</span>. The decision tree has too few leaves. Impossible by counting. ∎</p>
+  <p><strong>13 coins:</strong> Counting alone doesn't rule it out (<span class="m">26 ≤ 27</span>). But for any first weighing with k coins per side, the three branches have sizes <span class="m">2k, 2k, 2(13−2k)</span>. For all three to be ≤ 9: need <span class="m">2k ≤ 9</span> AND <span class="m">2(13−2k) ≤ 9</span>, giving <span class="m">k ≤ 4</span> AND <span class="m">k ≥ 4.25</span>. No integer k satisfies both. ∎</p>
+</div>
+<div class="block hw">
+  <span class="lbl">HW — Due Friday April 10</span>
+  <p><strong>Problem:</strong> Given sequence <span class="m">x₀,x₁,x₂,x₃,x₄</span> with positive sum and indices mod 5. An operation selects a negative term <span class="m">xₖ</span>, replaces it with <span class="m">−xₖ</span>, adds <span class="m">xₖ</span> to both neighbors. The doubly-infinite sequence <span class="m">sₙ</span> satisfies <span class="m">sₙ₊₁ = sₙ + xₙ mod 5</span>. What does the operation do to this infinite sequence?</p>
+  <p><strong>Answer:</strong> The operation corresponds to a <strong>reflection</strong> of the infinite sequence: if <span class="m">xₖ</span> is replaced by <span class="m">−xₖ</span>, the infinite sequence transforms as <span class="m">sₙ \mapsto s_* - sₙ</span> for some constant <span class="m">s_*</span> — i.e., the sequence is reflected about a horizontal axis. The sum <span class="m">\sum xᵢ</span> is preserved by each operation (since <span class="m">-xₖ + xₖ + xₖ = xₖ</span> in the net effect on the sum), keeping the overall drift of the infinite sequence positive.</p>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 8. CHEAT SHEET ══ -->
+<h2 id="cheat"><span class="sn">08</span>One-Page Cheat Sheet</h2>
+<div class="cheat-sheet">
+  <div class="cheat-title">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Week 2 Cheat Sheet — Sorting &amp; Information Theory
+  </div>
+  <div class="cheat-grid">
+    <div class="cheat-section">
+      <h5>Notation</h5>
+      <ul>
+        <li><strong style="color:var(--gold2)">O(f)</strong> — upper bound (at most)</li>
+        <li><strong style="color:var(--rose2)">Ω(f)</strong> — lower bound (at least)</li>
+        <li><strong style="color:var(--teal2)">Θ(f)</strong> — tight bound = O ∩ Ω</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Lower Bound</h5>
+      <ul>
+        <li>Need ≥ ⌈log₂(n!)⌉ comparisons</li>
+        <li>n=4: ≥5 &nbsp;|&nbsp; n=8: ≥16 &nbsp;|&nbsp; n=16: ≥45</li>
+        <li>All sorts: Ω(n log n) worst case</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Coin Weighing</h5>
+      <ul>
+        <li>k weighings → 3ᵏ outcomes</li>
+        <li>n coins → 2n outcomes needed</li>
+        <li>Max coins: (3ᵏ−3)/2</li>
+        <li>k=3: max 12 coins</li>
+        <li>13 fails: can't satisfy 2k≤9 AND 2(13−2k)≤9</li>
+        <li>14 fails: 28 &gt; 27 = 3³</li>
+      </ul>
+    </div>
+    <div class="cheat-section">
+      <h5>Sorting Algorithm Comparison</h5>
+      <table class="cheat-table">
+        <tr><th>Algorithm</th><th>Best</th><th>Worst</th></tr>
+        <tr><td>Insertion</td><td>n−1</td><td>n(n−1)/2</td></tr>
+        <tr><td>Selection</td><td>n(n−1)/2</td><td>n(n−1)/2</td></tr>
+        <tr><td>Bubble</td><td>n−1</td><td>n(n−1)/2</td></tr>
+        <tr><td>Merge</td><td>(n/2)log n</td><td>n·log n−(n−1)</td></tr>
+        <tr><td>Quick</td><td>~n log n</td><td>n(n−1)/2</td></tr>
+      </table>
+      <h5 style="margin-top:.8rem">Key Facts</h5>
+      <ul>
+        <li>Selection: always Θ(n²), no early stop</li>
+        <li>Bubble/Insertion: Θ(n) best with early stop</li>
+        <li>Merge: always Θ(n log n), most consistent</li>
+        <li>Quick: Θ(n²) worst on sorted input (bad pivot)</li>
+        <li>n=16 values: Merge best=32, worst=49, LB=45</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Math 100 · Dartmouth College · Spring 2026 · Week 2 — Sorting Algorithms &amp; Information Theory</div>
+</main>
+</div>
+<script>
+document.querySelectorAll('.pq-q').forEach(function(q){
+  q.addEventListener('click',function(){
+    var a=this.parentElement.querySelector('.pq-a');
+    var open=this.classList.toggle('open');
+    a.classList.toggle('vis',open);
+  });
+});
+var links=document.querySelectorAll('nav a');
+function setActive(){
+  var best=null;
+  document.querySelectorAll('h2[id],h3[id]').forEach(function(s){
+    if(s.getBoundingClientRect().top<120) best=s.id;
+  });
+  links.forEach(function(l){l.classList.toggle('active',l.getAttribute('href')==='#'+best);});
+}
+window.addEventListener('scroll',setActive);
+setActive();
+</script>
+</body>
+</html>
