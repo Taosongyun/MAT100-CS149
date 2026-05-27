@@ -91,51 +91,16 @@ td:first-child{color:var(--ink);font-weight:500}
 .cheat-section p,.cheat-section li{font-family:var(--sans);font-size:.8rem;color:var(--ink2);line-height:1.5;margin-bottom:.25rem}
 .cheat-section ul{padding-left:1.1rem;margin:.25rem 0}
 .divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
-.page-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .55rem;
-  margin-bottom: 1.6rem;
-}
-.page-link {
-  display: inline-block;
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  color: var(--bg);
-  background: var(--gold);
-  border: 1px solid rgba(212,168,67,.75);
-  border-radius: 4px;
-  padding: .38rem .75rem;
-  text-decoration: none;
-  transition: transform .15s, background .15s, border-color .15s;
-}
-.page-link:hover {
-  transform: translateY(-1px);
-  background: var(--gold2);
-  text-decoration: none;
-}
-.page-link.secondary {
-  color: var(--ink2);
-  background: transparent;
-  border-color: var(--border);
-}
-.page-link.secondary:hover {
-  color: var(--ink);
-  border-color: rgba(212,168,67,.55);
-  background: var(--bg3);
-}
-.page-link.disabled,
-.page-link.disabled:hover {
-  color: var(--ink3);
-  background: transparent;
-  border-color: var(--border);
-  opacity: .6;
-  cursor: not-allowed;
-  transform: none;
-}
+
+/* Page navigation buttons */
+.page-actions{display:flex;flex-wrap:wrap;gap:.55rem;margin-bottom:1.3rem}
+.page-link{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--bg);background:var(--gold);border:1px solid rgba(212,168,67,.55);border-radius:4px;padding:.42rem .78rem;text-decoration:none;transition:transform .15s,background .15s,border-color .15s,color .15s}
+.page-link:hover{background:var(--gold2);text-decoration:none;transform:translateY(-1px)}
+.page-link.secondary{color:var(--ink2);background:transparent;border-color:var(--border)}
+.page-link.secondary:hover{color:var(--ink);background:var(--bg3);border-color:rgba(212,168,67,.45)}
+.sidebar-actions{display:grid;gap:.45rem;padding:.2rem 1.2rem 1rem}
+.sidebar-actions .page-link{justify-content:center;padding:.36rem .65rem}
+
 .footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:var(--sans);font-size:11px;color:var(--ink3)}
 @media(max-width:960px){nav{display:none}main{padding:2rem 1.5rem}}
 @media(max-width:660px){.poset-grid{grid-template-columns:repeat(2,1fr)}.hex-pair{flex-direction:column}.cheat-grid{grid-template-columns:1fr}}
@@ -148,23 +113,28 @@ td:first-child{color:var(--ink);font-weight:500}
     <div class="course">Math 100 · Spring 2026</div>
     <div class="title">Week 5 — Poset Shapes, Permutahedron &amp; 1/3–2/3</div>
   </div>
+  <div class="sidebar-actions">
+    <a class="page-link" href="index.html">← Home</a>
+    <a class="page-link secondary" href="week4_graded_posets_mirsky.html">← Previous Week</a>
+    <a class="page-link secondary" href="week6_comparability_graphs_dimension.html">Next Week →</a>
+  </div>
   <ul>
-    <li class="nav-section">Navigation</li>
-    <li><a href="index.html">← Home</a></li>
-    <li><a href="week4_graded_posets_mirsky.html">← Previous Week</a></li>
-    <li><a href="week6_comparability_graphs_dimension.html">Next Week →</a></li>
     <li class="nav-section">Sections</li>
     <li><a href="#why">1 · Why We Care</a></li>
     <li><a href="#sixteen">2 · 16 Poset Shapes</a></li>
     <li><a href="#graded-equiv">3 · Graded ↔ Levels</a></li>
     <li><a href="#convex">4 · Convex Subsets</a></li>
-    <li><a href="#permutahedron">5 · Permutahedron</a></li>
+    <li><a href="#lin-ext-counting">5 · Counting Linear Extensions</a></li>
+    <li><a href="#lin-ext-methods">↳ Counting Methods</a></li>
+    <li><a href="#lin-ext-b3">↳ e(B₃) = 48</a></li>
+    <li><a href="#lin-ext-lemma">↳ Adjacent-Swap Lemma</a></li>
+    <li><a href="#permutahedron">6 · Permutahedron</a></li>
     <li><a href="#lin-ext-convex">↳ Linear Extensions</a></li>
-    <li><a href="#polytopes">6 · Order &amp; Chain Polytopes</a></li>
-    <li><a href="#conjecture">7 · 1/3–2/3 Conjecture</a></li>
-    <li><a href="#practice">8 · Try It Yourself</a></li>
-    <li><a href="#hw">9 · Homework</a></li>
-    <li><a href="#cheat">10 · Cheat Sheet</a></li>
+    <li><a href="#polytopes">7 · Order &amp; Chain Polytopes</a></li>
+    <li><a href="#conjecture">8 · 1/3–2/3 Conjecture</a></li>
+    <li><a href="#practice">9 · Try It Yourself</a></li>
+    <li><a href="#hw">10 · Homework</a></li>
+    <li><a href="#cheat">11 · Cheat Sheet</a></li>
   </ul>
 </nav>
 <main>
@@ -184,6 +154,8 @@ td:first-child{color:var(--ink);font-weight:500}
     <span class="topic-pill">Labellings = 4!/|Aut|</span>
     <span class="topic-pill">Graded ↔ level partition</span>
     <span class="topic-pill">Convex subsets</span>
+    <span class="topic-pill">Counting linear extensions</span>
+    <span class="topic-pill">Adjacent-swap lemma</span>
     <span class="topic-pill">Permutahedron Πₙ</span>
     <span class="topic-pill">Linear extensions as subgraph</span>
     <span class="topic-pill">Order polytope</span>
@@ -544,8 +516,159 @@ td:first-child{color:var(--ink);font-weight:500}
   </ul>
 </div>
 
-<!-- ══ 5. PERMUTAHEDRON ══ -->
-<h2 id="permutahedron"><span class="sn">05</span>Polytopes and the Permutahedron</h2>
+<!-- ══ 5. COUNTING LINEAR EXTENSIONS ══ -->
+<h2 id="lin-ext-counting"><span class="sn">05</span>Counting Linear Extensions</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Linear Extension (formal)</span>
+  A <strong>linear extension</strong> of a finite poset <span class="m">P = {x₁,…,xₙ}</span> is a total order <span class="m">≤*</span> on P such that <span class="m">x ≤ y</span> in P implies <span class="m">x ≤* y</span>. Equivalently, it is a listing <span class="m">x_{π(1)}, x_{π(2)}, …, x_{π(n)}</span> consistent with the partial order: whenever <span class="m">x_{π(i)} &lt; x_{π(j)}</span> in P, we must have <span class="m">i &lt; j</span>.
+  <br><br>
+  We write <span class="m">e(P)</span> for the number of linear extensions of P.
+</div>
+
+<h4>Quick counts</h4>
+<div class="block thm">
+  <span class="lbl">Immediate Examples</span>
+  <ul class="L">
+    <li><strong>Chain [n]:</strong> <span class="m">e(P) = 1</span> — only one valid ordering (the chain itself).</li>
+    <li><strong>Antichain on n:</strong> <span class="m">e(P) = n!</span> — no constraints, all orderings valid.</li>
+    <li><strong>V-poset a&lt;b, a&lt;c:</strong> <span class="m">e(P) = 2</span> — a must go first, then b and c in either order.</li>
+    <li><strong>Diamond a&lt;b, a&lt;c, b&lt;d, c&lt;d:</strong> <span class="m">e(P) = 2</span> — a forced first, d forced last, b and c in either order.</li>
+    <li><strong>Any finite poset:</strong> <span class="m">e(P) ≥ 1</span> — there is always at least one linear extension.</li>
+  </ul>
+</div>
+
+<div class="block proof">
+  <span class="lbl">Proof — e(P) ≥ 1 for every finite poset</span>
+  By induction on |P|. Base case |P|=1: the single element gives one extension. Inductive step: take any maximal element m of P (always exists since P is finite). Remove m to get P' = P \ {m}. By induction, e(P') ≥ 1 — take any linear extension L of P'. Append m at the end of L. Since m is maximal (nothing in P is above m), placing m last is always valid. This gives a linear extension of P. ∎
+</div>
+
+<h3 id="lin-ext-methods">Four Counting Methods</h3>
+
+<div class="block thm">
+  <span class="lbl">Method 1 — Forced Elements</span>
+  Identify elements that <strong>must</strong> be first or last.
+  <ul class="L">
+    <li>A <strong>unique minimum</strong> (below everything) must be first.</li>
+    <li>A <strong>unique maximum</strong> (above everything) must be last.</li>
+    <li>After fixing forced elements, count arrangements of what remains.</li>
+  </ul>
+  <em>Example — Diamond:</em> a is the unique minimum (forced first), d is the unique maximum (forced last). Remaining: arrange b, c with no constraints between them → 2! = 2. So <span class="m">e(diamond) = 2</span>. ✓
+</div>
+
+<div class="block thm">
+  <span class="lbl">Method 2 — Disjoint Chains (Multinomial)</span>
+  If P consists of <strong>m disjoint chains</strong> of lengths <span class="m">k₁, k₂, …, kₘ</span>:
+  <div class="mb">e(P)  =  (k₁ + k₂ + ··· + kₘ)! / (k₁! · k₂! · ··· · kₘ!)</div>
+  <em>Why:</em> You have n = k₁+…+kₘ total slots. Choose which k₁ slots go to chain 1 — there are C(n,k₁) ways, and chain 1's internal order is then forced. Then C(n−k₁, k₂) ways for chain 2, etc. The product telescopes to the multinomial.
+  <br><br>
+  <em>Examples:</em>
+  <ul class="L">
+    <li><strong>2+2 poset</strong> {a&lt;b, c&lt;d}: two chains of length 2. <span class="m">e = 4!/(2!·2!) = 6</span>.</li>
+    <li><strong>Antichain on n</strong>: n chains of length 1. <span class="m">e = n!/(1!·…·1!) = n!</span>. ✓</li>
+    <li><strong>Chain a&lt;b&lt;c plus chain d&lt;e</strong>: lengths 3,2. <span class="m">e = 5!/(3!·2!) = 10</span>.</li>
+  </ul>
+</div>
+
+<div class="block thm">
+  <span class="lbl">Method 3 — Insertion</span>
+  Add elements one at a time. When inserting element x into an existing arrangement of k elements, x can go into any position that respects its constraints.
+  <br><br>
+  <em>Example — Chain a&lt;b&lt;c, plus isolated d:</em> The chain a&lt;b&lt;c has e=1 (fixed order). Insert d: d has no constraints, so it can go into any of 4 positions (before a, between a&amp;b, between b&amp;c, after c). So <span class="m">e = 1 × 4 = 4</span>. ✓
+</div>
+
+<div class="block thm">
+  <span class="lbl">Method 4 — Case Analysis (decompose by one element)</span>
+  Fix one "flexible" element x and ask: which positions can x legally occupy? Count each case separately and sum.
+  <br><br>
+  <em>Example — N-shape: a&lt;b, c&lt;d, b&lt;d:</em> The chain a&lt;b&lt;d is the backbone. Element c must come after a (since... wait — actually c only satisfies c&lt;d, no constraint with a). Let's ask: where can c go relative to the chain [a,b,d]?
+  <ul class="L">
+    <li>c before a: would need c&lt;a... but no such relation. Valid? c only needs to be before d. So c before a, then a,b,d: gives [c,a,b,d] ✓</li>
+    <li>c between a and b: [a,c,b,d] ✓</li>
+    <li>c between b and d: [a,b,c,d] ✓</li>
+    <li>c after d: c must be before d — invalid! ✗</li>
+  </ul>
+  Three valid positions → <span class="m">e = 3</span>. ✓
+</div>
+
+<h3 id="lin-ext-b3">Worked Example — e(B₃) = 48</h3>
+
+<div class="block ex">
+  <span class="lbl">B₃ = subsets of {1,2,3} ordered by ⊆</span>
+  <p>B₃ has 8 elements across 4 levels. A linear extension must list all 8 subsets so that S ⊆ T implies S appears before T.</p>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>Level</th><th>Elements</th><th>Constraint</th></tr>
+    <tr><td>0</td><td>∅</td><td>Must be <strong>first</strong> — below all 7 others</td></tr>
+    <tr><td>1</td><td>{1}, {2}, {3}</td><td>Each must come before any pair containing it</td></tr>
+    <tr><td>2</td><td>{1,2}, {1,3}, {2,3}</td><td>Each must come before {1,2,3}</td></tr>
+    <tr><td>3</td><td>{1,2,3}</td><td>Must be <strong>last</strong> — above all 7 others</td></tr>
+  </table></div>
+
+  <p><strong>Step 1:</strong> ∅ is forced first, {1,2,3} forced last. The 6 middle elements fill positions 2–7.</p>
+  <p><strong>Step 2:</strong> Constraints on the 6 middle elements — {i} must come before {i,j} for each pair containing i:</p>
+  <div class="mb">{1} before {1,2} and {1,3}
+{2} before {1,2} and {2,3}
+{3} before {1,3} and {2,3}</div>
+  <p>No constraints <em>among</em> singletons and no constraints <em>among</em> pairs.</p>
+  <p><strong>Step 3: Build position by position.</strong></p>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>Position</th><th>Available choices</th><th># choices</th></tr>
+    <tr><td>2</td><td>Any singleton — no pair is available yet (each pair needs 2 singletons first)</td><td><strong>3</strong></td></tr>
+    <tr><td>3</td><td>Either remaining singleton — still no pair available</td><td><strong>2</strong></td></tr>
+    <tr><td>4</td><td>The 3rd singleton OR the 1 pair whose both singletons are now placed</td><td><strong>2</strong></td></tr>
+  </table></div>
+
+  <p><strong>Step 4: Split into two cases at position 4.</strong></p>
+
+  <div class="block note" style="margin:.6rem 0">
+    <span class="lbl">Case A — Position 4 takes the 3rd singleton</span>
+    All 3 singletons are now placed. All 3 pairs are simultaneously available (each has both its singletons placed). Arrange the 3 pairs freely: <span class="m">3! = 6</span> ways.
+    <br><br>
+    Case A total: <span class="m">3 × 2 × 1 × 6 = 36</span>
+  </div>
+
+  <div class="block note" style="margin:.6rem 0">
+    <span class="lbl">Case B — Position 4 takes the available pair</span>
+    Say singletons {1} and {2} are placed, and pair {1,2} is placed. Remaining: {3}, {1,3}, {2,3}.
+    <ul class="L">
+      <li>Only {3} is available — both {1,3} and {2,3} need {3} first. So {3} is <strong>forced next</strong> (1 choice).</li>
+      <li>After {3}: both {1,3} and {2,3} are available. Arrange freely: <span class="m">2! = 2</span> ways.</li>
+    </ul>
+    Case B total: <span class="m">3 × 2 × 1 × (1 × 2) = 12</span>
+  </div>
+
+  <p><strong>Total: 36 + 12 = <span class="m">e(B₃) = 48</span> ✓</strong></p>
+</div>
+
+<h3 id="lin-ext-lemma">The Adjacent-Swap Lemma</h3>
+
+<div class="block thm">
+  <span class="lbl">Lemma (Adjacent-Swap)</span>
+  Let <span class="m">L = (y₁, y₂, …, yₙ)</span> be a linear extension of P. If <span class="m">yᵢ ∥ yᵢ₊₁</span> in P (adjacent elements are incomparable), then swapping them gives another valid linear extension:
+  <div class="mb">L'  =  (y₁, …, yᵢ₋₁, yᵢ₊₁, yᵢ, yᵢ₊₂, …, yₙ)</div>
+</div>
+
+<div class="block proof">
+  <span class="lbl">Proof</span>
+  Any relation <span class="m">yₐ &lt; y_b</span> (a &lt; b) is preserved by the swap unless <span class="m">{a,b} = {i, i+1}</span>. But <span class="m">yᵢ ∥ yᵢ₊₁</span> means neither <span class="m">yᵢ &lt; yᵢ₊₁</span> nor <span class="m">yᵢ₊₁ &lt; yᵢ</span> holds in P — so the swap cannot violate the partial order. ∎
+</div>
+
+<div class="block ex">
+  <span class="lbl">Example — Diamond</span>
+  Extensions of the diamond: <span class="m">(a,b,c,d)</span> and <span class="m">(a,c,b,d)</span>. In <span class="m">(a,b,c,d)</span>, the adjacent pair b,c at positions 2,3 satisfies b∥c. Swapping gives <span class="m">(a,c,b,d)</span> — the other extension. ✓
+</div>
+
+<div class="block thm">
+  <span class="lbl">Consequence — Any two extensions are connected by adjacent swaps</span>
+  Any two linear extensions L and L' of P can be connected by a sequence of adjacent swaps of incomparable pairs. This is exactly <strong>bubble sort</strong> applied to a partially ordered input — each swap is valid (incomparable adjacent pair), and the Kendall tau distance τ(L, L') gives the exact number of swaps needed.
+  <br><br>
+  This is why the linear extensions of P form a <strong>connected subgraph</strong> of the permutahedron Πₙ (next section).
+</div>
+
+<!-- ══ 6. PERMUTAHEDRON ══ -->
+<h2 id="permutahedron"><span class="sn">06</span>Polytopes and the Permutahedron</h2>
 
 <div class="block def">
   <span class="lbl">Definition — Polytope</span>
@@ -706,7 +829,7 @@ td:first-child{color:var(--ink);font-weight:500}
 </div><!-- end hex-pair -->
 
 <!-- ══ 6. ORDER & CHAIN POLYTOPES ══ -->
-<h2 id="polytopes"><span class="sn">06</span>Order Polytope and Chain Polytope</h2>
+<h2 id="polytopes"><span class="sn">07</span>Order Polytope and Chain Polytope</h2>
 
 <div class="block def">
   <span class="lbl">Definition — Order Polytope O(P) (Stanley 1986)</span>
@@ -788,7 +911,7 @@ td:first-child{color:var(--ink);font-weight:500}
 </div>
 
 <!-- ══ 7. 1/3–2/3 CONJECTURE ══ -->
-<h2 id="conjecture"><span class="sn">07</span>The 1/3–2/3 Conjecture</h2>
+<h2 id="conjecture"><span class="sn">08</span>The 1/3–2/3 Conjecture</h2>
 
 <div class="block open">
   <span class="lbl">Famous Open Problem — Kislitsyn 1968</span>
@@ -843,7 +966,7 @@ td:first-child{color:var(--ink);font-weight:500}
 <hr class="divider">
 
 <!-- ══ 8. PRACTICE ══ -->
-<h2 id="practice"><span class="sn">08</span>Try It Yourself</h2>
+<h2 id="practice"><span class="sn">09</span>Try It Yourself</h2>
 
 <div class="practice-header">
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
@@ -951,7 +1074,7 @@ td:first-child{color:var(--ink);font-weight:500}
 <hr class="divider">
 
 <!-- ══ 9. HOMEWORK ══ -->
-<h2 id="hw"><span class="sn">09</span>Homework</h2>
+<h2 id="hw"><span class="sn">10</span>Homework</h2>
 
 <div class="block hw">
   <span class="lbl">HW — Due Wednesday April 29</span>
@@ -992,7 +1115,7 @@ td:first-child{color:var(--ink);font-weight:500}
 <hr class="divider">
 
 <!-- ══ 10. CHEAT SHEET ══ -->
-<h2 id="cheat"><span class="sn">10</span>One-Page Cheat Sheet</h2>
+<h2 id="cheat"><span class="sn">11</span>One-Page Cheat Sheet</h2>
 <div class="cheat-sheet">
   <div class="cheat-title">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -1022,7 +1145,17 @@ td:first-child{color:var(--ink);font-weight:500}
       </ul>
     </div>
     <div class="cheat-section">
-      <h5>Permutahedron Πₙ</h5>
+      <h5>Counting Linear Extensions e(P)</h5>
+      <ul>
+        <li>Chain [n]: e=1. Antichain: e=n!. Any P: e≥1.</li>
+        <li>V-poset a&lt;b,a&lt;c: e=2. Diamond: e=2.</li>
+        <li><strong>Disjoint chains</strong> k₁,…,kₘ: e = (Σkᵢ)!/(k₁!·…·kₘ!)</li>
+        <li>2+2 = 4!/(2!·2!) = 6; chain(3)+chain(2) = 5!/(3!·2!) = 10</li>
+        <li>e(B₃) = 48: ∅ first, {1,2,3} last, then case split at pos 4 → 36+12</li>
+        <li><strong>Adjacent-swap lemma:</strong> swap adjacent incomparable pair → new extension</li>
+        <li>Any two extensions connected by adjacent swaps (= bubble sort)</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Permutahedron Πₙ</h5>
       <ul>
         <li>Πₙ = conv{σ(1,…,n) : σ ∈ Sₙ}</li>
         <li>n! vertices; dimension n−1; degree n−1</li>
