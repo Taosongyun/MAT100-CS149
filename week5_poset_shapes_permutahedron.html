@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 5 — Poset Shapes, Permutahedron &amp; 1/3–2/3</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1117;--bg2:#161820;--bg3:#1e2028;--bg4:#252730;--border:#2e3040;--ink:#e8e4dc;--ink2:#a8a49c;--ink3:#68645c;--gold:#d4a843;--gold2:#f0c060;--teal:#4ab8a8;--teal2:#6dd4c4;--rose:#c86478;--rose2:#e08090;--violet:#9878c8;--violet2:#b898e0;--green:#5a9e6a;--green2:#7ac88a;--orange:#d4824a;--orange2:#f0a060;--mono:'JetBrains Mono',monospace;--serif:'Source Serif 4',Georgia,serif;--display:'Playfair Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--serif);background:var(--bg);color:var(--ink);line-height:1.8;font-size:16.5px}
+.shell{display:flex;min-height:100vh}
+nav{width:248px;min-width:248px;background:var(--bg2);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;padding:1.6rem 0;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.nav-logo{padding:0 1.2rem 1.2rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.nav-logo .course{font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3)}
+.nav-logo .title{font-family:var(--display);font-size:13px;color:var(--gold);margin-top:.25rem;line-height:1.3}
+nav ul{list-style:none}
+.nav-section{font-family:var(--sans);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);padding:.9rem 1.2rem .2rem}
+nav a{display:block;font-family:var(--sans);font-size:12px;color:var(--ink2);text-decoration:none;padding:.3rem 1.2rem;line-height:1.4;border-left:2px solid transparent;transition:all .15s}
+nav a:hover{color:var(--ink);background:var(--bg3)}
+nav a.active{color:var(--gold);border-left-color:var(--gold);background:var(--bg3)}
+main{flex:1;max-width:880px;padding:3.5rem 4rem}
+.cover{margin-bottom:3.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border)}
+.week-badge{display:inline-block;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.3);border-radius:3px;padding:.25rem .7rem;margin-bottom:1rem}
+.cover h1{font-family:var(--display);font-size:2.3rem;font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:.6rem}
+.cover h1 em{color:var(--gold);font-style:italic}
+.cover .subtitle{font-family:var(--sans);font-size:.9rem;color:var(--ink2);font-weight:300}
+.topics-row{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1.4rem}
+.topic-pill{font-family:var(--sans);font-size:11px;font-weight:500;padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);color:var(--ink2)}
+h2{font-family:var(--display);font-size:1.55rem;font-weight:600;color:var(--ink);margin:3.5rem 0 1.2rem;scroll-margin-top:2rem;display:flex;align-items:center;gap:.7rem}
+h2 .sn{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);padding:.25rem .55rem;border-radius:3px;flex-shrink:0}
+h3{font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--teal);margin:2rem 0 .65rem;scroll-margin-top:2rem;letter-spacing:.01em}
+h4{font-family:var(--sans);font-size:.9rem;font-weight:600;color:var(--ink2);margin:1.4rem 0 .4rem}
+p{margin-bottom:.9rem}
+.block{margin:1.2rem 0;padding:1rem 1.2rem;border-radius:6px}
+.def{background:rgba(74,184,168,.07);border-left:3px solid var(--teal)}
+.thm{background:rgba(212,168,67,.07);border-left:3px solid var(--gold)}
+.proof{background:var(--bg3);border-left:3px solid var(--border)}
+.ex{background:rgba(154,120,200,.07);border-left:3px solid var(--violet)}
+.note{background:var(--bg3);border-left:3px solid var(--border);font-size:.92rem;color:var(--ink2)}
+.hw{background:rgba(200,100,120,.07);border-left:3px solid var(--rose)}
+.open{background:rgba(212,130,74,.07);border-left:3px solid var(--orange)}
+.lbl{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:.4rem}
+.def .lbl{color:var(--teal)}.thm .lbl{color:var(--gold)}.proof .lbl{color:var(--ink3)}.ex .lbl{color:var(--violet)}.hw .lbl{color:var(--rose)}.note .lbl{color:var(--ink3)}.open .lbl{color:var(--orange)}
+.m{font-family:var(--mono);font-size:.83em;background:var(--bg4);color:var(--gold2);padding:.12em .38em;border-radius:3px;white-space:nowrap}
+.mb{display:block;font-family:var(--mono);font-size:.86em;background:var(--bg3);color:var(--teal2);padding:.65rem 1rem;border-radius:4px;margin:.7rem 0;border:1px solid var(--border);overflow-x:auto;white-space:pre}
+ul.L,ol.L{padding-left:1.4rem;margin:.5rem 0 .8rem}
+ul.L li,ol.L li{margin-bottom:.35rem}
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:.87rem;font-family:var(--sans)}
+th{background:var(--bg3);color:var(--ink2);font-weight:600;padding:.5rem .8rem;text-align:left;border-bottom:1px solid var(--border);font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
+td{padding:.42rem .8rem;border-bottom:1px solid var(--bg3);vertical-align:top;color:var(--ink2)}
+tr:last-child td{border-bottom:none}
+td:first-child{color:var(--ink);font-weight:500}
+.yes{color:var(--green2);font-weight:600}.no{color:var(--rose2);font-weight:600}
+/* Poset grid for 16 shapes */
+.poset-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin:1.5rem 0}
+.poset-card{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.7rem;text-align:center}
+.poset-card .pname{font-family:var(--sans);font-size:.72rem;font-weight:700;color:var(--teal2);margin-bottom:.3rem;display:block;letter-spacing:.04em;text-transform:uppercase}
+.poset-card .paut{font-family:var(--mono);font-size:.7em;color:var(--ink3);margin-top:.25rem;display:block}
+.poset-card .plab{font-family:var(--sans);font-size:.88rem;font-weight:700;color:var(--gold2);display:block;margin-top:.15rem}
+/* Hexagon visuals */
+.hex-pair{display:flex;gap:2rem;margin:1.5rem 0;align-items:flex-start;flex-wrap:wrap}
+.hex-fig{text-align:center;flex:1;min-width:220px}
+.hex-fig .hcap{font-family:var(--sans);font-size:11px;color:var(--ink3);margin-top:.6rem;line-height:1.4}
+.hex-fig .htitle{font-family:var(--sans);font-size:.78rem;font-weight:700;margin-bottom:.4rem}
+/* Practice */
+.practice-header{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#2a3a5e,#1e4a3a);padding:.6rem 1.1rem;border-radius:6px 6px 0 0;display:flex;align-items:center;gap:.5rem}
+.practice-wrap{border:1px solid var(--border);border-radius:0 0 6px 6px;overflow:hidden;margin-bottom:2rem}
+.pq{border-bottom:1px solid var(--border)}.pq:last-child{border-bottom:none}
+.pq-q{font-family:var(--sans);font-size:.875rem;font-weight:500;color:var(--ink);padding:.75rem 1.1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;user-select:none;transition:background .12s}
+.pq-q:hover{background:var(--bg3)}
+.pq-q .qn{font-size:9.5px;font-weight:700;letter-spacing:.1em;color:var(--teal);min-width:1.8rem;padding-top:.1rem;flex-shrink:0}
+.pq-q .arr{font-size:11px;color:var(--ink3);transition:transform .18s;flex-shrink:0;padding-top:.1rem}
+.pq-q.open .arr{transform:rotate(180deg)}
+.pq-a{display:none;padding:.2rem 1.1rem .9rem;border-top:1px dashed var(--border);background:var(--bg2)}
+.pq-a.vis{display:block}
+.pq-a .al{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green2);margin-bottom:.5rem;display:block;padding-top:.55rem}
+.pq-a p{font-size:.875rem;font-family:var(--sans);color:var(--ink2);margin-bottom:.45rem;line-height:1.65}
+.pq-a .step{background:var(--bg3);border-left:2px solid var(--teal);padding:.5rem .8rem;border-radius:0 4px 4px 0;margin:.4rem 0;font-size:.85rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a .step strong{color:var(--teal2)}
+.ans-box{background:rgba(90,158,106,.1);border:1px solid rgba(90,158,106,.3);border-radius:4px;padding:.4rem .8rem;font-family:var(--mono);font-size:.82em;color:var(--green2);margin:.4rem 0;display:inline-block}
+.pq-a ul,.pq-a ol{padding-left:1.3rem;margin:.3rem 0 .45rem;font-size:.875rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a li{margin-bottom:.25rem}
+/* Cheat sheet */
+.cheat-sheet{background:var(--bg2);border:1px solid var(--gold);border-radius:8px;padding:1.5rem;margin:2rem 0}
+.cheat-title{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem}
+.cheat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.cheat-section h5{font-family:var(--sans);font-size:.8rem;font-weight:700;color:var(--teal2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.cheat-section p,.cheat-section li{font-family:var(--sans);font-size:.8rem;color:var(--ink2);line-height:1.5;margin-bottom:.25rem}
+.cheat-section ul{padding-left:1.1rem;margin:.25rem 0}
+.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-bottom: 1.6rem;
+}
+.page-link {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--gold);
+  border: 1px solid rgba(212,168,67,.75);
+  border-radius: 4px;
+  padding: .38rem .75rem;
+  text-decoration: none;
+  transition: transform .15s, background .15s, border-color .15s;
+}
+.page-link:hover {
+  transform: translateY(-1px);
+  background: var(--gold2);
+  text-decoration: none;
+}
+.page-link.secondary {
+  color: var(--ink2);
+  background: transparent;
+  border-color: var(--border);
+}
+.page-link.secondary:hover {
+  color: var(--ink);
+  border-color: rgba(212,168,67,.55);
+  background: var(--bg3);
+}
+.page-link.disabled,
+.page-link.disabled:hover {
+  color: var(--ink3);
+  background: transparent;
+  border-color: var(--border);
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+}
+.footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:var(--sans);font-size:11px;color:var(--ink3)}
+@media(max-width:960px){nav{display:none}main{padding:2rem 1.5rem}}
+@media(max-width:660px){.poset-grid{grid-template-columns:repeat(2,1fr)}.hex-pair{flex-direction:column}.cheat-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav>
+  <div class="nav-logo">
+    <div class="course">Math 100 · Spring 2026</div>
+    <div class="title">Week 5 — Poset Shapes, Permutahedron &amp; 1/3–2/3</div>
+  </div>
+  <ul>
+    <li class="nav-section">Navigation</li>
+    <li><a href="index.html">← Home</a></li>
+    <li><a href="week4_graded_posets_mirsky.html">← Previous Week</a></li>
+    <li><a href="week6_comparability_graphs_dimension.html">Next Week →</a></li>
+    <li class="nav-section">Sections</li>
+    <li><a href="#why">1 · Why We Care</a></li>
+    <li><a href="#sixteen">2 · 16 Poset Shapes</a></li>
+    <li><a href="#graded-equiv">3 · Graded ↔ Levels</a></li>
+    <li><a href="#convex">4 · Convex Subsets</a></li>
+    <li><a href="#permutahedron">5 · Permutahedron</a></li>
+    <li><a href="#lin-ext-convex">↳ Linear Extensions</a></li>
+    <li><a href="#polytopes">6 · Order &amp; Chain Polytopes</a></li>
+    <li><a href="#conjecture">7 · 1/3–2/3 Conjecture</a></li>
+    <li><a href="#practice">8 · Try It Yourself</a></li>
+    <li><a href="#hw">9 · Homework</a></li>
+    <li><a href="#cheat">10 · Cheat Sheet</a></li>
+  </ul>
+</nav>
+<main>
+
+<div class="page-actions">
+  <a class="page-link" href="index.html">← Back to Home</a>
+  <a class="page-link secondary" href="week4_graded_posets_mirsky.html">← Previous Week</a>
+  <a class="page-link secondary" href="week6_comparability_graphs_dimension.html">Next Week →</a>
+</div>
+
+<div class="cover">
+  <div class="week-badge">Week 5</div>
+  <h1>Poset Shapes, Permutahedron<br>&amp; <em>the 1/3–2/3 Conjecture</em></h1>
+  <div class="subtitle">Math 100 · Dartmouth College · Spring 2026</div>
+  <div class="topics-row">
+    <span class="topic-pill">16 isomorphism classes</span>
+    <span class="topic-pill">Labellings = 4!/|Aut|</span>
+    <span class="topic-pill">Graded ↔ level partition</span>
+    <span class="topic-pill">Convex subsets</span>
+    <span class="topic-pill">Permutahedron Πₙ</span>
+    <span class="topic-pill">Linear extensions as subgraph</span>
+    <span class="topic-pill">Order polytope</span>
+    <span class="topic-pill">Chain polytope</span>
+    <span class="topic-pill">1/3–2/3 conjecture</span>
+  </div>
+</div>
+
+<!-- ══ 1. WHY WE CARE ══ -->
+<h2 id="why"><span class="sn">01</span>Why We Care</h2>
+<p>This week brings several threads together. We count all possible 4-element poset shapes and understand what makes them distinct. We prove the equivalence between the two definitions of "graded." We introduce the permutahedron — a beautiful geometric object that encodes all permutations of {1,…,n} as vertices, with adjacency given by Kendall tau distance — and see that linear extensions of any poset form a connected subgraph of it. And we meet the 1/3–2/3 conjecture, one of the most famous open problems in combinatorics.</p>
+
+<!-- ══ 2. SIXTEEN POSET SHAPES ══ -->
+<h2 id="sixteen"><span class="sn">02</span>The 16 Isomorphism Classes of 4-Element Posets</h2>
+
+<div class="block thm">
+  <span class="lbl">HW April 29 — Result</span>
+  There are exactly <strong>16</strong> non-isomorphic posets on 4 elements. For each shape P, the number of distinct labelled posets with that shape is <span class="m">4! / |Aut(P)|</span>. The sum of all 16 labelling counts is <strong>219</strong>.
+</div>
+
+<p>The 16 shapes are grouped below by number of cover edges. Each card shows the shape name, <span class="m">|Aut|</span>, and labelling count. All values verified computationally.</p>
+
+<div class="poset-grid">
+
+<!-- 0 edges -->
+<div class="poset-card">
+  <span class="pname">Antichain</span>
+  <svg width="80" height="55" viewBox="0 0 80 55">
+    <circle cx="15" cy="28" r="5" fill="#2a4a6b" stroke="#c86478" stroke-width="1.5"/>
+    <circle cx="32" cy="28" r="5" fill="#2a4a6b" stroke="#c86478" stroke-width="1.5"/>
+    <circle cx="49" cy="28" r="5" fill="#2a4a6b" stroke="#c86478" stroke-width="1.5"/>
+    <circle cx="66" cy="28" r="5" fill="#2a4a6b" stroke="#c86478" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 24</span>
+  <span class="plab">1 labelling</span>
+</div>
+
+<!-- 1 edge -->
+<div class="poset-card">
+  <span class="pname">1-edge + 2 isolated</span>
+  <svg width="80" height="55" viewBox="0 0 80 55">
+    <line x1="20" y1="42" x2="20" y2="12" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="20" cy="42" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="20" cy="12" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="50" cy="28" r="5" fill="#2a4a6b" stroke="#68645c" stroke-width="1.5"/>
+    <circle cx="68" cy="28" r="5" fill="#2a4a6b" stroke="#68645c" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 2</span>
+  <span class="plab">12 labellings</span>
+</div>
+
+<!-- 2 edges: V+1 -->
+<div class="poset-card">
+  <span class="pname">V + 1 isolated</span>
+  <svg width="80" height="55" viewBox="0 0 80 55">
+    <line x1="25" y1="42" x2="15" y2="12" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="25" y1="42" x2="35" y2="12" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="25" cy="42" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="15" cy="12" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="35" cy="12" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="65" cy="28" r="5" fill="#2a4a6b" stroke="#68645c" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 2</span>
+  <span class="plab">12 labellings</span>
+</div>
+
+<!-- 2 edges: 3-chain+1 -->
+<div class="poset-card">
+  <span class="pname">3-chain + 1 isolated</span>
+  <svg width="80" height="55" viewBox="0 0 80 55">
+    <line x1="30" y1="47" x2="30" y2="28" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="30" y1="28" x2="30" y2="8" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="30" cy="47" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="30" cy="28" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="30" cy="8" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="65" cy="28" r="5" fill="#2a4a6b" stroke="#68645c" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 1</span>
+  <span class="plab">24 labellings</span>
+</div>
+
+<!-- 2 edges: Lambda+1 -->
+<div class="poset-card">
+  <span class="pname">Λ + 1 isolated</span>
+  <svg width="80" height="55" viewBox="0 0 80 55">
+    <line x1="15" y1="42" x2="25" y2="12" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="35" y1="42" x2="25" y2="12" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="15" cy="42" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="35" cy="42" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="25" cy="12" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="65" cy="28" r="5" fill="#2a4a6b" stroke="#68645c" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 2</span>
+  <span class="plab">12 labellings</span>
+</div>
+
+<!-- 2 edges: 2+2 -->
+<div class="poset-card">
+  <span class="pname">2+2 chains</span>
+  <svg width="80" height="55" viewBox="0 0 80 55">
+    <line x1="22" y1="42" x2="22" y2="12" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="58" y1="42" x2="58" y2="12" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="22" cy="42" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="22" cy="12" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="58" cy="42" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="58" cy="12" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 2</span>
+  <span class="plab">12 labellings</span>
+</div>
+
+<!-- 3 edges: star-out -->
+<div class="poset-card">
+  <span class="pname">Star-out (1→3)</span>
+  <svg width="80" height="55" viewBox="0 0 80 55">
+    <line x1="40" y1="42" x2="15" y2="12" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="40" y1="42" x2="40" y2="12" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="40" y1="42" x2="65" y2="12" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="40" cy="42" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="15" cy="12" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="40" cy="12" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="65" cy="12" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 6</span>
+  <span class="plab">4 labellings</span>
+</div>
+
+<!-- 3 edges: N-shape -->
+<div class="poset-card">
+  <span class="pname">N-shape</span>
+  <svg width="80" height="55" viewBox="0 0 80 55">
+    <line x1="25" y1="47" x2="15" y2="22" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="25" y1="47" x2="45" y2="22" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="15" y1="22" x2="55" y2="7" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="25" cy="47" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="15" cy="22" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="45" cy="22" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="55" cy="7" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 1</span>
+  <span class="plab">24 labellings</span>
+</div>
+
+<!-- 3 edges: V-tower (d<a<b, a<c) -->
+<div class="poset-card">
+  <span class="pname">V-tower</span>
+  <svg width="80" height="60" viewBox="0 0 80 60">
+    <line x1="40" y1="52" x2="40" y2="30" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="40" y1="30" x2="20" y2="8" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="40" y1="30" x2="60" y2="8" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="40" cy="52" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="40" cy="30" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="20" cy="8" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="60" cy="8" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 2</span>
+  <span class="plab">12 labellings</span>
+</div>
+
+<!-- 3 edges: Skew -->
+<div class="poset-card">
+  <span class="pname">Skew (Z)</span>
+  <svg width="80" height="60" viewBox="0 0 80 60">
+    <line x1="25" y1="50" x2="20" y2="22" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="25" y1="50" x2="48" y2="22" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="55" y1="50" x2="48" y2="22" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="25" cy="50" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="55" cy="50" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="20" cy="22" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="48" cy="22" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 1</span>
+  <span class="plab">24 labellings</span>
+</div>
+
+<!-- 3 edges: 4-chain -->
+<div class="poset-card">
+  <span class="pname">4-chain</span>
+  <svg width="80" height="60" viewBox="0 0 80 60">
+    <line x1="40" y1="52" x2="40" y2="35" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="40" y1="35" x2="40" y2="18" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="40" y1="18" x2="40" y2="6" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="40" cy="52" r="5" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <circle cx="40" cy="35" r="5" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <circle cx="40" cy="18" r="5" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <circle cx="40" cy="6" r="5" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 1</span>
+  <span class="plab">24 labellings</span>
+</div>
+
+<!-- 3 edges: Y-mid (fork at middle) -->
+<div class="poset-card">
+  <span class="pname">Y-mid</span>
+  <svg width="80" height="60" viewBox="0 0 80 60">
+    <line x1="25" y1="52" x2="25" y2="30" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="55" y1="52" x2="25" y2="30" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="25" y1="30" x2="25" y2="8" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="25" cy="52" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="55" cy="52" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="25" cy="30" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="25" cy="8" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 2</span>
+  <span class="plab">12 labellings</span>
+</div>
+
+<!-- 3 edges: Lambda-top -->
+<div class="poset-card">
+  <span class="pname">Λ-top</span>
+  <svg width="80" height="60" viewBox="0 0 80 60">
+    <line x1="25" y1="52" x2="25" y2="30" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="25" y1="30" x2="40" y2="8" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="58" y1="52" x2="40" y2="8" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="25" cy="52" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="58" cy="52" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="25" cy="30" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="40" cy="8" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 1</span>
+  <span class="plab">24 labellings</span>
+</div>
+
+<!-- 3 edges: star-in -->
+<div class="poset-card">
+  <span class="pname">Star-in (3→1)</span>
+  <svg width="80" height="55" viewBox="0 0 80 55">
+    <line x1="15" y1="42" x2="40" y2="12" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="40" y1="42" x2="40" y2="12" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <line x1="65" y1="42" x2="40" y2="12" stroke="#4ab8a8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="15" cy="42" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="40" cy="42" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="65" cy="42" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="40" cy="12" r="5" fill="#2a4a6b" stroke="#4ab8a8" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 6</span>
+  <span class="plab">4 labellings</span>
+</div>
+
+<!-- 4 edges: Diamond -->
+<div class="poset-card">
+  <span class="pname">Diamond</span>
+  <svg width="80" height="60" viewBox="0 0 80 60">
+    <line x1="40" y1="52" x2="20" y2="30" stroke="#d4a843" stroke-width="1.5" opacity=".7"/>
+    <line x1="40" y1="52" x2="60" y2="30" stroke="#d4a843" stroke-width="1.5" opacity=".7"/>
+    <line x1="20" y1="30" x2="40" y2="8" stroke="#d4a843" stroke-width="1.5" opacity=".7"/>
+    <line x1="60" y1="30" x2="40" y2="8" stroke="#d4a843" stroke-width="1.5" opacity=".7"/>
+    <circle cx="40" cy="52" r="5" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <circle cx="20" cy="30" r="5" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <circle cx="60" cy="30" r="5" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+    <circle cx="40" cy="8" r="5" fill="#2a4a6b" stroke="#d4a843" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 2</span>
+  <span class="plab">12 labellings</span>
+</div>
+
+<!-- 4 edges: W-shape -->
+<div class="poset-card">
+  <span class="pname">W-shape</span>
+  <svg width="80" height="55" viewBox="0 0 80 55">
+    <line x1="18" y1="42" x2="30" y2="12" stroke="#9878c8" stroke-width="1.5" opacity=".7"/>
+    <line x1="18" y1="42" x2="52" y2="12" stroke="#9878c8" stroke-width="1.5" opacity=".7"/>
+    <line x1="62" y1="42" x2="30" y2="12" stroke="#9878c8" stroke-width="1.5" opacity=".7"/>
+    <line x1="62" y1="42" x2="52" y2="12" stroke="#9878c8" stroke-width="1.5" opacity=".7"/>
+    <circle cx="18" cy="42" r="5" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+    <circle cx="62" cy="42" r="5" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+    <circle cx="30" cy="12" r="5" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+    <circle cx="52" cy="12" r="5" fill="#2a4a6b" stroke="#9878c8" stroke-width="1.5"/>
+  </svg>
+  <span class="paut">|Aut| = 4</span>
+  <span class="plab">6 labellings</span>
+</div>
+
+</div><!-- end poset-grid -->
+
+<div class="block thm">
+  <span class="lbl">Verification — Sum = 219</span>
+  <p>1 + 12 + 12 + 24 + 12 + 12 + 4 + 24 + 12 + 24 + 24 + 12 + 24 + 4 + 12 + 6 = <strong>219</strong> ✓</p>
+  <p>The sum counts the total number of labelled posets on {1,2,3,4}: every labelled poset has exactly one underlying unlabelled shape, so the 16 groups partition all 219 labellings.</p>
+</div>
+
+<div class="block note">
+  <span class="lbl">How |Aut| is determined</span>
+  <ul class="L">
+    <li><strong>Antichain (|Aut|=24):</strong> All 4! permutations preserve the empty order relation.</li>
+    <li><strong>Stars (|Aut|=6):</strong> The 3 top (or bottom) elements can be permuted freely — 3! = 6.</li>
+    <li><strong>W-shape (|Aut|=4):</strong> Can swap the two sources (a↔d) and/or the two targets (b↔c) independently — 2×2 = 4.</li>
+    <li><strong>Diamond (|Aut|=2):</strong> Can only swap the two incomparable middle elements.</li>
+    <li><strong>Most asymmetric shapes (|Aut|=1):</strong> No non-trivial symmetries → 24 labellings each.</li>
+  </ul>
+</div>
+
+<!-- ══ 3. GRADED EQUIVALENCE ══ -->
+<h2 id="graded-equiv"><span class="sn">03</span>Graded ↔ Level Partition</h2>
+
+<div class="block thm">
+  <span class="lbl">Theorem (HW May 1)</span>
+  A finite poset P is <strong>graded with height h</strong> if and only if it can be partitioned into levels <span class="m">L₁, L₂, …, Lₕ</span> such that:
+  <ol class="L">
+    <li>All minimal elements of P are in <span class="m">L₁</span>.</li>
+    <li>All maximal elements of P are in <span class="m">Lₕ</span>.</li>
+    <li>Every cover relation <span class="m">x ⋖ y</span> satisfies <span class="m">x ∈ Lₖ</span> and <span class="m">y ∈ Lₖ₊₁</span> for some k — i.e., all covers go between consecutive levels.</li>
+  </ol>
+</div>
+
+<div class="block proof">
+  <span class="lbl">Proof — Both Directions</span>
+  <p><strong>(⟹) Graded implies level partition.</strong> Suppose P has a rank function <span class="m">rk</span> with <span class="m">rk(x)=0</span> for minimal elements and <span class="m">rk(y)=rk(x)+1</span> for all covers <span class="m">x ⋖ y</span>. Define <span class="m">Lₖ = {x ∈ P : rk(x) = k-1}</span> for k = 1,…,h where h = max rk + 1.</p>
+  <ul class="L">
+    <li>Minimal elements have rk = 0, so they land in L₁. ✓</li>
+    <li>Maximal elements all have rk = h−1 (since all maximal chains reach rk h−1 by induction on the rank axiom), so they land in Lₕ. ✓</li>
+    <li>Every cover x ⋖ y satisfies rk(y) = rk(x)+1, so x ∈ Lₖ and y ∈ Lₖ₊₁. ✓</li>
+  </ul>
+  <p><strong>(⟸) Level partition implies graded.</strong> Suppose P is partitioned into levels L₁,…,Lₕ with the three properties above. Define <span class="m">rk(x) = k-1</span> for <span class="m">x ∈ Lₖ</span>.</p>
+  <ul class="L">
+    <li>Minimal elements are in L₁, so rk = 0. ✓</li>
+    <li>Every cover x ⋖ y has x ∈ Lₖ, y ∈ Lₖ₊₁ (by property 3), so rk(y) = k = rk(x)+1. ✓</li>
+  </ul>
+  <p>This is a valid rank function, so P is graded. ∎</p>
+  <p><strong>Why minimal elements must ALL be in L₁ (and not just some):</strong> If a minimal element m were in Lₖ for k &gt; 1, then there would be no covers going into m from below (m is minimal), but the level structure requires elements in Lₖ to have predecessors in Lₖ₋₁. This means all maximal chains through m would be shorter than chains through elements in L₁, violating the "all maximal chains same length" property.</p>
+</div>
+
+<!-- ══ 4. CONVEX SUBSETS ══ -->
+<h2 id="convex"><span class="sn">04</span>Convex Subsets of a Poset</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Convex Subset</span>
+  A subset <span class="m">C ⊆ P</span> is <strong>convex</strong> (also called <em>order-convex</em> or an <em>interval</em>) if whenever <span class="m">x, y ∈ C</span> and <span class="m">z ∈ P</span> with <span class="m">x ≤ z ≤ y</span>, we have <span class="m">z ∈ C</span>.
+  <br><br>
+  The intuition matches the real line: convex subsets of <span class="m">(ℤ, ≤)</span> are intervals like <span class="m">{3,4,5,6}</span>, never <span class="m">{3,5}</span> (the 4 in between escapes).
+</div>
+
+<div class="block ex">
+  <span class="lbl">Examples — Distinguishing Convex from Non-Convex</span>
+  <ul class="L">
+    <li><strong>In D₁₂:</strong> <span class="m">{2,4,6,12}</span> <span class="yes">is convex</span> — every divisor between 2 and 12 that lies above 2 is in the set. (Between 2 and 12: divisors 4 and 6, both included. Between 2 and 4: nothing in D₁₂ strictly between them. ✓)</li>
+    <li><strong>In D₁₂:</strong> <span class="m">{2,12}</span> <span class="no">is not convex</span> — missing 4 (since 2|4|12 but 4 ∉ {2,12}).</li>
+    <li><strong>In V-poset a&lt;b, a&lt;c:</strong> <span class="m">{b,c}</span> <span class="yes">is convex</span> — b and c are incomparable, so no z satisfies b≤z≤c, making the condition vacuously true.</li>
+    <li><strong>In any chain:</strong> convex subsets are exactly the contiguous intervals.</li>
+  </ul>
+</div>
+
+<div class="block thm">
+  <span class="lbl">Convex Subsets of a Chain of Length n</span>
+  The number of convex subsets of a chain <span class="m">1 &lt; 2 &lt; ··· &lt; n</span> is:
+  <div class="mb">C(n+1, 2) + 1  =  n(n+1)/2 + 1</div>
+  <em>Why:</em> The non-empty convex subsets are exactly the intervals [i,j] for 1≤i≤j≤n. There are C(n+1,2) = n(n+1)/2 such intervals (choose 2 positions from {1,…,n+1} to mark endpoints). Adding the empty set gives +1.
+  <br><br>
+  <em>Example:</em> For chain 1&lt;2&lt;3&lt;4 (n=4): C(5,2)+1 = 10+1 = <strong>11 convex subsets</strong>: ∅, {1},{2},{3},{4}, {1,2},{2,3},{3,4}, {1,2,3},{2,3,4}, {1,2,3,4}.
+</div>
+
+<div class="block thm">
+  <span class="lbl">Key Properties</span>
+  <ul class="L">
+    <li><strong>Closed under intersection:</strong> If C₁ and C₂ are both convex, then C₁ ∩ C₂ is convex. <em>Proof:</em> If x,y ∈ C₁∩C₂ and x≤z≤y, then z ∈ C₁ (C₁ convex) and z ∈ C₂ (C₂ convex), so z ∈ C₁∩C₂. ✓</li>
+    <li><strong>NOT closed under union:</strong> In chain 1&lt;2&lt;3, take C₁={1} and C₂={3}. Both are convex (singletons always are). But C₁∪C₂ = {1,3} is not convex — 2 lies between 1 and 3 but is missing.</li>
+    <li><strong>In an antichain:</strong> every subset is convex, vacuously (no z can satisfy x≤z≤y when x∥y).</li>
+  </ul>
+</div>
+
+<!-- ══ 5. PERMUTAHEDRON ══ -->
+<h2 id="permutahedron"><span class="sn">05</span>Polytopes and the Permutahedron</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Polytope</span>
+  A <strong>polytope</strong> in <span class="m">ℝᵈ</span> is the convex hull of finitely many points (its vertices, in the simplest case). Equivalently, a bounded intersection of finitely many half-spaces.
+</div>
+
+<div class="block def">
+  <span class="lbl">Definition — Permutahedron Πₙ</span>
+  The <strong>permutahedron</strong> <span class="m">Πₙ</span> is the convex hull in <span class="m">ℝⁿ</span> of all <span class="m">n!</span> permutations of the vector <span class="m">(1, 2, 3, …, n)</span>.
+</div>
+
+<h4>Key Facts (all verified)</h4>
+<div class="tbl-wrap"><table>
+  <tr><th>Property</th><th>Formula</th><th>n=3</th><th>n=4</th><th>n=5</th></tr>
+  <tr><td>Vertices</td><td>n!</td><td>6</td><td>24</td><td>120</td></tr>
+  <tr><td>Dimension</td><td>n−1</td><td>2</td><td>3</td><td>4</td></tr>
+  <tr><td>Degree per vertex</td><td>n−1</td><td>2</td><td>3</td><td>4</td></tr>
+  <tr><td>Total edges</td><td>n!(n−1)/2</td><td>6</td><td>36</td><td>240</td></tr>
+  <tr><td>Hyperplane</td><td>Σxᵢ = n(n+1)/2</td><td>x+y+z=6</td><td>Σ=10</td><td>Σ=15</td></tr>
+</table></div>
+
+<div class="block note">
+  <span class="lbl">Edge rule</span>
+  Two vertices σ and π are joined by an edge if and only if they differ by exactly one <strong>adjacent transposition</strong> — swapping two elements in positions i and i+1. This means their Kendall tau distance equals 1. The graph distance on Πₙ equals the Kendall tau distance.
+</div>
+
+<h4>Π₂, Π₃, Π₄</h4>
+<ul class="L">
+  <li><strong>Π₂:</strong> A single line segment between (1,2) and (2,1).</li>
+  <li><strong>Π₃:</strong> A regular hexagon in 2D (after projecting onto the plane x+y+z=6). Six vertices are the 6 permutations of (1,2,3); adjacent vertices differ by one adjacent transposition.</li>
+  <li><strong>Π₄:</strong> A truncated octahedron in 3D — 24 vertices, 36 edges, 14 faces (8 hexagonal + 6 square).</li>
+</ul>
+
+<h4>Π₃ — The Hexagon (Correct Layout)</h4>
+<p>The hexagon cycle, going around in order, with each edge corresponding to one adjacent transposition:</p>
+
+<div style="display:flex;justify-content:center;margin:1.5rem 0">
+<svg width="340" height="320" viewBox="0 0 340 320">
+  <!-- Hexagon edges, cycle: (1,2,3)-(1,3,2)-(2,3,1)-(3,2,1)-(3,1,2)-(2,1,3)-(1,2,3) -->
+  <!-- Vertices at angles: (1,2,3)=240°, (1,3,2)=180°, (2,3,1)=120°, (3,2,1)=60°, (3,1,2)=0°, (2,1,3)=300° -->
+  <!-- Center (170,160), radius 110 -->
+  <!-- (1,2,3): 240° -> (170+110*cos(240),160-110*sin(240)) = (170-55, 160+95.3) = (115,255) -->
+  <!-- (1,3,2): 180° -> (170-110, 160) = (60,160) -->
+  <!-- (2,3,1): 120° -> (170-55, 160-95.3) = (115,65) -->
+  <!-- (3,2,1): 60°  -> (170+55, 160-95.3) = (225,65) -->
+  <!-- (3,1,2): 0°   -> (170+110, 160) = (280,160) -->
+  <!-- (2,1,3): 300° -> (170+55, 160+95.3) = (225,255) -->
+  <defs>
+    <marker id="none" viewBox="0 0 1 1"/>
+  </defs>
+  <!-- Edges -->
+  <line x1="115" y1="255" x2="60" y2="160" stroke="#4ab8a8" stroke-width="2" opacity=".5"/>
+  <line x1="60" y1="160" x2="115" y2="65" stroke="#4ab8a8" stroke-width="2" opacity=".5"/>
+  <line x1="115" y1="65" x2="225" y2="65" stroke="#4ab8a8" stroke-width="2" opacity=".5"/>
+  <line x1="225" y1="65" x2="280" y2="160" stroke="#4ab8a8" stroke-width="2" opacity=".5"/>
+  <line x1="280" y1="160" x2="225" y2="255" stroke="#4ab8a8" stroke-width="2" opacity=".5"/>
+  <line x1="225" y1="255" x2="115" y2="255" stroke="#4ab8a8" stroke-width="2" opacity=".5"/>
+  <!-- Edge labels (transpositions) -->
+  <text x="72" y="218" font-family="monospace" font-size="10" fill="#68645c">swap(2,3)</text>
+  <text x="60" y="108" font-family="monospace" font-size="10" fill="#68645c">swap(1,2)</text>
+  <text x="148" y="55" font-family="monospace" font-size="10" fill="#68645c">swap(1,2)</text>
+  <text x="245" y="108" font-family="monospace" font-size="10" fill="#68645c">swap(2,3)</text>
+  <text x="245" y="218" font-family="monospace" font-size="10" fill="#68645c">swap(1,2)</text>
+  <text x="148" y="278" font-family="monospace" font-size="10" fill="#68645c">swap(2,3)</text>
+  <!-- Vertex circles -->
+  <circle cx="115" cy="255" r="22" fill="#1e2028" stroke="#4ab8a8" stroke-width="2"/>
+  <circle cx="60" cy="160" r="22" fill="#1e2028" stroke="#4ab8a8" stroke-width="2"/>
+  <circle cx="115" cy="65" r="22" fill="#1e2028" stroke="#4ab8a8" stroke-width="2"/>
+  <circle cx="225" cy="65" r="22" fill="#1e2028" stroke="#4ab8a8" stroke-width="2"/>
+  <circle cx="280" cy="160" r="22" fill="#1e2028" stroke="#4ab8a8" stroke-width="2"/>
+  <circle cx="225" cy="255" r="22" fill="#1e2028" stroke="#4ab8a8" stroke-width="2"/>
+  <!-- Vertex labels -->
+  <text x="115" y="259" font-family="monospace" font-size="13" fill="#f0c060" text-anchor="middle" dominant-baseline="middle">123</text>
+  <text x="60" y="164" font-family="monospace" font-size="13" fill="#f0c060" text-anchor="middle" dominant-baseline="middle">132</text>
+  <text x="115" y="69" font-family="monospace" font-size="13" fill="#f0c060" text-anchor="middle" dominant-baseline="middle">231</text>
+  <text x="225" y="69" font-family="monospace" font-size="13" fill="#f0c060" text-anchor="middle" dominant-baseline="middle">321</text>
+  <text x="280" y="164" font-family="monospace" font-size="13" fill="#f0c060" text-anchor="middle" dominant-baseline="middle">312</text>
+  <text x="225" y="259" font-family="monospace" font-size="13" fill="#f0c060" text-anchor="middle" dominant-baseline="middle">213</text>
+</svg>
+</div>
+<p style="text-align:center;font-family:var(--sans);font-size:11px;color:var(--ink3);margin-top:-1rem">Permutahedron Π₃. All 6 edges have Kendall tau distance = 1. Each edge corresponds to an adjacent transposition.</p>
+
+<h3 id="lin-ext-convex">Linear Extensions as a Connected Subgraph</h3>
+
+<div class="block thm">
+  <span class="lbl">Key Theorem — Linear Extensions form a Connected Subgraph</span>
+  If P is a poset on {1,…,n}, the linear extensions of P correspond to a subset of Πₙ's vertices forming a <strong>connected subgraph</strong> under adjacent-transposition edges.
+  <br><br>
+  The reason: if σ is a linear extension and σ(i) and σ(i+1) are <strong>incomparable</strong> in P, then swapping them gives another linear extension. This is the "swap adjacent incomparable elements" lemma — it says the extension set is closed under certain edges of Πₙ. Any two extensions can be connected by a sequence of such swaps, giving connectedness.
+</div>
+
+<h4>Visualizing on Π₃ — Two Contrasting Examples</h4>
+
+<div class="hex-pair">
+
+<div class="hex-fig">
+  <div class="htitle" style="color:var(--green2)">✓ Valid Extension Set — Convex Connected Subgraph</div>
+  <svg width="240" height="230" viewBox="0 0 240 230">
+    <!-- All 6 edges (dim) -->
+    <line x1="80" y1="185" x2="30" y2="115" stroke="#2e3040" stroke-width="2"/>
+    <line x1="30" y1="115" x2="80" y2="45" stroke="#4ab8a8" stroke-width="2.5"/>
+    <line x1="80" y1="45" x2="160" y2="45" stroke="#4ab8a8" stroke-width="2.5"/>
+    <line x1="160" y1="45" x2="210" y2="115" stroke="#2e3040" stroke-width="2"/>
+    <line x1="210" y1="115" x2="160" y2="185" stroke="#2e3040" stroke-width="2"/>
+    <line x1="160" y1="185" x2="80" y2="185" stroke="#4ab8a8" stroke-width="2.5"/>
+    <!-- Highlighted vertices (extensions of {1<3}) -->
+    <circle cx="80" cy="185" r="18" fill="#1a3a2a" stroke="#7ac88a" stroke-width="2.5"/>
+    <circle cx="30" cy="115" r="18" fill="#1a3a2a" stroke="#7ac88a" stroke-width="2.5"/>
+    <circle cx="80" cy="45" r="18" fill="#1a3a2a" stroke="#7ac88a" stroke-width="2.5"/>
+    <!-- Dim vertices -->
+    <circle cx="160" cy="45" r="18" fill="#1e2028" stroke="#2e3040" stroke-width="1.5"/>
+    <circle cx="210" cy="115" r="18" fill="#1e2028" stroke="#2e3040" stroke-width="1.5"/>
+    <circle cx="160" cy="185" r="18" fill="#1e2028" stroke="#2e3040" stroke-width="1.5"/>
+    <!-- Labels -->
+    <text x="80" y="189" font-family="monospace" font-size="11" fill="#7ac88a" text-anchor="middle" dominant-baseline="middle">123</text>
+    <text x="30" y="119" font-family="monospace" font-size="11" fill="#7ac88a" text-anchor="middle" dominant-baseline="middle">132</text>
+    <text x="80" y="49" font-family="monospace" font-size="11" fill="#7ac88a" text-anchor="middle" dominant-baseline="middle">231</text>
+    <text x="160" y="49" font-family="monospace" font-size="11" fill="#68645c" text-anchor="middle" dominant-baseline="middle">321</text>
+    <text x="210" y="119" font-family="monospace" font-size="11" fill="#68645c" text-anchor="middle" dominant-baseline="middle">312</text>
+    <text x="160" y="189" font-family="monospace" font-size="11" fill="#68645c" text-anchor="middle" dominant-baseline="middle">213</text>
+  </svg>
+  <div class="hcap">Poset {1&lt;3} on {1,2,3}.<br>Extensions: {123, 132, 231} — three consecutive vertices. Connected subgraph, no gaps.</div>
+</div>
+
+<div class="hex-fig">
+  <div class="htitle" style="color:var(--rose2)">✗ Not a Valid Extension Set — Disconnected</div>
+  <svg width="240" height="230" viewBox="0 0 240 230">
+    <!-- All 6 edges (dim) -->
+    <line x1="80" y1="185" x2="30" y2="115" stroke="#2e3040" stroke-width="2"/>
+    <line x1="30" y1="115" x2="80" y2="45" stroke="#2e3040" stroke-width="2"/>
+    <line x1="80" y1="45" x2="160" y2="45" stroke="#2e3040" stroke-width="2"/>
+    <line x1="160" y1="45" x2="210" y2="115" stroke="#2e3040" stroke-width="2"/>
+    <line x1="210" y1="115" x2="160" y2="185" stroke="#2e3040" stroke-width="2"/>
+    <line x1="160" y1="185" x2="80" y2="185" stroke="#2e3040" stroke-width="2"/>
+    <!-- Highlighted vertices: {123, 231} — NOT adjacent, gap at 132 -->
+    <circle cx="80" cy="185" r="18" fill="#3a1a1a" stroke="#e08090" stroke-width="2.5"/>
+    <circle cx="80" cy="45" r="18" fill="#3a1a1a" stroke="#e08090" stroke-width="2.5"/>
+    <!-- Gap vertex (would need to be included) -->
+    <circle cx="30" cy="115" r="18" fill="#1e2028" stroke="#d4a843" stroke-width="2" stroke-dasharray="4,2"/>
+    <!-- Dim vertices -->
+    <circle cx="160" cy="45" r="18" fill="#1e2028" stroke="#2e3040" stroke-width="1.5"/>
+    <circle cx="210" cy="115" r="18" fill="#1e2028" stroke="#2e3040" stroke-width="1.5"/>
+    <circle cx="160" cy="185" r="18" fill="#1e2028" stroke="#2e3040" stroke-width="1.5"/>
+    <!-- Labels -->
+    <text x="80" y="189" font-family="monospace" font-size="11" fill="#e08090" text-anchor="middle" dominant-baseline="middle">123</text>
+    <text x="30" y="119" font-family="monospace" font-size="10" fill="#d4a843" text-anchor="middle" dominant-baseline="middle">132?</text>
+    <text x="80" y="49" font-family="monospace" font-size="11" fill="#e08090" text-anchor="middle" dominant-baseline="middle">231</text>
+    <text x="160" y="49" font-family="monospace" font-size="11" fill="#68645c" text-anchor="middle" dominant-baseline="middle">321</text>
+    <text x="210" y="119" font-family="monospace" font-size="11" fill="#68645c" text-anchor="middle" dominant-baseline="middle">312</text>
+    <text x="160" y="189" font-family="monospace" font-size="11" fill="#68645c" text-anchor="middle" dominant-baseline="middle">213</text>
+    <!-- Gap arrow annotation -->
+    <text x="120" y="140" font-family="sans-serif" font-size="9" fill="#d4a843" text-anchor="middle">gap!</text>
+    <line x1="42" y1="132" x2="65" y2="160" stroke="#d4a843" stroke-width="1" stroke-dasharray="3,2"/>
+  </svg>
+  <div class="hcap">Set {123, 231}: tau=2, not adjacent.<br>132 lies on the shortest path between them but is missing → disconnected → cannot be any poset's extensions.</div>
+</div>
+
+</div><!-- end hex-pair -->
+
+<!-- ══ 6. ORDER & CHAIN POLYTOPES ══ -->
+<h2 id="polytopes"><span class="sn">06</span>Order Polytope and Chain Polytope</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Order Polytope O(P) (Stanley 1986)</span>
+  For a poset P on {x₁,…,xₙ}, the <strong>order polytope</strong> is:
+  <div class="mb">O(P)  =  {f : P → [0,1]  :  x ≤ y in P ⟹ f(x) ≤ f(y)}</div>
+  That is, order-preserving functions from P to [0,1]. It lives in [0,1]ⁿ ⊂ ℝⁿ.
+</div>
+
+<div class="block def">
+  <span class="lbl">Definition — Chain Polytope C(P) (Stanley 1986)</span>
+  The <strong>chain polytope</strong> is:
+  <div class="mb">C(P)  =  {f : P → [0,1]  :  x &lt; y in P ⟹ f(x) + f(y) ≤ 1}</div>
+  Functions where comparable elements can't both be large.
+</div>
+
+<div class="block ex">
+  <span class="lbl">Example — Poset {a &lt; b} on two elements</span>
+  <p>Both polytopes live in [0,1]² with coordinates (f(a), f(b)).</p>
+  <ul class="L">
+    <li><strong>O(P):</strong> constraint f(a) ≤ f(b). This is the triangle with vertices (0,0), (0,1), (1,1) — the upper triangle of the unit square.</li>
+    <li><strong>C(P):</strong> constraint f(a) + f(b) ≤ 1. This is the triangle with vertices (0,0), (1,0), (0,1) — the lower-left triangle.</li>
+  </ul>
+
+  <div style="display:flex;gap:2.5rem;justify-content:center;margin:1.2rem 0;flex-wrap:wrap">
+  <div style="text-align:center">
+  <svg width="160" height="160" viewBox="0 0 160 160">
+    <!-- Unit square -->
+    <rect x="20" y="20" width="110" height="110" fill="none" stroke="#2e3040" stroke-width="1.5"/>
+    <!-- O(P) triangle: (0,0)->(0,1)->(1,1) i.e. in SVG: (20,130)->(20,20)->(130,20) -->
+    <polygon points="20,130 20,20 130,20" fill="rgba(74,184,168,0.2)" stroke="#4ab8a8" stroke-width="2"/>
+    <!-- Axes labels -->
+    <text x="75" y="152" font-family="sans-serif" font-size="11" fill="#a8a49c" text-anchor="middle">f(a)</text>
+    <text x="8" y="78" font-family="sans-serif" font-size="11" fill="#a8a49c" text-anchor="middle" transform="rotate(-90,8,78)">f(b)</text>
+    <!-- Corner labels -->
+    <text x="16" y="145" font-family="monospace" font-size="9" fill="#68645c">(0,0)</text>
+    <text x="16" y="18" font-family="monospace" font-size="9" fill="#68645c">(0,1)</text>
+    <text x="118" y="18" font-family="monospace" font-size="9" fill="#68645c">(1,1)</text>
+    <!-- Constraint label -->
+    <text x="55" y="85" font-family="sans-serif" font-size="10" fill="#4ab8a8" transform="rotate(-45,55,85)">f(a) ≤ f(b)</text>
+    <!-- Title -->
+    <text x="75" y="12" font-family="sans-serif" font-size="10" fill="#6dd4c4" text-anchor="middle" font-weight="600">O(P)</text>
+  </svg>
+  <div style="font-family:var(--sans);font-size:11px;color:var(--ink3);margin-top:.3rem">Order polytope: upper triangle</div>
+  </div>
+
+  <div style="text-align:center">
+  <svg width="160" height="160" viewBox="0 0 160 160">
+    <!-- Unit square -->
+    <rect x="20" y="20" width="110" height="110" fill="none" stroke="#2e3040" stroke-width="1.5"/>
+    <!-- C(P) triangle: (0,0)->(1,0)->(0,1) i.e. (20,130)->(130,130)->(20,20) -->
+    <polygon points="20,130 130,130 20,20" fill="rgba(212,168,67,0.2)" stroke="#d4a843" stroke-width="2"/>
+    <!-- Axes labels -->
+    <text x="75" y="152" font-family="sans-serif" font-size="11" fill="#a8a49c" text-anchor="middle">f(a)</text>
+    <text x="8" y="78" font-family="sans-serif" font-size="11" fill="#a8a49c" text-anchor="middle" transform="rotate(-90,8,78)">f(b)</text>
+    <!-- Corner labels -->
+    <text x="16" y="145" font-family="monospace" font-size="9" fill="#68645c">(0,0)</text>
+    <text x="118" y="145" font-family="monospace" font-size="9" fill="#68645c">(1,0)</text>
+    <text x="16" y="18" font-family="monospace" font-size="9" fill="#68645c">(0,1)</text>
+    <!-- Constraint label -->
+    <text x="72" y="105" font-family="sans-serif" font-size="10" fill="#d4a843" transform="rotate(-45,72,105)">f(a)+f(b)≤1</text>
+    <!-- Title -->
+    <text x="75" y="12" font-family="sans-serif" font-size="10" fill="#f0c060" text-anchor="middle" font-weight="600">C(P)</text>
+  </svg>
+  <div style="font-family:var(--sans);font-size:11px;color:var(--ink3);margin-top:.3rem">Chain polytope: lower triangle</div>
+  </div>
+  </div>
+
+  <p>Both triangles have area 1/2. Both live in the same unit square but are <em>different</em> objects — O(P) contains the top-right corner (1,1); C(P) contains the bottom-right corner (1,0).</p>
+</div>
+
+<div class="block thm">
+  <span class="lbl">Key Facts</span>
+  <ul class="L">
+    <li>The vertices of O(P) are the 0-1 vectors corresponding to <strong>upper sets (filters)</strong> of P: f(x) = 1 iff x is in the upper set.</li>
+    <li>The vertices of C(P) are the 0-1 vectors corresponding to <strong>antichains</strong> of P: f(x) = 1 iff x is in the antichain.</li>
+    <li>Both polytopes have the same number of vertices (= number of antichains of P = number of upper sets of P, by the antichain-filter bijection).</li>
+    <li>Both polytopes have the same <strong>volume</strong>: <span class="m">Vol(O(P)) = Vol(C(P)) = e(P) / n!</span>, where e(P) is the number of linear extensions.</li>
+  </ul>
+</div>
+
+<!-- ══ 7. 1/3–2/3 CONJECTURE ══ -->
+<h2 id="conjecture"><span class="sn">07</span>The 1/3–2/3 Conjecture</h2>
+
+<div class="block open">
+  <span class="lbl">Famous Open Problem — Kislitsyn 1968</span>
+  <p>This is one of the most famous open problems in poset combinatorics, connecting linear extensions to the efficiency of sorting.</p>
+</div>
+
+<div class="block def">
+  <span class="lbl">Definition — Balance Constant δ(P)</span>
+  For a finite poset P that is not totally ordered, and for two elements x, y, let <span class="m">Pr[x &lt;ₑ y]</span> denote the probability that x comes before y in a uniformly random linear extension e of P.
+  <br><br>
+  A pair (x,y) contributes only when <span class="m">x ∥ y</span> (incomparable). Define:
+  <div class="mb">δ(P)  =  max_{x ≠ y incomparable}  min(Pr[x &lt;ₑ y],  Pr[y &lt;ₑ x])</div>
+  <strong>How to read it:</strong> For each incomparable pair, take the smaller of the two probabilities (always ≤ 1/2, equals 1/2 when perfectly balanced). Then take the maximum over all such pairs. So δ(P) answers: "among all incomparable pairs, how close to 50/50 does the most balanced pair get?"
+</div>
+
+<div class="block thm">
+  <span class="lbl">The 1/3–2/3 Conjecture</span>
+  For every finite poset P that is <strong>not a total order</strong>:
+  <div class="mb">δ(P)  ≥  1/3</div>
+  That is, there always exists an incomparable pair (x,y) such that between 1/3 and 2/3 of all linear extensions place x before y.
+</div>
+
+<div class="block note">
+  <span class="lbl">Current Status</span>
+  <ul class="L">
+    <li><strong>Conjectured:</strong> Kislitsyn (1968), independently Fredman (1976) and Linial (1984).</li>
+    <li><strong>Best known lower bound:</strong> Brightwell–Felsner–Trotter (1995) proved <span class="m">δ(P) ≥ (5−√5)/10 ≈ 0.276</span>.</li>
+    <li><strong>Still open</strong> in full generality as of 2026.</li>
+    <li><strong>Known cases:</strong> True for posets of width 2 (Linial 1984), and several other special families.</li>
+  </ul>
+</div>
+
+<div class="block ex">
+  <span class="lbl">Tight Example — δ(P) = 1/3</span>
+  <p>Consider the poset <span class="m">P = {a &lt; b} ∪ {c}</span> on three elements: a 2-chain plus one incomparable element.</p>
+  <p>The three linear extensions are: <span class="m">(a,b,c)</span>, <span class="m">(a,c,b)</span>, <span class="m">(c,a,b)</span>. (a must come before b; c can go anywhere.)</p>
+  <p>The only incomparable pairs are (a,c) and (b,c):</p>
+  <ul class="L">
+    <li>Pr[a &lt;ₑ c] = 2/3 (in 2 of 3 extensions: (a,b,c) and (a,c,b)), Pr[c &lt;ₑ a] = 1/3. So min = <strong>1/3</strong>.</li>
+    <li>Pr[b &lt;ₑ c] = 1/3 (only in (a,b,c)), Pr[c &lt;ₑ b] = 2/3. So min = <strong>1/3</strong>.</li>
+  </ul>
+  <p>δ(P) = max(1/3, 1/3) = <strong>1/3</strong>. This shows the bound 1/3 would be tight if the conjecture is true.</p>
+</div>
+
+<div class="block thm">
+  <span class="lbl">Connection to Sorting</span>
+  If the conjecture holds (δ(P) ≥ 1/3 always), then when sorting elements partially ordered by P, we can always find a comparison that eliminates at least 1/3 of the remaining linear extensions:
+  <div class="mb">Number of comparisons needed  ≤  log_{3/2}(e(P))  ≈  1.71 · log₂(e(P))</div>
+  This is within a constant factor of the information-theoretic lower bound log₂(e(P)), making the algorithm <strong>optimally efficient up to a constant</strong>.
+</div>
+
+<hr class="divider">
+
+<!-- ══ 8. PRACTICE ══ -->
+<h2 id="practice"><span class="sn">08</span>Try It Yourself</h2>
+
+<div class="practice-header">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+  Practice Problems — Week 5
+</div>
+<div class="practice-wrap">
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q1</span><span>List all convex subsets of the antichain on 3 elements {a, b, c}.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Key insight:</strong> In an antichain, all elements are incomparable. No z satisfies x ≤ z ≤ y for any distinct x, y (since x ∥ y, neither x ≤ y nor y ≤ x holds). So the condition "x,y ∈ C and x ≤ z ≤ y implies z ∈ C" is vacuously true for every subset.</div>
+  <p>Every subset of the antichain is convex. There are 2³ = 8 subsets:</p>
+  <p>∅, {a}, {b}, {c}, {a,b}, {a,c}, {b,c}, {a,b,c}.</p>
+  <p><span class="ans-box">All 8 subsets are convex.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q2</span><span>List all convex subsets of the V-poset a &lt; b, a &lt; c.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Identify betweenness:</strong> The relations are a&lt;b, a&lt;c (and b∥c). What can be "between" two elements?</div>
+  <ul>
+    <li>Between a and b: only elements z with a≤z≤b. Since a⋖b (cover), nothing strictly between them.</li>
+    <li>Between a and c: similarly nothing strictly between.</li>
+    <li>Between b and c: b∥c, so the condition is vacuous — nothing can satisfy b≤z≤c.</li>
+  </ul>
+  <div class="step">Since all covers are direct (no intermediate elements) and b∥c, the condition is vacuously satisfied for every subset. All 2³ = 8 subsets are convex.</div>
+  <p><span class="ans-box">All 8 subsets are convex: ∅, {a},{b},{c},{a,b},{a,c},{b,c},{a,b,c}.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q3</span><span>Find a counterexample showing the union of two convex subsets need not be convex.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Use a chain.</strong> In the chain 1&lt;2&lt;3&lt;4, convex subsets are exactly contiguous intervals. Take:</div>
+  <ul>
+    <li>C₁ = {1} — convex (single element, trivially).</li>
+    <li>C₂ = {3} — convex (single element, trivially).</li>
+    <li>C₁ ∪ C₂ = {1, 3} — is this convex? Element 2 satisfies 1 ≤ 2 ≤ 3 but 2 ∉ {1,3}.</li>
+  </ul>
+  <p><span class="ans-box">Counterexample: C₁={1}, C₂={3} in chain 1&lt;2&lt;3. Both convex, but {1,3} is NOT convex.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q4</span><span>Prove: the intersection of two convex subsets of P is convex.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Setup:</strong> Let C₁, C₂ ⊆ P be convex. Let C = C₁ ∩ C₂. We need to show: if x, y ∈ C and x ≤ z ≤ y, then z ∈ C.</div>
+  <div class="step"><strong>Proof:</strong> Suppose x, y ∈ C = C₁ ∩ C₂ and z ∈ P with x ≤ z ≤ y.
+  <br>Since x, y ∈ C₁ and C₁ is convex: z ∈ C₁.
+  <br>Since x, y ∈ C₂ and C₂ is convex: z ∈ C₂.
+  <br>Therefore z ∈ C₁ ∩ C₂ = C. ∎</div>
+  <p><span class="ans-box">Proof complete. The key step: z lands in both C₁ and C₂ independently, so it's in their intersection.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q5</span><span>How many vertices and edges does Π₅ have? What shape is Π₄?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Π₅:</strong> Vertices = 5! = 120. Edges = 5! × (5−1)/2 = 120 × 2 = 240.</div>
+  <div class="step"><strong>Π₄:</strong> A <strong>truncated octahedron</strong> — a 3D solid with 24 vertices, 36 edges, and 14 faces (8 regular hexagons + 6 squares).</div>
+  <p><span class="ans-box">Π₅: 120 vertices, 240 edges. Π₄: truncated octahedron (24v, 36e, 14f).</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q6</span><span>For the diamond poset (a&lt;b, a&lt;c, b&lt;d, c&lt;d with b∥c), locate its 2 linear extensions as vertices of Π₄ and verify they are connected by an edge.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Find extensions:</strong> Elements {a,b,c,d} with a first (minimum) and d last (maximum), b and c in either order. Extensions: (a,b,c,d) and (a,c,b,d).</div>
+  <div class="step"><strong>As permutations on {1,2,3,4}:</strong> Label a=1,b=2,c=3,d=4. Extensions: (1,2,3,4) and (1,3,2,4).</div>
+  <div class="step"><strong>Compute Kendall tau:</strong> The only disagreeing pair is (2,3): in (1,2,3,4) we have 2 before 3; in (1,3,2,4) we have 3 before 2. One disagreement → tau = 1.</div>
+  <p><span class="ans-box">Extensions: (1,2,3,4) and (1,3,2,4). tau = 1 → connected by an edge in Π₄. ✓ (b and c are incomparable in the diamond, so swapping them gives another extension.)</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q7</span><span>Verify that the 16 labelling counts sum to 219 by grouping them.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>By number of cover edges:</strong></div>
+  <ul>
+    <li>0 edges: 1 shape → 1 labelling. Subtotal: 1.</li>
+    <li>1 edge: 1 shape → 12 labellings. Subtotal: 12.</li>
+    <li>2 edges: 4 shapes → 12+24+12+12 = 60. Subtotal: 60.</li>
+    <li>3 edges: 8 shapes → 4+24+12+24+24+12+24+4 = 128. Subtotal: 128.</li>
+    <li>4 edges: 2 shapes → 12+6 = 18. Subtotal: 18.</li>
+  </ul>
+  <p>Total: 1 + 12 + 60 + 128 + 18 = <strong>219</strong> ✓</p>
+  <p><span class="ans-box">1 + 12 + 60 + 128 + 18 = 219 ✓</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q8</span><span>In the 1/3–2/3 conjecture context: for the antichain P = {a, b} (two incomparable elements), what is δ(P)?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Linear extensions of {a∥b}:</strong> Both orderings are valid — (a,b) and (b,a). So e(P) = 2.</div>
+  <div class="step"><strong>Compute probabilities:</strong> Pr[a &lt;ₑ b] = 1/2 (exactly one of two extensions has a before b). Pr[b &lt;ₑ a] = 1/2.</div>
+  <div class="step"><strong>min(1/2, 1/2) = 1/2.</strong> The only incomparable pair (a,b) gives a perfectly balanced 50/50 split.</div>
+  <p>δ(P) = 1/2 ≥ 1/3. The conjecture holds here (trivially, since this is the most balanced case possible).</p>
+  <p><span class="ans-box">δ({a∥b}) = 1/2. The 2-element antichain is perfectly balanced.</span></p>
+</div>
+</div>
+
+</div><!-- end practice-wrap -->
+
+<hr class="divider">
+
+<!-- ══ 9. HOMEWORK ══ -->
+<h2 id="hw"><span class="sn">09</span>Homework</h2>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Wednesday April 29</span>
+  <p><strong>Problem:</strong> Draw the Hasse diagram for each of the 16 isomorphism classes of 4-element posets, and for each indicate the number of labellings = 4!/|Aut|. The sum should be 219.</p>
+  <p><strong>All 16 shapes with counts:</strong></p>
+  <div class="tbl-wrap"><table>
+    <tr><th>#</th><th>Shape</th><th>|Aut|</th><th>Labellings</th></tr>
+    <tr><td>1</td><td>Antichain (4 isolated)</td><td>24</td><td>1</td></tr>
+    <tr><td>2</td><td>One 2-chain + 2 isolated</td><td>2</td><td>12</td></tr>
+    <tr><td>3</td><td>V-shape + 1 isolated</td><td>2</td><td>12</td></tr>
+    <tr><td>4</td><td>3-chain + 1 isolated</td><td>1</td><td>24</td></tr>
+    <tr><td>5</td><td>Λ-shape + 1 isolated</td><td>2</td><td>12</td></tr>
+    <tr><td>6</td><td>Two disjoint 2-chains (2+2)</td><td>2</td><td>12</td></tr>
+    <tr><td>7</td><td>Star-out: one element below three</td><td>6</td><td>4</td></tr>
+    <tr><td>8</td><td>N-shape: a&lt;b, a&lt;c, b&lt;d</td><td>1</td><td>24</td></tr>
+    <tr><td>9</td><td>V-tower: d&lt;a, a&lt;b, a&lt;c</td><td>2</td><td>12</td></tr>
+    <tr><td>10</td><td>Skew (Z): a&lt;b, a&lt;c, d&lt;b</td><td>1</td><td>24</td></tr>
+    <tr><td>11</td><td>4-chain: a&lt;b&lt;c&lt;d</td><td>1</td><td>24</td></tr>
+    <tr><td>12</td><td>Y-mid: a&lt;b&lt;c, d&lt;b</td><td>2</td><td>12</td></tr>
+    <tr><td>13</td><td>Λ-top: a&lt;b&lt;c, d&lt;c</td><td>1</td><td>24</td></tr>
+    <tr><td>14</td><td>Star-in: three elements above one</td><td>6</td><td>4</td></tr>
+    <tr><td>15</td><td>Diamond: a&lt;b, a&lt;c, b&lt;d, c&lt;d</td><td>2</td><td>12</td></tr>
+    <tr><td>16</td><td>W-shape: a&lt;b, a&lt;c, d&lt;b, d&lt;c</td><td>4</td><td>6</td></tr>
+  </table></div>
+  <p><strong>Sum:</strong> 1+12+12+24+12+12+4+24+12+24+24+12+24+4+12+6 = <strong>219 ✓</strong></p>
+</div>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Friday May 1</span>
+  <p><strong>Problem:</strong> Show that P is graded with height h iff it can be partitioned into levels L₁,…,Lₕ with: minimal elements in L₁, maximal in Lₕ, all covers between consecutive levels.</p>
+  <p><strong>Proof:</strong> See Section 3 above for the full two-direction proof. Key points:</p>
+  <ul class="L">
+    <li>(⟹) Use the rank function: define Lₖ = {x : rk(x) = k−1}. The rank axioms give exactly the three required properties.</li>
+    <li>(⟸) Use the level partition: define rk(x) = k−1 for x ∈ Lₖ. The level properties imply this is a valid rank function.</li>
+  </ul>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 10. CHEAT SHEET ══ -->
+<h2 id="cheat"><span class="sn">10</span>One-Page Cheat Sheet</h2>
+<div class="cheat-sheet">
+  <div class="cheat-title">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Week 5 Cheat Sheet
+  </div>
+  <div class="cheat-grid">
+    <div class="cheat-section">
+      <h5>16 Poset Shapes on 4 Elements</h5>
+      <ul>
+        <li>Total labelled posets = 219 = Σ 4!/|Aut(P)|</li>
+        <li>Unique labellings: antichain(1), stars(4), W(6)</li>
+        <li>Max labellings (24): asymmetric shapes, |Aut|=1</li>
+        <li>Sum check: 1+12+12+24+12+12+4+24+12+24+24+12+24+4+12+6</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Graded ↔ Level Partition</h5>
+      <ul>
+        <li>Graded iff: levels L₁,…,Lₕ with minimals in L₁, maximals in Lₕ, covers between consecutive levels</li>
+        <li>Proof (⟹): rk(x)=k−1 for x∈Lₖ</li>
+        <li>Proof (⟸): Lₖ = {x: rk(x)=k−1}</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Convex Subsets</h5>
+      <ul>
+        <li>C ⊆ P convex: x,y∈C, x≤z≤y ⟹ z∈C</li>
+        <li>Antichain: every subset convex (vacuous)</li>
+        <li>Chain of length n: C(n+1,2)+1 convex subsets</li>
+        <li>Closed under ∩, NOT under ∪</li>
+      </ul>
+    </div>
+    <div class="cheat-section">
+      <h5>Permutahedron Πₙ</h5>
+      <ul>
+        <li>Πₙ = conv{σ(1,…,n) : σ ∈ Sₙ}</li>
+        <li>n! vertices; dimension n−1; degree n−1</li>
+        <li>Edges = adjacent transpositions (tau=1)</li>
+        <li>Total edges = n!(n−1)/2</li>
+        <li>Π₂=segment, Π₃=hexagon, Π₄=truncated octahedron</li>
+        <li>Graph distance = Kendall tau</li>
+        <li>Correct Π₃ cycle: 123-132-231-321-312-213</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Linear Extensions &amp; Polytopes</h5>
+      <ul>
+        <li>Extensions of P → connected subgraph of Πₙ</li>
+        <li>Swap adjacent incomparable elements → another extension</li>
+        <li>O(P) = {f:P→[0,1] : order-preserving}</li>
+        <li>C(P) = {f:P→[0,1] : comparable pair sums ≤1}</li>
+        <li>Vol(O(P)) = Vol(C(P)) = e(P)/n!</li>
+      </ul>
+      <h5 style="margin-top:.8rem">1/3–2/3 Conjecture</h5>
+      <ul>
+        <li>δ(P) = max_{x∥y} min(Pr[x&lt;y], Pr[y&lt;x])</li>
+        <li>Conjecture: δ(P) ≥ 1/3 for all non-total-order P</li>
+        <li>Best known: (5−√5)/10 ≈ 0.276 (BFT 1995)</li>
+        <li>Tight example: {a&lt;b}∪{c} gives δ=1/3</li>
+        <li>Sorting implication: O(log_{3/2} e(P)) comparisons</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Math 100 · Dartmouth College · Spring 2026 · Week 5 — Poset Shapes, Permutahedron &amp; the 1/3–2/3 Conjecture</div>
+</main>
+</div>
+<script>
+document.querySelectorAll('.pq-q').forEach(function(q){
+  q.addEventListener('click',function(){
+    var a=this.parentElement.querySelector('.pq-a');
+    var open=this.classList.toggle('open');
+    a.classList.toggle('vis',open);
+  });
+});
+var links=document.querySelectorAll('nav a');
+function setActive(){
+  var best=null;
+  document.querySelectorAll('h2[id],h3[id]').forEach(function(s){
+    if(s.getBoundingClientRect().top<120) best=s.id;
+  });
+  links.forEach(function(l){l.classList.toggle('active',l.getAttribute('href')==='#'+best);});
+}
+window.addEventListener('scroll',setActive);
+setActive();
+</script>
+</body>
+</html>
