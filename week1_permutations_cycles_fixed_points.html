@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 1 — Permutations, Cycles & Fixed Points</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0f1117;
+  --bg2:      #161820;
+  --bg3:      #1e2028;
+  --bg4:      #252730;
+  --border:   #2e3040;
+  --ink:      #e8e4dc;
+  --ink2:     #a8a49c;
+  --ink3:     #68645c;
+  --gold:     #d4a843;
+  --gold2:    #f0c060;
+  --teal:     #4ab8a8;
+  --teal2:    #6dd4c4;
+  --rose:     #c86478;
+  --rose2:    #e08090;
+  --violet:   #9878c8;
+  --violet2:  #b898e0;
+  --green:    #5a9e6a;
+  --green2:   #7ac88a;
+  --mono:     'JetBrains Mono', monospace;
+  --serif:    'Source Serif 4', Georgia, serif;
+  --display:  'Playfair Display', Georgia, serif;
+  --sans:     'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--serif);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.8;
+  font-size: 16.5px;
+}
+
+/* ── Layout ── */
+.shell { display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+nav {
+  width: 240px; min-width: 240px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto; padding: 1.6rem 0;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.nav-logo {
+  padding: 0 1.2rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+.nav-logo .course { font-family: var(--sans); font-size: 10px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase; color: var(--ink3); }
+.nav-logo .title  { font-family: var(--display); font-size: 14px; color: var(--gold); margin-top: .25rem; line-height: 1.3; }
+nav ul { list-style: none; }
+.nav-section { font-family: var(--sans); font-size: 9.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink3); padding: .9rem 1.2rem .2rem; }
+nav a { display: block; font-family: var(--sans); font-size: 12px; color: var(--ink2); text-decoration: none; padding: .3rem 1.2rem; line-height: 1.4; border-left: 2px solid transparent; transition: all .15s; }
+nav a:hover { color: var(--ink); background: var(--bg3); }
+nav a.active { color: var(--gold); border-left-color: var(--gold); background: var(--bg3); }
+
+/* ── Main ── */
+main { flex: 1; max-width: 820px; padding: 3.5rem 4rem; }
+
+/* ── Cover ── */
+.cover { margin-bottom: 3.5rem; padding-bottom: 2.5rem; border-bottom: 1px solid var(--border); }
+.week-badge { display: inline-block; font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); background: rgba(212,168,67,.12); border: 1px solid rgba(212,168,67,.3); border-radius: 3px; padding: .25rem .7rem; margin-bottom: 1rem; }
+.cover h1 { font-family: var(--display); font-size: 2.4rem; font-weight: 700; color: var(--ink); line-height: 1.15; margin-bottom: .6rem; }
+.cover h1 em { color: var(--gold); font-style: italic; }
+.cover .subtitle { font-family: var(--sans); font-size: .9rem; color: var(--ink2); font-weight: 300; letter-spacing: .02em; }
+.topics-row { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.4rem; }
+.topic-pill { font-family: var(--sans); font-size: 11px; font-weight: 500; padding: .28rem .7rem; border-radius: 20px; border: 1px solid var(--border); color: var(--ink2); }
+
+/* ── Section headers ── */
+h2 { font-family: var(--display); font-size: 1.6rem; font-weight: 600; color: var(--ink); margin: 3.5rem 0 1.2rem; scroll-margin-top: 2rem; display: flex; align-items: center; gap: .7rem; }
+h2 .sec-num { font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); background: rgba(212,168,67,.1); border: 1px solid rgba(212,168,67,.25); padding: .25rem .55rem; border-radius: 3px; flex-shrink: 0; }
+h3 { font-family: var(--sans); font-size: 1rem; font-weight: 600; color: var(--teal); margin: 2rem 0 .65rem; scroll-margin-top: 2rem; letter-spacing: .01em; }
+h4 { font-family: var(--sans); font-size: .9rem; font-weight: 600; color: var(--ink2); margin: 1.4rem 0 .4rem; }
+p { margin-bottom: .9rem; }
+
+/* ── Content blocks ── */
+.block { margin: 1.2rem 0; padding: 1rem 1.2rem; border-radius: 6px; }
+.def    { background: rgba(74,184,168,.07);  border-left: 3px solid var(--teal);   }
+.thm    { background: rgba(212,168,67,.07);  border-left: 3px solid var(--gold);   }
+.proof  { background: var(--bg3);            border-left: 3px solid var(--border); }
+.ex     { background: rgba(154,120,200,.07); border-left: 3px solid var(--violet); }
+.note   { background: var(--bg3);            border-left: 3px solid var(--border); font-size: .92rem; color: var(--ink2); }
+.hw     { background: rgba(200,100,120,.07); border-left: 3px solid var(--rose);   }
+.label  { font-family: var(--sans); font-size: 9.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; display: block; margin-bottom: .4rem; }
+.def .label    { color: var(--teal);   }
+.thm .label    { color: var(--gold);   }
+.proof .label  { color: var(--ink3);   }
+.ex .label     { color: var(--violet); }
+.hw .label     { color: var(--rose);   }
+.note .label   { color: var(--ink3);   }
+
+/* ── Math ── */
+.m { font-family: var(--mono); font-size: .83em; background: var(--bg4); color: var(--gold2); padding: .12em .38em; border-radius: 3px; white-space: nowrap; }
+.mb { display: block; font-family: var(--mono); font-size: .88em; background: var(--bg3); color: var(--teal2); padding: .65rem 1rem; border-radius: 4px; margin: .7rem 0; border: 1px solid var(--border); overflow-x: auto; white-space: pre; }
+
+/* ── Lists ── */
+ul.L, ol.L { padding-left: 1.4rem; margin: .5rem 0 .8rem; }
+ul.L li, ol.L li { margin-bottom: .35rem; }
+
+/* ── Table ── */
+.tbl-wrap { overflow-x: auto; margin: 1rem 0; }
+table { width: 100%; border-collapse: collapse; font-size: .88rem; font-family: var(--sans); }
+th { background: var(--bg3); color: var(--ink2); font-weight: 600; padding: .5rem .8rem; text-align: left; border-bottom: 1px solid var(--border); font-size: .82rem; letter-spacing: .04em; text-transform: uppercase; }
+td { padding: .42rem .8rem; border-bottom: 1px solid var(--bg3); vertical-align: top; color: var(--ink2); }
+tr:last-child td { border-bottom: none; }
+td:first-child { color: var(--ink); font-weight: 500; }
+
+/* ── Running examples container ── */
+.examples-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 1.2rem 0; }
+.ex-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+.ex-card .ex-badge { font-family: var(--sans); font-size: 9px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .5rem; display: block; }
+.ex-card.easy .ex-badge  { color: var(--green); }
+.ex-card.med  .ex-badge  { color: var(--gold);  }
+.ex-card.hard .ex-badge  { color: var(--rose);  }
+.ex-card h4 { margin: 0 0 .4rem; font-size: .85rem; color: var(--ink); }
+.ex-card p  { font-size: .83rem; color: var(--ink2); margin-bottom: 0; }
+
+/* ── Divider ── */
+.divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+/* ── Practice section ── */
+.practice-header {
+  font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: #fff; background: linear-gradient(135deg, #2a3a5e, #1e4a3a);
+  padding: .6rem 1.1rem; border-radius: 6px 6px 0 0;
+  display: flex; align-items: center; gap: .5rem;
+}
+.practice-wrap { border: 1px solid var(--border); border-radius: 0 0 6px 6px; overflow: hidden; margin-bottom: 2rem; }
+.pq { border-bottom: 1px solid var(--border); }
+.pq:last-child { border-bottom: none; }
+.pq-q {
+  font-family: var(--sans); font-size: .875rem; font-weight: 500;
+  color: var(--ink); padding: .75rem 1.1rem;
+  cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start;
+  gap: .6rem; user-select: none; transition: background .12s;
+}
+.pq-q:hover { background: var(--bg3); }
+.pq-q .qn { font-size: 9.5px; font-weight: 700; letter-spacing: .1em; color: var(--teal); min-width: 1.8rem; padding-top: .1rem; flex-shrink: 0; }
+.pq-q .arr { font-size: 11px; color: var(--ink3); transition: transform .18s; flex-shrink: 0; padding-top: .1rem; }
+.pq-q.open .arr { transform: rotate(180deg); }
+.pq-a { display: none; padding: .2rem 1.1rem .9rem; border-top: 1px dashed var(--border); background: var(--bg2); }
+.pq-a.vis { display: block; }
+.pq-a .al { font-family: var(--sans); font-size: 9.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--green2); margin-bottom: .5rem; display: block; padding-top: .55rem; }
+.pq-a p { font-size: .875rem; font-family: var(--sans); color: var(--ink2); margin-bottom: .45rem; line-height: 1.65; }
+.pq-a .m { font-size: .8em; }
+.pq-a ul, .pq-a ol { padding-left: 1.3rem; margin: .3rem 0 .45rem; font-size: .875rem; font-family: var(--sans); color: var(--ink2); }
+.pq-a li { margin-bottom: .25rem; }
+.pq-a .step { background: var(--bg3); border-left: 2px solid var(--teal); padding: .5rem .8rem; border-radius: 0 4px 4px 0; margin: .4rem 0; font-size: .85rem; font-family: var(--sans); color: var(--ink2); }
+.pq-a .step strong { color: var(--teal2); }
+.ans-box { background: rgba(90,158,106,.1); border: 1px solid rgba(90,158,106,.3); border-radius: 4px; padding: .4rem .8rem; font-family: var(--mono); font-size: .82em; color: var(--green2); margin: .4rem 0; display: inline-block; }
+
+/* ── Permutation display ── */
+.perm-display { display: inline-flex; gap: 0; font-family: var(--mono); font-size: .85em; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin: .3rem .1rem; }
+.perm-row { display: flex; flex-direction: column; }
+.perm-cell { padding: .18rem .45rem; text-align: center; background: var(--bg3); border-right: 1px solid var(--border); }
+.perm-cell:last-child { border-right: none; }
+.perm-top .perm-cell { color: var(--ink3); font-size: .78em; border-bottom: 1px solid var(--border); }
+.perm-bot .perm-cell { color: var(--gold2); }
+
+
+/* ── Home button ── */
+.home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--gold);
+  border: 1px solid rgba(212,168,67,.55);
+  border-radius: 4px;
+  padding: .42rem .78rem;
+  text-decoration: none;
+  margin-bottom: 1.3rem;
+  transition: transform .15s, background .15s;
+}
+.home-link:hover {
+  background: var(--gold2);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+.home-link.sidebar {
+  margin: .2rem 1.2rem 1rem;
+  justify-content: center;
+  color: var(--bg);
+}
+
+/* ── Footer ── */
+.footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-family: var(--sans); font-size: 11px; color: var(--ink3); }
+
+@media (max-width: 960px) { nav { display: none; } main { padding: 2rem 1.5rem; } }
+@media (max-width: 660px) { .examples-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="nav-logo">
+    <div class="course">Math 100 · Spring 2026</div>
+    <div class="title">Week 1 — Permutations, Cycles &amp; Fixed Points</div>
+  </div>
+  <a class="home-link sidebar" href="index.html">← Home</a>
+  <ul>
+    <li class="nav-section">Sections</li>
+    <li><a href="#why">1 · Why We Care</a></li>
+    <li><a href="#defs">2 · Definitions</a></li>
+    <li><a href="#examples">3 · Running Examples</a></li>
+    <li><a href="#worked">4 · Worked Examples</a></li>
+    <li><a href="#practice">5 · Try It Yourself</a></li>
+    <li class="nav-section">Key Results</li>
+    <li><a href="#long-cycle">Long Cycle Theorem</a></li>
+    <li><a href="#derangements">Derangements</a></li>
+    <li><a href="#prisoners">100 Prisoners</a></li>
+    <li class="nav-section">Homework</li>
+    <li><a href="#hw1">HW 1 — Long Cycles</a></li>
+    <li><a href="#hw2">HW 2 — Uniformity</a></li>
+  </ul>
+</nav>
+
+<!-- ══ MAIN ══ -->
+<main>
+
+<a class="home-link" href="index.html">← Back to Home</a>
+
+<!-- Cover -->
+<div class="cover">
+  <div class="week-badge">Week 1</div>
+  <h1>Permutations, Cycles<br>&amp; <em>Fixed Points</em></h1>
+  <div class="subtitle">Math 100 · Dartmouth College · Spring 2026</div>
+  <div class="topics-row">
+    <span class="topic-pill">Permutations</span>
+    <span class="topic-pill">Cycle notation</span>
+    <span class="topic-pill">Fixed points</span>
+    <span class="topic-pill">Derangements</span>
+    <span class="topic-pill">100 Prisoners</span>
+    <span class="topic-pill">Game of 13</span>
+    <span class="topic-pill">Long cycle probability</span>
+  </div>
+</div>
+
+<!-- ══ 1. WHY WE CARE ══ -->
+<h2 id="why"><span class="sec-num">01</span>Why We Care</h2>
+<p>A permutation is just a rearrangement — but when you choose one <em>uniformly at random</em>, surprisingly deep structure emerges. This week we build the language and intuition to answer questions like:</p>
+<ul class="L">
+  <li>If 100 prisoners each follow a cycle-tracing strategy, what is the probability they all survive?</li>
+  <li>If you shuffle a deck and deal cards calling out 1, 2, 3…, what is the probability you <em>never</em> match?</li>
+  <li>How many elements, on average, does a random permutation leave in place?</li>
+</ul>
+<p>The answers — ln 2, 1/e, and 1 respectively — are elegant and non-obvious. Understanding <em>why</em> they're true is the goal of this week.</p>
+
+<div class="block note">
+  <span class="label">Course Context</span>
+  These results connect directly to the two homework problems: HW1 asks you to derive the ln 2 limit, and HW2 asks you to prove the uniformity theorem that makes the prisoners' strategy analysis valid.
+</div>
+
+<!-- ══ 2. DEFINITIONS ══ -->
+<h2 id="defs"><span class="sec-num">02</span>Definitions</h2>
+
+<h3>Permutation</h3>
+<div class="block def">
+  <span class="label">Definition — Permutation</span>
+  A <strong>permutation</strong> of the set <span class="m">{1, 2, …, n}</span> is a bijection <span class="m">σ : {1,…,n} → {1,…,n}</span>. In other words, σ rearranges the elements — every element appears exactly once as an input and exactly once as an output.
+  <br><br>
+  The set of all permutations of <span class="m">{1,…,n}</span> is called the <strong>symmetric group</strong> <span class="m">Sₙ</span> and has exactly <span class="m">n!</span> elements.
+</div>
+
+<h4>Two ways to write a permutation</h4>
+<p><strong>One-line notation:</strong> simply list the outputs in order: <span class="m">σ = σ(1) σ(2) … σ(n)</span>. For example, <span class="m">σ = 2 1 4 3</span> means <span class="m">σ(1)=2, σ(2)=1, σ(3)=4, σ(4)=3</span>.</p>
+<p><strong>Two-line notation:</strong> write inputs on top, outputs below:</p>
+<div class="perm-display">
+  <div class="perm-row perm-top"><div class="perm-cell">1</div></div>
+  <div class="perm-row perm-top"><div class="perm-cell">2</div></div>
+  <div class="perm-row perm-top"><div class="perm-cell">3</div></div>
+  <div class="perm-row perm-top"><div class="perm-cell">4</div></div>
+</div>
+<span style="font-family:var(--mono);font-size:.85em;color:var(--ink3);margin:0 .3rem">↕</span>
+<div class="perm-display">
+  <div class="perm-row perm-bot"><div class="perm-cell">2</div></div>
+  <div class="perm-row perm-bot"><div class="perm-cell">1</div></div>
+  <div class="perm-row perm-bot"><div class="perm-cell">4</div></div>
+  <div class="perm-row perm-bot"><div class="perm-cell">3</div></div>
+</div>
+
+<h3>Cycles</h3>
+<div class="block def">
+  <span class="label">Definition — Cycle</span>
+  A <strong>k-cycle</strong> is a permutation that moves k elements in a "rotation" and fixes everything else. It is written <span class="m">(a₁ a₂ … aₖ)</span> and defined by:
+  <div class="mb">σ(a₁) = a₂,  σ(a₂) = a₃,  …,  σ(aₖ₋₁) = aₖ,  σ(aₖ) = a₁</div>
+  Every element not in <span class="m">{a₁,…,aₖ}</span> is fixed: <span class="m">σ(x) = x</span>.
+</div>
+
+<div class="block note">
+  <span class="label">Key Fact — Cycle Decomposition</span>
+  Every permutation can be written uniquely as a product of <strong>disjoint cycles</strong> (cycles that share no elements). This decomposition is unique up to the order in which we write the cycles and the starting point within each cycle. We always have <span class="m">(a₁ a₂ … aₖ) = (a₂ a₃ … aₖ a₁) = (a₃ … aₖ a₁ a₂)</span> — they're the same cycle.
+</div>
+
+<h4>How to find cycles: the tracing algorithm</h4>
+<ol class="L">
+  <li>Pick the smallest element not yet in a cycle. Call it <span class="m">a₁</span>.</li>
+  <li>Apply σ: <span class="m">a₂ = σ(a₁)</span>, <span class="m">a₃ = σ(a₂)</span>, and so on.</li>
+  <li>Stop when you return to <span class="m">a₁</span>. You've found the cycle <span class="m">(a₁ a₂ … aₖ)</span>.</li>
+  <li>Repeat with the next smallest element not yet placed.</li>
+</ol>
+
+<h3>Fixed Points</h3>
+<div class="block def">
+  <span class="label">Definition — Fixed Point</span>
+  An element <span class="m">i ∈ {1,…,n}</span> is a <strong>fixed point</strong> of σ if <span class="m">σ(i) = i</span>. In cycle notation, fixed points appear as 1-cycles: <span class="m">(i)</span>. Convention: we often omit 1-cycles when writing cycle notation, so <span class="m">(1 3)(2)</span> and <span class="m">(1 3)</span> mean the same permutation when working in <span class="m">S₃</span>.
+</div>
+
+<div class="block thm">
+  <span class="label">Theorem — Expected Fixed Points</span>
+  For a uniformly random permutation <span class="m">σ ∈ Sₙ</span>, the expected number of fixed points is exactly <strong>1</strong>, for every <span class="m">n ≥ 1</span>.
+  <br><br>
+  <em>Proof:</em> Let <span class="m">Xᵢ = 𝟙[σ(i) = i]</span> be the indicator that <span class="m">i</span> is a fixed point. By symmetry, each element is equally likely to map to any of the <span class="m">n</span> positions, so <span class="m">Pr(Xᵢ = 1) = 1/n</span>. By linearity of expectation:
+  <div class="mb">E[# fixed points] = E[X₁ + X₂ + … + Xₙ] = n · (1/n) = 1</div>
+</div>
+
+<h3>Derangements</h3>
+<div class="block def">
+  <span class="label">Definition — Derangement</span>
+  A <strong>derangement</strong> is a permutation with <strong>no fixed points</strong> — every element moves. The number of derangements of <span class="m">{1,…,n}</span> is denoted <span class="m">Dₙ</span> (also written <span class="m">!n</span>).
+</div>
+
+<div class="block thm">
+  <span class="label">Theorem — Derangement Formula</span>
+  By inclusion-exclusion:
+  <div class="mb">Dₙ = n! · ∑ₖ₌₀ⁿ (−1)ᵏ / k! = n!(1 − 1 + 1/2! − 1/3! + … + (−1)ⁿ/n!)</div>
+  As <span class="m">n → ∞</span>, the probability of a derangement converges to:
+  <div class="mb">Pr(derangement) = Dₙ/n! → ∑ₖ₌₀^∞ (−1)ᵏ/k! = e⁻¹ ≈ 0.3679</div>
+  <em>Why?</em> The series <span class="m">∑(−1)ᵏ/k!</span> is the Taylor expansion of <span class="m">e⁻¹</span>, and adding more terms changes the value by less than <span class="m">1/n!</span> → 0.
+</div>
+
+<div class="block note">
+  <span class="label">The Game of 13 (Treize)</span>
+  This is the historical origin of derangements, from de Montmort (1708). Shuffle 13 cards numbered 1–13. Flip them one at a time, calling out 1, 2, 3, …, 13 as you go. You <strong>win</strong> if any card matches the number called; you <strong>lose</strong> only if no card ever matches — that is, if the shuffle is a derangement. Since <span class="m">D₁₃/13! ≈ 1/e</span>, the probability of losing is about 36.8%. The game is cleverly designed so this probability is nearly constant regardless of how many cards you use.
+</div>
+
+<h3 id="long-cycle">Long Cycles</h3>
+<div class="block def">
+  <span class="label">Definition — Long Cycle</span>
+  A cycle in a permutation is called a <strong>long cycle</strong> if its length exceeds <span class="m">n/2</span>. Note that at most one cycle can be long (two cycles each of length <span class="m">&gt; n/2</span> would require more than <span class="m">n</span> elements total).
+</div>
+
+<div class="block thm" id="long-cycle-thm">
+  <span class="label">Theorem — Long Cycle Probability (HW1)</span>
+  For a uniform random permutation of <span class="m">{1,…,n}</span>, as <span class="m">n → ∞</span>:
+  <div class="mb">Pr(σ has a cycle of length &gt; n/2)  →  ln 2  ≈  0.6931</div>
+  <em>Proof idea:</em> For a specific set <span class="m">S</span> of <span class="m">k</span> elements, the probability they form a single <span class="m">k</span>-cycle in a random permutation of <span class="m">[n]</span> is <span class="m">(k−1)! · (n−k)! / n! = 1/(k · C(n,k))</span>. Summing over all sets <span class="m">S</span> of size <span class="m">k</span> (there are <span class="m">C(n,k)</span> of them), the probability of having <em>some</em> <span class="m">k</span>-cycle is exactly <span class="m">1/k</span>. Since at most one long cycle can exist (the events are mutually exclusive), we sum:
+  <div class="mb">Pr(long cycle)  =  ∑_{k = ⌊n/2⌋+1}^{n}  1/k  →  ∫_{1/2}^{1} (1/x) dx  =  ln(1) − ln(1/2)  =  ln 2</div>
+</div>
+
+<h3 id="prisoners">The 100 Prisoners Problem</h3>
+<div class="block def">
+  <span class="label">Setup</span>
+  100 prisoners are numbered 1–100. The warden writes their names on slips and places one in each of 100 boxes (numbered 1–100). Each prisoner may open 50 boxes. They survive iff <strong>all</strong> prisoners find their own name. No communication after the process begins.
+  <br><br>
+  <strong>The strategy:</strong> Each prisoner starts at their own numbered box, opens it, reads the name inside, and goes to the box with <em>that number</em>. They repeat until they find their own name or exhaust 50 opens. This is the <em>cycle-following strategy</em>.
+  <br><br>
+  <strong>Why it works:</strong> Each prisoner follows exactly the cycle that contains their number in the warden's permutation. They succeed iff that cycle has length ≤ 50. They all succeed iff the permutation has <strong>no cycle of length &gt; 50</strong>.
+  <div class="mb">Pr(all survive)  =  1 − Pr(∃ cycle of length &gt; 50)  →  1 − ln 2  ≈  30.7%</div>
+</div>
+
+<div class="block hw" id="hw2">
+  <span class="label">HW 2 — Uniformity Theorem</span>
+  <strong>Claim:</strong> No matter how the warden assigns names to boxes, if prisoners assign box ownership uniformly at random, the resulting permutation (prisoner → name in their box) is uniformly random.
+  <br><br>
+  <strong>Proof:</strong> Let <span class="m">w : boxes → names</span> be the warden's fixed bijection and <span class="m">b : prisoners → boxes</span> be the prisoners' uniform random bijection. The composed function <span class="m">σ = w ∘ b</span> maps each prisoner to the name in their box.
+  <br><br>
+  For any target permutation <span class="m">τ : prisoners → names</span>:
+  <div class="mb">Pr(σ = τ) = Pr(w ∘ b = τ) = Pr(b = w⁻¹ ∘ τ)</div>
+  Since <span class="m">b</span> is uniform over all <span class="m">n!</span> bijections, and <span class="m">w⁻¹ ∘ τ</span> is one specific bijection, this probability equals <span class="m">1/n!</span>. This holds for every <span class="m">τ</span>, so <span class="m">σ</span> is uniform. ∎
+</div>
+
+<!-- ══ 3. RUNNING EXAMPLES ══ -->
+<h2 id="examples"><span class="sec-num">03</span>Three Running Examples</h2>
+<p>The same three examples will appear throughout sections 4 and 5 at increasing levels of depth.</p>
+
+<div class="examples-grid">
+  <div class="ex-card easy">
+    <span class="ex-badge">🟢 Easy — n = 4</span>
+    <h4>σ = 2 1 3 4</h4>
+    <p>A simple permutation on 4 elements with a 2-cycle and two fixed points. Perfect for building intuition with definitions.</p>
+  </div>
+  <div class="ex-card med">
+    <span class="ex-badge">🟡 Medium — n = 6</span>
+    <h4>σ = 3 4 5 2 1 6</h4>
+    <p>A richer permutation with a 3-cycle, a 2-cycle, and a fixed point. Used to illustrate the 100 Prisoners problem concretely.</p>
+  </div>
+  <div class="ex-card hard">
+    <span class="ex-badge">🔴 Hard — general n</span>
+    <h4>Probability &amp; limits</h4>
+    <p>Work through Pr(long cycle) → ln 2, E[fixed points] = 1, and Pr(derangement) → 1/e with full proofs.</p>
+  </div>
+</div>
+
+<!-- ══ 4. WORKED EXAMPLES ══ -->
+<h2 id="worked"><span class="sec-num">04</span>Worked Examples</h2>
+
+<h3>🟢 Easy: Decomposing σ = 2 1 3 4</h3>
+<div class="block ex">
+  <span class="label">Step-by-step cycle decomposition</span>
+  <p>We have <span class="m">σ(1)=2, σ(2)=1, σ(3)=3, σ(4)=4</span>.</p>
+  <p><strong>Step 1:</strong> Start at 1. Apply σ: <span class="m">1 → 2 → 1</span>. We returned to 1 after 2 steps. First cycle: <span class="m">(1 2)</span>.</p>
+  <p><strong>Step 2:</strong> Next unused element is 3. Apply σ: <span class="m">3 → 3</span>. Returned immediately. Cycle: <span class="m">(3)</span> — a fixed point.</p>
+  <p><strong>Step 3:</strong> Next unused element is 4. Apply σ: <span class="m">4 → 4</span>. Fixed point: <span class="m">(4)</span>.</p>
+  <p><strong>Result:</strong> <span class="m">σ = (1 2)(3)(4)</span>. Fixed points: <span class="m">{3, 4}</span>. The permutation has 2 fixed points and one 2-cycle. It is <em>not</em> a derangement.</p>
+</div>
+
+<h3>🟡 Medium: The Prisoners Problem with n = 6</h3>
+<div class="block ex">
+  <span class="label">Setup: σ = 3 4 5 2 1 6</span>
+  <p>Six prisoners, six boxes. The warden's permutation is <span class="m">σ(1)=3, σ(2)=4, σ(3)=5, σ(4)=2, σ(5)=1, σ(6)=6</span>.</p>
+  <p><strong>Step 1 — Find cycles:</strong></p>
+  <p>Start at 1: <span class="m">1 → 3 → 5 → 1</span>. Cycle: <span class="m">(1 3 5)</span>, length 3.</p>
+  <p>Start at 2 (next unused): <span class="m">2 → 4 → 2</span>. Cycle: <span class="m">(2 4)</span>, length 2.</p>
+  <p>Start at 6 (next unused): <span class="m">6 → 6</span>. Cycle: <span class="m">(6)</span>, length 1 (fixed point).</p>
+  <p><strong>Full decomposition:</strong> <span class="m">σ = (1 3 5)(2 4)(6)</span>.</p>
+  <p><strong>Step 2 — Apply the prisoners strategy:</strong></p>
+  <p>Each prisoner starts at their own box. With <span class="m">n/2 = 3</span> allowed opens:</p>
+  <ul class="L">
+    <li>Prisoner 1 opens boxes 1 → 3 → 5. Finds name "1" in box 5. ✓ (3 opens, exactly on the limit)</li>
+    <li>Prisoner 2 opens boxes 2 → 4. Finds "2" in box 4. ✓ (2 opens)</li>
+    <li>Prisoner 3 opens boxes 3 → 5 → 1. Finds "3" in box 1. ✓ (3 opens)</li>
+    <li>Prisoner 4 opens boxes 4 → 2. Finds "4" in box 2. ✓ (2 opens)</li>
+    <li>Prisoner 5 opens boxes 5 → 1 → 3. Finds "5" in box 3. ✓ (3 opens)</li>
+    <li>Prisoner 6 opens box 6. Finds "6" immediately. ✓ (1 open)</li>
+  </ul>
+  <p><strong>All prisoners survive!</strong> This works because the longest cycle has length 3 = n/2. If any cycle had length 4, 5, or 6, that prisoner would run out of opens.</p>
+</div>
+
+<h3>🔴 Hard: Deriving Pr(long cycle) → ln 2</h3>
+<div class="block ex">
+  <span class="label">Full derivation</span>
+  <p><strong>Setup.</strong> We want <span class="m">Pr(σ has a cycle of length k)</span> for a specific <span class="m">k</span>, then sum over all <span class="m">k &gt; n/2</span>.</p>
+  <p><strong>Step 1 — Probability of a specific k-cycle.</strong> Fix a set <span class="m">S = {a₁,…,aₖ}</span> of k elements. How many permutations in <span class="m">Sₙ</span> have these k elements forming a single k-cycle, with the remaining <span class="m">n−k</span> elements in any arrangement?</p>
+  <ul class="L">
+    <li>Number of k-cycles on S: <span class="m">(k−1)!</span> (fix one element, arrange the rest)</li>
+    <li>Number of arrangements of remaining <span class="m">n−k</span> elements: <span class="m">(n−k)!</span></li>
+    <li>Total favorable: <span class="m">(k−1)! · (n−k)!</span></li>
+    <li>Probability: <span class="m">(k−1)! · (n−k)! / n!</span></li>
+  </ul>
+  <p><strong>Step 2 — Probability that some k-cycle exists.</strong> There are <span class="m">C(n,k)</span> choices for S. Since these events are mutually exclusive (a permutation can have at most one k-cycle on any given set S, and different sets S are disjoint events):</p>
+  <div class="mb">Pr(∃ k-cycle) = C(n,k) · (k−1)! · (n−k)! / n!
+            = [n! / (k! · (n−k)!)] · (k−1)! · (n−k)! / n!
+            = 1/k</div>
+  <p><strong>Step 3 — Sum over long cycles.</strong> For <span class="m">k &gt; n/2</span>, at most one such cycle can exist, so events for different values of k are mutually exclusive:</p>
+  <div class="mb">Pr(long cycle) = ∑_{k=⌊n/2⌋+1}^{n}  1/k</div>
+  <p><strong>Step 4 — Take the limit.</strong> As <span class="m">n → ∞</span>, this Riemann sum converges to an integral:</p>
+  <div class="mb">∑_{k=⌊n/2⌋+1}^{n}  1/k  ≈  ∑_{k=⌊n/2⌋+1}^{n}  (1/n) · (n/k)  →  ∫_{1/2}^{1}  (1/x) dx  =  [ln x]_{1/2}^{1}  =  0 − ln(1/2)  =  ln 2</div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 5. TRY IT YOURSELF ══ -->
+<h2 id="practice"><span class="sec-num">05</span>Try It Yourself</h2>
+<p>Click any question to reveal the full solution with step-by-step walkthrough.</p>
+
+<div class="practice-header">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+  Practice Problems — Permutations, Cycles &amp; Fixed Points
+</div>
+<div class="practice-wrap">
+
+<!-- Q1 -->
+<div class="pq">
+<div class="pq-q"><span class="qn">Q1</span><span>Write <span class="m">σ = 3 1 4 2</span> (one-line notation on {1,2,3,4}) in cycle notation. Identify all fixed points.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>We use the tracing algorithm. <span class="m">σ(1)=3, σ(2)=1, σ(3)=4, σ(4)=2</span>.</p>
+  <div class="step"><strong>Trace from 1:</strong> 1 → σ(1) = 3 → σ(3) = 4 → σ(4) = 2 → σ(2) = 1. We returned to 1 after visiting {1, 3, 4, 2}. This is a single 4-cycle.</div>
+  <div class="step"><strong>All elements used:</strong> {1, 2, 3, 4} are all in the cycle. No remaining elements.</div>
+  <p>Cycle notation: <span class="ans-box">(1 3 4 2)</span></p>
+  <p>Fixed points: <span class="ans-box">none</span> — every element moves.</p>
+  <p>Is it a derangement? <span class="ans-box">Yes</span> — no fixed points.</p>
+</div>
+</div>
+
+<!-- Q2 -->
+<div class="pq">
+<div class="pq-q"><span class="qn">Q2</span><span>List all derangements of <span class="m">{1, 2, 3}</span>. Verify using the formula <span class="m">D₃ = 3!(1 − 1 + 1/2 − 1/6)</span>.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>A derangement of {1,2,3} is a permutation where σ(1)≠1, σ(2)≠2, σ(3)≠3. Let's check all 3! = 6 permutations:</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Permutation</th><th>σ(1)</th><th>σ(2)</th><th>σ(3)</th><th>Derangement?</th></tr>
+    <tr><td>1 2 3</td><td>1 ✗</td><td>2 ✗</td><td>3 ✗</td><td>No (all fixed)</td></tr>
+    <tr><td>1 3 2</td><td>1 ✗</td><td>—</td><td>—</td><td>No (σ(1)=1)</td></tr>
+    <tr><td>2 1 3</td><td>—</td><td>—</td><td>3 ✗</td><td>No (σ(3)=3)</td></tr>
+    <tr><td>2 3 1</td><td>2 ✓</td><td>3 ✓</td><td>1 ✓</td><td><strong>Yes</strong></td></tr>
+    <tr><td>3 1 2</td><td>3 ✓</td><td>1 ✓</td><td>2 ✓</td><td><strong>Yes</strong></td></tr>
+    <tr><td>3 2 1</td><td>—</td><td>2 ✗</td><td>—</td><td>No (σ(2)=2)</td></tr>
+  </table></div>
+  <p>Derangements: <span class="ans-box">(2 3 1) and (3 1 2)</span> — exactly 2.</p>
+  <p>Formula check: <span class="m">D₃ = 3!(1 − 1 + 1/2 − 1/6) = 6 · (1/2 − 1/6) = 6 · (3/6 − 1/6) = 6 · 2/6 = 2</span>. ✓</p>
+</div>
+</div>
+
+<!-- Q3 -->
+<div class="pq">
+<div class="pq-q"><span class="qn">Q3</span><span>Prove that the expected number of fixed points of a uniform random permutation of <span class="m">{1,…,5}</span> equals 1. (Use linearity of expectation — don't just cite the theorem, carry out the proof for n = 5.)</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>Define indicator random variables: for each <span class="m">i ∈ {1,2,3,4,5}</span>, let</p>
+  <p style="text-align:center"><span class="m">Xᵢ = 1</span> if <span class="m">σ(i) = i</span>, and <span class="m">Xᵢ = 0</span> otherwise.</p>
+  <div class="step"><strong>Step 1: Find E[Xᵢ].</strong> What is the probability that element <span class="m">i</span> maps to itself? A uniform random permutation is equally likely to send <span class="m">i</span> to any of the 5 positions. Exactly 1 of those 5 possibilities is <span class="m">σ(i) = i</span>. So <span class="m">Pr(Xᵢ = 1) = 1/5</span>, and therefore <span class="m">E[Xᵢ] = 1/5</span>.</div>
+  <div class="step"><strong>Step 2: Apply linearity of expectation.</strong> The total number of fixed points is <span class="m">X = X₁ + X₂ + X₃ + X₄ + X₅</span>. Linearity of expectation says E[sum] = sum of E's, even for dependent random variables:
+  <br><span class="m">E[X] = E[X₁] + E[X₂] + E[X₃] + E[X₄] + E[X₅] = 5 · (1/5) = 1</span>.</div>
+  <p><span class="ans-box">E[# fixed points] = 1</span> for n = 5. The same argument works for any n: n terms each equal to 1/n. ∎</p>
+</div>
+</div>
+
+<!-- Q4 -->
+<div class="pq">
+<div class="pq-q"><span class="qn">Q4</span><span>What is the probability that a uniform random permutation of <span class="m">{1, 2, 3, 4}</span> has <strong>at least one</strong> fixed point?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>It is easier to compute the complement: Pr(no fixed points) = Pr(derangement) = D₄/4!.</p>
+  <div class="step"><strong>Compute D₄.</strong> Using the formula <span class="m">Dₙ = n! · ∑ₖ₌₀ⁿ (−1)ᵏ/k!</span>:
+  <br><span class="m">D₄ = 4!(1 − 1 + 1/2 − 1/6 + 1/24) = 24 · (12/24 − 4/24 + 1/24) = 24 · 9/24 = 9</span>.</div>
+  <div class="step"><strong>Compute the probability.</strong>
+  <br><span class="m">Pr(derangement) = 9/24 = 3/8</span>.
+  <br><span class="m">Pr(≥ 1 fixed point) = 1 − 3/8 = 5/8</span>.</div>
+  <p><span class="ans-box">Pr(at least one fixed point) = 5/8 = 0.625</span></p>
+</div>
+</div>
+
+<!-- Q5 -->
+<div class="pq">
+<div class="pq-q"><span class="qn">Q5</span><span>Find the cycle decomposition of the medium running example <span class="m">σ = 3 4 5 2 1 6</span>. For each cycle, state its length and whether any element is a fixed point.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p><span class="m">σ(1)=3, σ(2)=4, σ(3)=5, σ(4)=2, σ(5)=1, σ(6)=6</span>.</p>
+  <div class="step"><strong>Trace from 1:</strong> <span class="m">1 → 3 → 5 → 1</span>. Cycle: <span class="m">(1 3 5)</span>, length 3.</div>
+  <div class="step"><strong>Trace from 2</strong> (next unused): <span class="m">2 → 4 → 2</span>. Cycle: <span class="m">(2 4)</span>, length 2.</div>
+  <div class="step"><strong>Trace from 6</strong> (next unused): <span class="m">6 → 6</span>. Cycle: <span class="m">(6)</span>, length 1 — fixed point.</div>
+  <p>Full decomposition: <span class="ans-box">σ = (1 3 5)(2 4)(6)</span></p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Cycle</th><th>Length</th><th>Type</th></tr>
+    <tr><td>(1 3 5)</td><td>3</td><td>3-cycle</td></tr>
+    <tr><td>(2 4)</td><td>2</td><td>2-cycle (transposition)</td></tr>
+    <tr><td>(6)</td><td>1</td><td>Fixed point</td></tr>
+  </table></div>
+</div>
+</div>
+
+<!-- Q6 -->
+<div class="pq">
+<div class="pq-q"><span class="qn">Q6</span><span>In the 100 Prisoners problem with <span class="m">n = 6</span> (6 prisoners, each may open 3 boxes), using the cycle-following strategy: what is the exact probability that all prisoners survive?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>All prisoners survive iff the warden's permutation has no cycle of length &gt; 3. We need to count permutations in S₆ where every cycle has length ≤ 3.</p>
+  <div class="step"><strong>Method:</strong> Pr(survive) = 1 − Pr(∃ cycle of length &gt; 3) = 1 − Pr(∃ cycle of length 4, 5, or 6).</div>
+  <div class="step"><strong>Use the formula Pr(∃ k-cycle) = 1/k</strong>, and note events for different k &gt; n/2 = 3 are mutually exclusive:
+  <br><span class="m">Pr(long cycle) = 1/4 + 1/5 + 1/6 = 15/60 + 12/60 + 10/60 = 37/60</span>.</div>
+  <div class="step"><strong>Survival probability:</strong>
+  <br><span class="m">Pr(all survive) = 1 − 37/60 = 23/60</span>.</div>
+  <p><span class="ans-box">Pr(all survive) = 23/60 ≈ 0.3833</span></p>
+  <p>For comparison, the large-n limit is <span class="m">1 − ln 2 ≈ 0.3069</span>. With only n=6, we're still somewhat above the limit.</p>
+</div>
+</div>
+
+<!-- Q7 -->
+<div class="pq">
+<div class="pq-q"><span class="qn">Q7</span><span>Verify directly that <span class="m">Pr(∃ cycle of length &gt; 3 in S₆) = 1/4 + 1/5 + 1/6</span> by checking that <span class="m">444</span> out of <span class="m">720</span> permutations contain such a cycle, and confirm <span class="m">444/720 = 37/60</span>.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Formula gives:</strong> <span class="m">1/4 + 1/5 + 1/6 = 15/60 + 12/60 + 10/60 = 37/60</span>.</div>
+  <div class="step"><strong>Convert to count:</strong> <span class="m">37/60 × 720 = 37 × 12 = 444</span> permutations should contain a long cycle.</div>
+  <div class="step"><strong>Verify the fraction:</strong> <span class="m">444/720 = 222/360 = 111/180 = 37/60</span>. ✓</div>
+  <div class="step"><strong>Check survival count:</strong> <span class="m">720 − 444 = 276</span> permutations have all cycles of length ≤ 3. <span class="m">276/720 = 138/360 = 23/60</span>. ✓</div>
+  <p><span class="ans-box">444/720 = 37/60 ✓</span></p>
+</div>
+</div>
+
+<!-- Q8 -->
+<div class="pq">
+<div class="pq-q"><span class="qn">Q8</span><span>How many permutations in <span class="m">S₆</span> have exactly one fixed point? What is the probability?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>A permutation of {1,…,6} with exactly one fixed point: choose which element is fixed, then the remaining 5 elements must form a derangement.</p>
+  <div class="step"><strong>Step 1: Choose the fixed point.</strong> There are <span class="m">C(6,1) = 6</span> choices for which element stays in place.</div>
+  <div class="step"><strong>Step 2: Count derangements of the remaining 5 elements.</strong> <span class="m">D₅ = 5!(1 − 1 + 1/2 − 1/6 + 1/24 − 1/120) = 120 · (44/120) = 44</span>.</div>
+  <div class="step"><strong>Step 3: Multiply.</strong> Total = <span class="m">6 · D₅ = 6 · 44 = 264</span>.</div>
+  <div class="step"><strong>Step 4: Compute probability.</strong> <span class="m">264/720 = 11/30 ≈ 0.3667</span>.</div>
+  <p><span class="ans-box">264 permutations, probability = 11/30 ≈ 0.367</span></p>
+  <p>Interesting: this is very close to <span class="m">1/e ≈ 0.368</span> — and for large n, the probability of exactly one fixed point converges to exactly <span class="m">1/e</span> as well (it follows a Poisson(1) distribution).</p>
+</div>
+</div>
+
+</div><!-- end practice-wrap -->
+
+<hr class="divider">
+
+<!-- HW sections -->
+<h2 id="hw1"><span class="sec-num">HW</span>Homework Problems</h2>
+<div class="block hw">
+  <span class="label">HW 1 — Due Wednesday April 1</span>
+  <p>Let a permutation of <span class="m">{1,2,…,n}</span> be chosen uniformly at random. For large n, what is the probability that it contains a cycle of length greater than n/2?</p>
+  <p><strong>Answer:</strong> <span class="m">ln 2 ≈ 0.6931</span>. The key steps are: (1) show Pr(∃ k-cycle) = 1/k for any specific k; (2) observe events for different k &gt; n/2 are mutually exclusive; (3) sum 1/k for k from ⌊n/2⌋+1 to n; (4) recognize this Riemann sum converges to <span class="m">∫_{1/2}^{1}(1/x)dx = ln 2</span>. See the full derivation in the Hard Worked Example above.</p>
+</div>
+<div class="block hw">
+  <span class="label">HW 2 — Due Friday April 3</span>
+  <p>Write up a theorem and proof: no matter how the warden assigns names to boxes, if prisoners assign box ownership uniformly at random, the resulting permutation is uniformly random.</p>
+  <p><strong>Answer:</strong> The composed map <span class="m">σ = w ∘ b</span> (warden's bijection composed with prisoners' uniform random bijection) is uniform because composing with a fixed bijection is a bijection on the set of bijections — it maps each of the n! choices for b to a distinct choice for σ, preserving the uniform distribution. The full proof is written out in the Definitions section above.</p>
+</div>
+
+<div class="footer">Math 100 · Dartmouth College · Spring 2026 · Week 1 — Permutations, Cycles &amp; Fixed Points</div>
+</main>
+</div>
+
+<script>
+// Toggle practice answers
+document.querySelectorAll('.pq-q').forEach(function(q) {
+  q.addEventListener('click', function() {
+    var a = this.parentElement.querySelector('.pq-a');
+    var open = this.classList.toggle('open');
+    a.classList.toggle('vis', open);
+  });
+});
+
+// Active nav link on scroll
+var links = document.querySelectorAll('nav a');
+function setActive() {
+  var best = null;
+  document.querySelectorAll('h2[id], h3[id]').forEach(function(s) {
+    if (s.getBoundingClientRect().top < 120) best = s.id;
+  });
+  links.forEach(function(l) {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + best);
+  });
+}
+window.addEventListener('scroll', setActive);
+setActive();
+</script>
+</body>
+</html>
