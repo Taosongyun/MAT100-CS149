@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 8 — Permutons, Convergence &amp; Permutation Classes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1117;--bg2:#161820;--bg3:#1e2028;--bg4:#252730;--border:#2e3040;--ink:#e8e4dc;--ink2:#a8a49c;--ink3:#68645c;--gold:#d4a843;--gold2:#f0c060;--teal:#4ab8a8;--teal2:#6dd4c4;--rose:#c86478;--rose2:#e08090;--violet:#9878c8;--violet2:#b898e0;--green:#5a9e6a;--green2:#7ac88a;--orange:#d4824a;--mono:'JetBrains Mono',monospace;--serif:'Source Serif 4',Georgia,serif;--display:'Playfair Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--serif);background:var(--bg);color:var(--ink);line-height:1.8;font-size:16.5px}
+.shell{display:flex;min-height:100vh}
+nav{width:248px;min-width:248px;background:var(--bg2);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;padding:1.6rem 0;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.nav-logo{padding:0 1.2rem 1.2rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.nav-logo .course{font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3)}
+.nav-logo .title{font-family:var(--display);font-size:13px;color:var(--gold);margin-top:.25rem;line-height:1.3}
+nav ul{list-style:none}
+.nav-section{font-family:var(--sans);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);padding:.9rem 1.2rem .2rem}
+nav a{display:block;font-family:var(--sans);font-size:12px;color:var(--ink2);text-decoration:none;padding:.3rem 1.2rem;line-height:1.4;border-left:2px solid transparent;transition:all .15s}
+nav a:hover{color:var(--ink);background:var(--bg3)}
+nav a.active{color:var(--gold);border-left-color:var(--gold);background:var(--bg3)}
+main{flex:1;max-width:880px;padding:3.5rem 4rem}
+.cover{margin-bottom:3.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border)}
+.week-badge{display:inline-block;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.3);border-radius:3px;padding:.25rem .7rem;margin-bottom:1rem}
+.cover h1{font-family:var(--display);font-size:2.3rem;font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:.6rem}
+.cover h1 em{color:var(--gold);font-style:italic}
+.cover .subtitle{font-family:var(--sans);font-size:.9rem;color:var(--ink2);font-weight:300}
+.topics-row{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1.4rem}
+.topic-pill{font-family:var(--sans);font-size:11px;font-weight:500;padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);color:var(--ink2)}
+h2{font-family:var(--display);font-size:1.55rem;font-weight:600;color:var(--ink);margin:3.5rem 0 1.2rem;scroll-margin-top:2rem;display:flex;align-items:center;gap:.7rem}
+h2 .sn{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);padding:.25rem .55rem;border-radius:3px;flex-shrink:0}
+h3{font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--teal);margin:2rem 0 .65rem;scroll-margin-top:2rem}
+h4{font-family:var(--sans);font-size:.9rem;font-weight:600;color:var(--ink2);margin:1.4rem 0 .4rem}
+p{margin-bottom:.9rem}
+.block{margin:1.2rem 0;padding:1rem 1.2rem;border-radius:6px}
+.def{background:rgba(74,184,168,.07);border-left:3px solid var(--teal)}
+.thm{background:rgba(212,168,67,.07);border-left:3px solid var(--gold)}
+.proof{background:var(--bg3);border-left:3px solid var(--border)}
+.ex{background:rgba(154,120,200,.07);border-left:3px solid var(--violet)}
+.note{background:var(--bg3);border-left:3px solid var(--border);font-size:.92rem;color:var(--ink2)}
+.hw{background:rgba(200,100,120,.07);border-left:3px solid var(--rose)}
+.insight{background:rgba(74,184,168,.1);border:1px solid rgba(74,184,168,.25);border-radius:6px}
+.lbl{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:.4rem}
+.def .lbl{color:var(--teal)}.thm .lbl{color:var(--gold)}.proof .lbl{color:var(--ink3)}.ex .lbl{color:var(--violet)}.note .lbl{color:var(--ink3)}.hw .lbl{color:var(--rose)}.insight .lbl{color:var(--teal)}
+.m{font-family:var(--mono);font-size:.83em;background:var(--bg4);color:var(--gold2);padding:.12em .38em;border-radius:3px;white-space:nowrap}
+.mb{display:block;font-family:var(--mono);font-size:.86em;background:var(--bg3);color:var(--teal2);padding:.65rem 1rem;border-radius:4px;margin:.7rem 0;border:1px solid var(--border);overflow-x:auto;white-space:pre}
+ul.L,ol.L{padding-left:1.4rem;margin:.5rem 0 .8rem}
+ul.L li,ol.L li{margin-bottom:.35rem}
+.step{background:var(--bg3);border-left:2px solid var(--teal);padding:.5rem .9rem;border-radius:0 4px 4px 0;margin:.5rem 0;font-size:.9rem}
+.step strong{color:var(--teal2)}
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:.87rem;font-family:var(--sans)}
+th{background:var(--bg3);color:var(--ink2);font-weight:600;padding:.5rem .8rem;text-align:left;border-bottom:1px solid var(--border);font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
+td{padding:.42rem .8rem;border-bottom:1px solid var(--bg3);vertical-align:top;color:var(--ink2)}
+tr:last-child td{border-bottom:none}
+td:first-child{color:var(--ink);font-weight:500}
+.yes{color:var(--green2);font-weight:600}.no{color:var(--rose2);font-weight:600}
+/* Three-step transform visual */
+.transform-flow{display:flex;gap:1.5rem;align-items:center;margin:1.5rem 0;flex-wrap:wrap}
+.transform-step{text-align:center;flex:1;min-width:160px}
+.transform-step .t-label{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal2);margin-bottom:.5rem;display:block}
+.transform-arrow{font-size:1.5rem;color:var(--gold);flex-shrink:0;align-self:center;margin-bottom:1.5rem}
+/* Convergence types */
+.conv-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.2rem 0}
+.conv-card{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.9rem 1rem}
+.conv-card .cn{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;display:block}
+.conv-card .ct{font-family:var(--sans);font-size:.82rem;font-weight:600;color:var(--ink);margin-bottom:.4rem}
+.conv-card p{font-family:var(--sans);font-size:.8rem;color:var(--ink2);line-height:1.55;margin-bottom:.3rem}
+.conv-card .ce{font-family:var(--mono);font-size:.78em;color:var(--teal2);background:var(--bg4);padding:.3rem .6rem;border-radius:3px;display:block;margin-top:.4rem}
+/* Practice */
+.practice-header{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#2a3a5e,#1e4a3a);padding:.6rem 1.1rem;border-radius:6px 6px 0 0;display:flex;align-items:center;gap:.5rem}
+.practice-wrap{border:1px solid var(--border);border-radius:0 0 6px 6px;overflow:hidden;margin-bottom:2rem}
+.pq{border-bottom:1px solid var(--border)}.pq:last-child{border-bottom:none}
+.pq-q{font-family:var(--sans);font-size:.875rem;font-weight:500;color:var(--ink);padding:.75rem 1.1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;user-select:none;transition:background .12s}
+.pq-q:hover{background:var(--bg3)}
+.pq-q .qn{font-size:9.5px;font-weight:700;letter-spacing:.1em;color:var(--teal);min-width:1.8rem;padding-top:.1rem;flex-shrink:0}
+.pq-q .arr{font-size:11px;color:var(--ink3);transition:transform .18s;flex-shrink:0}
+.pq-q.open .arr{transform:rotate(180deg)}
+.pq-a{display:none;padding:.2rem 1.1rem .9rem;border-top:1px dashed var(--border);background:var(--bg2)}
+.pq-a.vis{display:block}
+.pq-a .al{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green2);margin-bottom:.5rem;display:block;padding-top:.55rem}
+.pq-a p{font-size:.875rem;font-family:var(--sans);color:var(--ink2);margin-bottom:.45rem;line-height:1.65}
+.pq-a .step-s{background:var(--bg3);border-left:2px solid var(--teal);padding:.45rem .8rem;border-radius:0 4px 4px 0;margin:.35rem 0;font-size:.85rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a .step-s strong{color:var(--teal2)}
+.pq-a ul,.pq-a ol{padding-left:1.3rem;margin:.3rem 0 .45rem;font-size:.875rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a li{margin-bottom:.25rem}
+.ans-box{background:rgba(90,158,106,.1);border:1px solid rgba(90,158,106,.3);border-radius:4px;padding:.4rem .8rem;font-family:var(--mono);font-size:.82em;color:var(--green2);margin:.4rem 0;display:inline-block}
+.cheat-sheet{background:var(--bg2);border:1px solid var(--gold);border-radius:8px;padding:1.5rem;margin:2rem 0}
+.cheat-title{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem}
+.cheat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.cheat-section h5{font-family:var(--sans);font-size:.8rem;font-weight:700;color:var(--teal2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.cheat-section li,.cheat-section p{font-family:var(--sans);font-size:.8rem;color:var(--ink2);line-height:1.5;margin-bottom:.25rem}
+.cheat-section ul{padding-left:1.1rem;margin:.25rem 0}
+.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+
+/* ── Page navigation buttons ── */
+.page-actions{display:flex;flex-wrap:wrap;gap:.55rem;margin-bottom:1.3rem}
+.page-link{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--bg);background:var(--gold);border:1px solid rgba(212,168,67,.55);border-radius:4px;padding:.42rem .78rem;text-decoration:none;transition:transform .15s,background .15s,border-color .15s,color .15s}
+.page-link:hover{background:var(--gold2);text-decoration:none;transform:translateY(-1px)}
+.page-link.secondary{color:var(--ink2);background:transparent;border-color:var(--border)}
+.page-link.secondary:hover{color:var(--ink);background:var(--bg3);border-color:rgba(212,168,67,.45)}
+.page-link.disabled{color:var(--ink3);background:transparent;border-color:var(--border);pointer-events:none;cursor:default;opacity:.7}
+.sidebar-actions{display:grid;gap:.45rem;padding:.2rem 1.2rem 1rem}
+.sidebar-actions .page-link{justify-content:center;padding:.36rem .65rem}
+
+.footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:var(--sans);font-size:11px;color:var(--ink3)}
+@media(max-width:960px){nav{display:none}main{padding:2rem 1.5rem}}
+@media(max-width:660px){.conv-grid{grid-template-columns:1fr}.cheat-grid{grid-template-columns:1fr}.transform-flow{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav>
+  <div class="nav-logo">
+    <div class="course">Math 100 · Spring 2026</div>
+    <div class="title">Week 8 — Permutons, Convergence &amp; Classes</div>
+  </div>
+
+  <div class="sidebar-actions">
+    <a class="page-link" href="index.html">← Home</a>
+    <a class="page-link secondary" href="week7_patterns_stack_sorting.html">← Previous Week</a>
+    <a class="page-link disabled" href="#">Next Week →</a>
+  </div>
+  <ul>
+    <li class="nav-section">Sections</li>
+    <li><a href="#why">1 · Why We Care</a></li>
+    <li><a href="#pattern-density">2 · Pattern Densities</a></li>
+    <li><a href="#marginals">↳ Deducing Shorter Patterns</a></li>
+    <li><a href="#permuton-def">3 · Permuton — Formal Definition</a></li>
+    <li><a href="#transform">↳ Permutation → Matrix → Permuton</a></li>
+    <li><a href="#cdf">↳ CDF and Marginals</a></li>
+    <li><a href="#convergence">4 · Convergence of Permutations</a></li>
+    <li><a href="#examples">↳ Convergence Examples</a></li>
+    <li><a href="#rw">5 · Random Walk Permuton</a></li>
+    <li><a href="#support">6 · Support of a Permuton</a></li>
+    <li><a href="#basis">7 · Basis of a Permutation Class</a></li>
+    <li><a href="#conv-types">8 · Four Convergence Types</a></li>
+    <li><a href="#practice">9 · Try It Yourself</a></li>
+    <li><a href="#hw">10 · Homework</a></li>
+    <li><a href="#cheat">11 · Cheat Sheet</a></li>
+  </ul>
+</nav>
+<main>
+
+
+<div class="page-actions">
+  <a class="page-link" href="index.html">← Back to Home</a>
+  <a class="page-link secondary" href="week7_patterns_stack_sorting.html">← Previous Week</a>
+  <a class="page-link disabled" href="#">Next Week →</a>
+</div>
+
+<div class="cover">
+  <div class="week-badge">Week 8</div>
+  <h1>Permutons, Convergence<br>&amp; <em>Permutation Classes</em></h1>
+  <div class="subtitle">Math 100 · Dartmouth College · Spring 2026</div>
+  <div class="topics-row">
+    <span class="topic-pill">Pattern densities</span>
+    <span class="topic-pill">Marginal consistency</span>
+    <span class="topic-pill">Permutation → matrix → permuton</span>
+    <span class="topic-pill">CDF of a permuton</span>
+    <span class="topic-pill">Convergence in distribution</span>
+    <span class="topic-pill">Random walk permuton</span>
+    <span class="topic-pill">Support</span>
+    <span class="topic-pill">Basis of a permutation class</span>
+    <span class="topic-pill">Four convergence modes</span>
+    <span class="topic-pill">Total variation distance</span>
+  </div>
+</div>
+
+<!-- ══ 1. WHY WE CARE ══ -->
+<h2 id="why"><span class="sn">01</span>Why We Care</h2>
+<p>Last week introduced permutons as limit objects for permutation sequences. This week makes them concrete: we learn to compute pattern densities, see exactly how a permutation turns into a permuton via its matrix, define convergence rigorously via CDFs, and work through two important examples — the identity sequence (converges to the diagonal) and the random walk (has a specific non-uniform permuton limit). We also prove the basis theorem for permutation classes, tying together the pattern avoidance story from Week 7.</p>
+
+<!-- ══ 2. PATTERN DENSITIES ══ -->
+<h2 id="pattern-density"><span class="sn">02</span>Pattern Densities</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Pattern Density</span>
+  For a permutation <span class="m">σ ∈ Sₙ</span> and a pattern <span class="m">π ∈ Sₖ</span> with k ≤ n:
+  <div class="mb">p(π, σ)  =  (# k-element subsets of positions realizing π in σ) / C(n, k)</div>
+  This is the probability that a uniformly random k-element subset of {1,…,n} forms pattern π in σ.
+</div>
+
+<div class="block ex">
+  <span class="lbl">Worked Example — density(132, 6214537)</span>
+  <p>σ = (6,2,1,4,5,3,7), n=7, k=3. Total triples: C(7,3) = 35.</p>
+  <p>Count k-element subsets where the relative order is 132 (medium, large, small):</p>
+  <ul class="L">
+    <li>Positions (1,2,4): values (6,2,4) → ranks (3,1,2) = 312. ✗</li>
+    <li>Positions (2,4,6): values (2,4,3) → ranks (1,3,2) = 132. ✓</li>
+    <li>Positions (2,4,7): values (2,4,7) → ranks (1,2,3) = 123. ✗</li>
+    <li>…(checking all 35 triples)…</li>
+  </ul>
+  <p>Total occurrences of 132: <strong>4</strong>. So <span class="m">p(132, 6214537) = 4/35</span>. ✓</p>
+</div>
+
+<div class="block note">
+  <span class="lbl">Key property</span>
+  The 6 pattern densities for patterns of length 3 always sum to 1 — they form a <strong>probability distribution</strong> on S₃. This is why we can compute total variation distance between two permutations' density profiles.
+</div>
+
+<h3 id="marginals">Deducing Shorter Patterns from Longer Ones</h3>
+
+<div class="block thm">
+  <span class="lbl">Marginal Consistency — Recovering Length-2 from Length-3 Densities</span>
+  If you know all six length-3 pattern densities, you can recover the length-2 densities. For the pattern 12 (increasing pair):
+  <div class="mb">p(12, σ)  =  [3·p(123) + 2·p(132) + 2·p(213) + 1·p(231) + 1·p(312) + 0·p(321)] / 3</div>
+  And for 21 (decreasing pair): p(21, σ) = 1 − p(12, σ).
+</div>
+
+<div class="block proof">
+  <span class="lbl">Why this works</span>
+  <p>Pick a random 2-element subset {i,j} (i&lt;j). We want P(σ(i)&lt;σ(j)) = p(12,σ). Now extend this to a random 3-element subset by adding a third uniformly random position. The triple has a pattern in S₃. How many increasing pairs does each S₃ pattern contain?</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Pattern</th><th>123</th><th>132</th><th>213</th><th>231</th><th>312</th><th>321</th></tr>
+    <tr><td># increasing pairs</td><td>3</td><td>2</td><td>2</td><td>1</td><td>1</td><td>0</td></tr>
+  </table></div>
+  <p>A random triple contains 3 random pairs. The expected number of increasing pairs = 3·p(12,σ). But it also equals the weighted sum above. Dividing by 3 gives the formula. ✓</p>
+  <p>This generalises: <em>all shorter-pattern densities are determined by longer-pattern densities</em>. In the limit, the full permuton is determined by its pattern densities — if you know all pattern densities consistently, you know the permuton.</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">Example — 1324 (n=4)</span>
+  <p>All length-3 densities for 1324 = (1,3,2,4):</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Pattern</th><th>123</th><th>132</th><th>213</th><th>231</th><th>312</th><th>321</th></tr>
+    <tr><td>Density</td><td>1/2</td><td>1/4</td><td>1/4</td><td>0</td><td>0</td><td>0</td></tr>
+  </table></div>
+  <p>Note: 1324 avoids 231 and 321, so those densities are 0.</p>
+  <p>Recovering p(12) from these: [3·(1/2) + 2·(1/4) + 2·(1/4) + 0 + 0 + 0] / 3 = [3/2 + 1/2 + 1/2] / 3 = (5/2)/3 = 5/6. ✓</p>
+</div>
+
+<!-- ══ 3. PERMUTON ══ -->
+<h2 id="permuton-def"><span class="sn">03</span>Permuton — Formal Definition</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Permuton</span>
+  A <strong>permuton</strong> is a probability measure μ on [0,1]² with <strong>uniform marginals</strong>:
+  <div class="mb">μ([0,1] × [0,y])  =  y   and   μ([0,x] × [0,1])  =  x   for all x,y ∈ [0,1]</div>
+  Both the x-projection and the y-projection of μ are the uniform distribution on [0,1].
+</div>
+
+<h3 id="transform">Permutation → Permutation Matrix → Permuton</h3>
+
+<p>Every permutation naturally gives a permuton via a three-step transformation. Here it is for σ = (2,4,1,3):</p>
+
+<div class="transform-flow">
+
+<div class="transform-step">
+  <span class="t-label">Step 1 — Permutation</span>
+  <svg width="130" height="130" viewBox="0 0 130 130">
+    <text x="65" y="12" font-family="monospace" font-size="13" fill="#f0c060" text-anchor="middle" font-weight="700">σ = (2,4,1,3)</text>
+    <!-- Grid lines -->
+    <line x1="20" y1="20" x2="20" y2="115" stroke="#2e3040" stroke-width="1"/>
+    <line x1="20" y1="115" x2="115" y2="115" stroke="#2e3040" stroke-width="1"/>
+    <!-- Position labels at bottom -->
+    <text x="35" y="126" font-family="monospace" font-size="9" fill="#68645c" text-anchor="middle">1</text>
+    <text x="58" y="126" font-family="monospace" font-size="9" fill="#68645c" text-anchor="middle">2</text>
+    <text x="82" y="126" font-family="monospace" font-size="9" fill="#68645c" text-anchor="middle">3</text>
+    <text x="105" y="126" font-family="monospace" font-size="9" fill="#68645c" text-anchor="middle">4</text>
+    <!-- Value labels on left -->
+    <text x="14" y="105" font-family="monospace" font-size="9" fill="#68645c" text-anchor="end">1</text>
+    <text x="14" y="82" font-family="monospace" font-size="9" fill="#68645c" text-anchor="end">2</text>
+    <text x="14" y="58" font-family="monospace" font-size="9" fill="#68645c" text-anchor="end">3</text>
+    <text x="14" y="35" font-family="monospace" font-size="9" fill="#68645c" text-anchor="end">4</text>
+    <!-- Dots: (i, σ(i)): (1,2),(2,4),(3,1),(4,3) -->
+    <!-- x positions: 35, 58, 82, 105; y positions (inverted): 82,35,105,58 -->
+    <circle cx="35" cy="82" r="6" fill="#4ab8a8"/>
+    <circle cx="58" cy="35" r="6" fill="#4ab8a8"/>
+    <circle cx="82" cy="105" r="6" fill="#4ab8a8"/>
+    <circle cx="105" cy="58" r="6" fill="#4ab8a8"/>
+  </svg>
+</div>
+
+<span class="transform-arrow">→</span>
+
+<div class="transform-step">
+  <span class="t-label">Step 2 — Permutation Matrix</span>
+  <svg width="130" height="130" viewBox="0 0 130 130">
+    <text x="65" y="12" font-family="monospace" font-size="11" fill="#d4a843" text-anchor="middle">n×n grid, 1 dot/row/col</text>
+    <!-- 4x4 grid -->
+    <rect x="20" y="18" width="95" height="95" fill="none" stroke="#2e3040" stroke-width="1"/>
+    <line x1="44" y1="18" x2="44" y2="113" stroke="#2e3040" stroke-width=".5"/>
+    <line x1="68" y1="18" x2="68" y2="113" stroke="#2e3040" stroke-width=".5"/>
+    <line x1="92" y1="18" x2="92" y2="113" stroke="#2e3040" stroke-width=".5"/>
+    <line x1="20" y1="42" x2="115" y2="42" stroke="#2e3040" stroke-width=".5"/>
+    <line x1="20" y1="66" x2="115" y2="66" stroke="#2e3040" stroke-width=".5"/>
+    <line x1="20" y1="89" x2="115" y2="89" stroke="#2e3040" stroke-width=".5"/>
+    <!-- Dots at (col, row): σ=(2,4,1,3) means col1→row2, col2→row4, col3→row1, col4→row3 -->
+    <!-- Row 1 = top = value 4, row 4 = bottom = value 1 -->
+    <!-- col positions: 32, 56, 80, 104; row positions (val 1=bottom): 101, 77, 53, 29 -->
+    <rect x="21" y="67" width="23" height="22" fill="rgba(74,184,168,.3)"/>
+    <rect x="45" y="20" width="23" height="22" fill="rgba(74,184,168,.3)"/>
+    <rect x="69" y="90" width="23" height="22" fill="rgba(74,184,168,.3)"/>
+    <rect x="93" y="43" width="23" height="22" fill="rgba(74,184,168,.3)"/>
+    <text x="32" y="82" font-family="monospace" font-size="13" fill="#f0c060" text-anchor="middle">1</text>
+    <text x="56" y="35" font-family="monospace" font-size="13" fill="#f0c060" text-anchor="middle">1</text>
+    <text x="80" y="105" font-family="monospace" font-size="13" fill="#f0c060" text-anchor="middle">1</text>
+    <text x="104" y="58" font-family="monospace" font-size="13" fill="#f0c060" text-anchor="middle">1</text>
+  </svg>
+</div>
+
+<span class="transform-arrow">→</span>
+
+<div class="transform-step">
+  <span class="t-label">Step 3 — Permuton (normalized to [0,1]²)</span>
+  <svg width="130" height="130" viewBox="0 0 130 130">
+    <text x="65" y="12" font-family="monospace" font-size="10" fill="#9878c8" text-anchor="middle">mass 1/n per box</text>
+    <!-- [0,1]² square -->
+    <rect x="20" y="18" width="95" height="95" fill="none" stroke="#2e3040" stroke-width="1.5"/>
+    <!-- Grid lines at 1/4 increments -->
+    <line x1="44" y1="18" x2="44" y2="113" stroke="#2e3040" stroke-width=".5" stroke-dasharray="2,2"/>
+    <line x1="68" y1="18" x2="68" y2="113" stroke="#2e3040" stroke-width=".5" stroke-dasharray="2,2"/>
+    <line x1="92" y1="18" x2="92" y2="113" stroke="#2e3040" stroke-width=".5" stroke-dasharray="2,2"/>
+    <line x1="20" y1="42" x2="115" y2="42" stroke="#2e3040" stroke-width=".5" stroke-dasharray="2,2"/>
+    <line x1="20" y1="66" x2="115" y2="66" stroke="#2e3040" stroke-width=".5" stroke-dasharray="2,2"/>
+    <line x1="20" y1="89" x2="115" y2="89" stroke="#2e3040" stroke-width=".5" stroke-dasharray="2,2"/>
+    <!-- Shaded boxes: σ=(2,4,1,3) -->
+    <!-- i=1,σ=2: x∈[0,.25], y∈[.25,.5] → px x∈[20,44], y∈[66,89] (y inverted) -->
+    <rect x="21" y="67" width="22" height="22" fill="rgba(152,120,200,.6)" rx="1"/>
+    <!-- i=2,σ=4: x∈[.25,.5], y∈[.75,1] → px x∈[44,68], y∈[18,42] -->
+    <rect x="45" y="19" width="22" height="22" fill="rgba(152,120,200,.6)" rx="1"/>
+    <!-- i=3,σ=1: x∈[.5,.75], y∈[0,.25] → px x∈[68,92], y∈[90,113] -->
+    <rect x="69" y="90" width="22" height="22" fill="rgba(152,120,200,.6)" rx="1"/>
+    <!-- i=4,σ=3: x∈[.75,1], y∈[.5,.75] → px x∈[92,115], y∈[42,66] -->
+    <rect x="93" y="43" width="22" height="22" fill="rgba(152,120,200,.6)" rx="1"/>
+    <!-- Axis labels -->
+    <text x="67" y="126" font-family="sans-serif" font-size="9" fill="#68645c" text-anchor="middle">x (position)</text>
+    <text x="10" y="68" font-family="sans-serif" font-size="9" fill="#68645c" text-anchor="middle" transform="rotate(-90,10,68)">y (value)</text>
+    <text x="20" y="116" font-family="monospace" font-size="8" fill="#68645c">0</text>
+    <text x="110" y="116" font-family="monospace" font-size="8" fill="#68645c">1</text>
+  </svg>
+</div>
+
+</div><!-- end transform-flow -->
+
+<div class="block note">
+  <span class="lbl">Reading the diagram</span>
+  <ul class="L">
+    <li><strong>Step 1 (scatter plot):</strong> element at position i with value σ(i) becomes a dot at (i, σ(i)) in ℤ² space.</li>
+    <li><strong>Step 2 (matrix):</strong> each dot becomes a 1 in an n×n binary matrix. Each row and column has exactly one 1 (it's a permutation matrix).</li>
+    <li><strong>Step 3 (permuton):</strong> rescale to [0,1]². Position i maps to the interval [(i−1)/n, i/n] on the x-axis. Value σ(i) maps to [(σ(i)−1)/n, σ(i)/n] on the y-axis. Each of the n boxes gets mass 1/n. This is the <strong>step permuton</strong> μ_σ.</li>
+    <li><strong>As n→∞:</strong> if permutations have a "global structure" that stabilizes, the step permutons converge to a continuous measure — the permuton limit.</li>
+  </ul>
+</div>
+
+<h3 id="cdf">CDF of a Permuton</h3>
+
+<div class="block def">
+  <span class="lbl">CDF of a Permuton</span>
+  The cumulative distribution function of a permuton μ is:
+  <div class="mb">G(x, y)  :=  μ([0,x] × [0,y])</div>
+  the probability that a random point drawn from μ falls in the lower-left rectangle [0,x]×[0,y].
+  <br><br>
+  The <strong>uniform marginal conditions</strong> become:
+  <div class="mb">G(x, 1) = x   (x-marginal uniform)
+G(1, y) = y   (y-marginal uniform)</div>
+  If μ has a density g(x,y) (i.e., μ is absolutely continuous), then:
+  <div class="mb">∫₀¹ g(x,y) dy = 1  for a.e. x    and    ∫₀¹ g(x,y) dx = 1  for a.e. y</div>
+</div>
+
+<div class="block thm">
+  <span class="lbl">Going from Permuton to Permutation Distribution</span>
+  Every permuton μ induces a probability distribution on Sₙ for each n:
+  <ol class="L">
+    <li>Sample n points (x₁,y₁),…,(xₙ,yₙ) i.i.d. from μ.</li>
+    <li>Sort by x-coordinate: relabel so x₁ &lt; x₂ &lt; ··· &lt; xₙ.</li>
+    <li>Record the permutation given by the y-coordinates: σ(i) = rank of yᵢ among {y₁,…,yₙ}.</li>
+  </ol>
+  This gives a random permutation in Sₙ. As n→∞, the step permuton of this random permutation converges back to μ.
+</div>
+
+<div class="block ex">
+  <span class="lbl">Example — permuton for pattern 231</span>
+  <p>The permuton giving the "average shape" of a 231-pattern is concentrated near the three points (0,½), (½,1), (1,0) in [0,1]² — reflecting the relative order: middle value comes first, then large, then small.</p>
+</div>
+
+<!-- ══ 4. CONVERGENCE ══ -->
+<h2 id="convergence"><span class="sn">04</span>Convergence of Permutation Sequences</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Convergence of Permutations</span>
+  A sequence of permutations σ₁, σ₂, σ₃, … (with |σₙ| → ∞) <strong>converges</strong> to a permuton μ if their step permutons μ_{σₙ} converge <strong>weakly</strong> to μ — equivalently, if the CDF converges pointwise:
+  <div class="mb">G_{σₙ}(x, y)  →  G_μ(x, y)   for all (x,y) ∈ [0,1]²</div>
+  Equivalently: for every fixed pattern π ∈ Sₖ, the pattern densities converge:
+  <div class="mb">p(π, σₙ)  →  p(π, μ)</div>
+</div>
+
+<div class="block insight">
+  <span class="lbl">What "global structure" means</span>
+  <p>As n grows, a permutation of length n has more and more local complexity. But if the <em>large-scale shape</em> stabilises — meaning the fraction of triples, quadruples, etc. forming each pattern converges — then the sequence converges. The permuton captures exactly this global shape.</p>
+  <p>Think of it like a blurry photograph: the fine details (which specific positions have which values) wash out as n→∞, but the overall pattern (how values are distributed spatially) remains.</p>
+</div>
+
+<h3 id="examples">Two Key Convergence Examples</h3>
+
+<div class="block ex">
+  <span class="lbl">Example 1 — Identity sequence converges to the diagonal</span>
+  <p>Sequence: 1, 12, 123, 1234, 12345, …</p>
+  <p>For every n, σₙ = (1,2,…,n) is the identity permutation. Its step permuton places mass 1/n at each box along the diagonal: [(i−1)/n, i/n] × [(i−1)/n, i/n].</p>
+  <p>As n→∞, these boxes shrink and fill in the diagonal line y=x uniformly. The limit is the <strong>diagonal permuton</strong> — the measure supported on {(x,x) : x ∈ [0,1]}.</p>
+  <p>Pattern densities: p(123) → 1, all others → 0. ✓ (The identity is always increasing.)</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">Example 2 — Random sequence converges to the uniform permuton</span>
+  <p>Sequence: 132, 4123, 35124, …</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>σ</th><th>p(123)</th><th>p(132)</th><th>p(213)</th><th>p(231)</th><th>p(312)</th><th>p(321)</th></tr>
+    <tr><td>132</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+    <tr><td>4123</td><td>0.25</td><td>0</td><td>0</td><td>0</td><td>0.75</td><td>0</td></tr>
+    <tr><td>35124</td><td>0.10</td><td>0.10</td><td>0.20</td><td>0.20</td><td>0.40</td><td>0</td></tr>
+  </table></div>
+  <p>These densities are heading toward 1/6 for all six patterns — the uniform distribution on S₃. The limit is the <strong>uniform permuton</strong>: the Lebesgue measure on [0,1]² (a gray square). A uniformly random permutation of length n converges to this as n→∞.</p>
+</div>
+
+<div class="block note">
+  <span class="lbl">Two extreme permutons</span>
+  <ul class="L">
+    <li><strong>Diagonal (identity):</strong> supported on y=x. Pattern densities: p(12…k) = 1, all others = 0 for every k.</li>
+    <li><strong>Anti-diagonal (reverse):</strong> supported on y=1−x. Pattern densities: p(k…21) = 1, all others = 0.</li>
+    <li><strong>Uniform (gray square):</strong> p(π) = 1/k! for all π ∈ Sₖ, for all k.</li>
+  </ul>
+</div>
+
+<!-- ══ 5. RANDOM WALK ══ -->
+<h2 id="rw"><span class="sn">05</span>The Random Walk Permuton</h2>
+
+<div class="block def">
+  <span class="lbl">Setup</span>
+  Take n−1 steps of a random walk: X₁=0, Xᵢ₊₁ = Xᵢ + Δᵢ, where Δ₁,…,Δₙ₋₁ are i.i.d. with a <strong>symmetric, continuous</strong> distribution (e.g. standard normal). The permutation σ is induced by ranking the values X₁,…,Xₙ.
+</div>
+
+<div class="block thm">
+  <span class="lbl">Pattern Densities for the Random Walk Permuton</span>
+  For any triple of positions (consecutive or not), the six S₃-pattern probabilities are:
+  <div class="mb">p(123) = p(321) = 1/4
+p(132) = p(231) = p(213) = p(312) = 1/8</div>
+  The <strong>monotone patterns</strong> (123 and 321) each get probability 1/4. The four <strong>non-monotone patterns</strong> each get 1/8.
+</div>
+
+<div class="block proof">
+  <span class="lbl">Proof — for a 3-step walk</span>
+  <p>Let X₁=0, X₂=Δ₁, X₃=Δ₁+Δ₂ with Δ₁,Δ₂ i.i.d. symmetric. The pattern of (X₁,X₂,X₃) is determined by which values are in increasing or decreasing order. There are 4 cases based on signs of Δ₁ and Δ₂:</p>
+
+  <div class="step"><strong>(Δ₁&gt;0, Δ₂&gt;0):</strong> X₁&lt;X₂&lt;X₃ → pattern 123. P = 1/4.</div>
+  <div class="step"><strong>(Δ₁&lt;0, Δ₂&lt;0):</strong> X₁&gt;X₂&gt;X₃ → pattern 321. P = 1/4.</div>
+  <div class="step"><strong>(Δ₁&gt;0, Δ₂&lt;0):</strong> X₂ is larger than both X₁ and X₃. P(Δ₁&gt;0,Δ₂&lt;0)=1/4.
+  <br>Within this case, by symmetry of |Δ₁| and |Δ₂|: P(|Δ₁|&gt;|Δ₂|)=P(|Δ₁|&lt;|Δ₂|)=1/2.
+  <br>If |Δ₁|&gt;|Δ₂|: X₁&lt;X₃&lt;X₂ → pattern 132. P = 1/4 × 1/2 = <strong>1/8</strong>.
+  <br>If |Δ₁|&lt;|Δ₂|: X₃&lt;X₁&lt;X₂ → pattern 231. P = 1/4 × 1/2 = <strong>1/8</strong>.</div>
+  <div class="step"><strong>(Δ₁&lt;0, Δ₂&gt;0):</strong> By symmetry: patterns 213 and 312 each with P = <strong>1/8</strong>.</div>
+
+  <p>Sum: 1/4 + 1/4 + 4×(1/8) = 1. ✓</p>
+  <p>This structure holds for <em>any</em> triple of positions in a long random walk, not just consecutive ones. The random walk permuton has this as its length-3 pattern density profile.</p>
+</div>
+
+<div class="block note">
+  <span class="lbl">Lecture example</span>
+  The lecture noted: P(X₂ &gt; X₁) = 1/2 (obvious), and naively one might expect P(123) = 1/2 × 1/2 = 1/4 since each step is symmetric. But this is NOT the right reasoning — the events "X₁&lt;X₂" and "X₂&lt;X₃" are NOT independent (they share X₂). The correct answer P(123)=1/4 happens to equal 1/4 but for the right reason: P(Δ₁&gt;0 AND Δ₂&gt;0) = 1/4 by independence of Δ₁,Δ₂. For P(231)=1/8, the reasoning goes through the sign decomposition above.
+</div>
+
+<!-- ══ 6. SUPPORT ══ -->
+<h2 id="support"><span class="sn">06</span>Support of a Permuton</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Support</span>
+  The <strong>support</strong> of a permuton μ is the <em>smallest closed subset</em> of [0,1]² with μ-probability 1:
+  <div class="mb">supp(μ)  =  ⋂ {C ⊆ [0,1]² : C closed and μ(C) = 1}</div>
+  Equivalently, a point (x,y) is in supp(μ) iff every open neighborhood of (x,y) has positive μ-measure.
+</div>
+
+<div class="block ex">
+  <span class="lbl">Examples</span>
+  <div class="tbl-wrap"><table>
+    <tr><th>Permuton</th><th>Support</th><th>Description</th></tr>
+    <tr><td>Identity (diagonal)</td><td>{(x,x) : x ∈ [0,1]}</td><td>The main diagonal — a 1D curve in [0,1]²</td></tr>
+    <tr><td>Reverse (anti-diagonal)</td><td>{(x,1−x) : x ∈ [0,1]}</td><td>The anti-diagonal from (0,1) to (1,0)</td></tr>
+    <tr><td>Uniform (gray square)</td><td>[0,1]²</td><td>The entire square — full support</td></tr>
+    <tr><td>Step permuton of σ ∈ Sₙ</td><td>n boxes of size 1/n × 1/n</td><td>Finite support — n rectangular boxes along the matrix positions</td></tr>
+    <tr><td>Random walk permuton</td><td>A specific region of [0,1]²</td><td>Related to the arc-sine distribution</td></tr>
+  </table></div>
+</div>
+
+<div class="block note">
+  <span class="lbl">Support tells you what's possible</span>
+  The support describes which (position, value) combinations occur with positive probability in the limit. A permuton supported on the diagonal means that in the limit, large elements tend to be at the "correct" positions — the permutation looks like the identity. A permuton with full support means every region of the unit square is visited with positive probability.
+</div>
+
+<!-- ══ 7. BASIS ══ -->
+<h2 id="basis"><span class="sn">07</span>Basis of a Permutation Class (HW May 20)</h2>
+
+<div class="block def">
+  <span class="lbl">Recall — Permutation Class</span>
+  A <strong>permutation class</strong> C is a set of permutations closed downward under pattern containment: if σ ∈ C and π is a pattern of σ, then π ∈ C. Every permutation class has the form <span class="m">Av(F)</span> for some set of forbidden patterns F.
+</div>
+
+<div class="block thm">
+  <span class="lbl">Theorem — Unique Basis (HW May 20)</span>
+  For every permutation class C, there exists a <strong>unique antichain</strong> A (called the <em>basis</em> of C) such that C = Av(A).
+  <br><br>
+  The basis is: <span class="m">A = {σ ∉ C : every proper pattern of σ is in C}</span> — the <em>minimal permutations not in C</em>.
+</div>
+
+<div class="block proof">
+  <span class="lbl">Proof</span>
+  <p><strong>Existence — C = Av(A).</strong></p>
+
+  <div class="step"><strong>C ⊆ Av(A):</strong> Suppose σ ∈ C contains some π ∈ A. Then π is a pattern of σ. Since C is downward closed, π ∈ C. But π ∈ A means π ∉ C — contradiction. So σ ∈ C avoids every element of A, i.e. σ ∈ Av(A). ✓</div>
+
+  <div class="step"><strong>Av(A) ⊆ C:</strong> Suppose σ ∉ C. By well-foundedness of the pattern order (no infinite descending chains), there exists a <em>minimal</em> subpermutation of σ that is not in C. Call it π. Every proper pattern of π lies in C (by minimality of π). So π ∈ A. And π is a pattern of σ, so σ contains A → σ ∉ Av(A). ✓</div>
+
+  <p><strong>A is an antichain.</strong> Suppose π, τ ∈ A with π a proper pattern of τ. Since τ ∈ A, every proper pattern of τ is in C — so π ∈ C. But π ∈ A means π ∉ C. Contradiction. So no element of A is a pattern of another. ✓</p>
+
+  <p><strong>A is unique.</strong> Suppose B is another antichain with C = Av(B). Let π ∈ A. Since π ∉ C = Av(B), π contains some β ∈ B. But every proper pattern of π is in C = Av(B), so it avoids B, meaning β is not a proper pattern of π — so β = π. Thus π ∈ B. Similarly B ⊆ A. So A = B. ✓</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">Examples of Bases</span>
+  <ul class="L">
+    <li><strong>Av(231):</strong> basis = {231}. (Stack-sortable permutations.)</li>
+    <li><strong>Av(321):</strong> basis = {321}. (2-increasing permutations.)</li>
+    <li><strong>All permutations:</strong> basis = ∅ (no forbidden patterns).</li>
+    <li><strong>Only the identity permutation (1,2,…,n) for each n:</strong> basis = {21}. (Avoiding any descent.)</li>
+    <li><strong>Av(231, 321):</strong> basis = {231, 321} — an antichain since neither is a pattern of the other.</li>
+  </ul>
+</div>
+
+<!-- ══ 8. FOUR CONVERGENCE TYPES ══ -->
+<h2 id="conv-types"><span class="sn">08</span>Four Modes of Convergence (HW May 22)</h2>
+
+<p>The HW asks for a random sequence of points X₁, X₂, X₃, … on [0,1] illustrating four different convergence behaviors. There are two types of convergence to distinguish:</p>
+
+<div class="block def">
+  <span class="lbl">Two types of convergence</span>
+  <ul class="L">
+    <li><strong>Almost sure (a.s.) convergence:</strong> P(Xₙ → X) = 1. Every sample path converges. The stronger notion.</li>
+    <li><strong>Convergence in distribution:</strong> P(Xₙ ≤ t) → P(X ≤ t) for all t. The CDFs converge. The weaker notion.</li>
+  </ul>
+  <strong>Key relationship:</strong> a.s. convergence ⟹ convergence in distribution, but NOT vice versa.
+</div>
+
+<div class="conv-grid">
+
+<div class="conv-card">
+  <span class="cn">(1)</span>
+  <div class="ct">Converges a.s. to a fixed point</div>
+  <p>Every sample path converges, and they all converge to the same limit.</p>
+  <p><strong>Example:</strong> Xₙ = Uⁿ where U ~ Uniform[0,1].</p>
+  <p>Since P(U &lt; 1) = 1, we have Uⁿ → 0 almost surely. Every sample path converges to 0.</p>
+  <span class="ce">Xₙ = Uⁿ, U ~ Unif[0,1] → 0 a.s.</span>
+</div>
+
+<div class="conv-card">
+  <span class="cn">(2)</span>
+  <div class="ct">Converges a.s., but not to the same point</div>
+  <p>Every sample path converges, but different paths converge to different limits.</p>
+  <p><strong>Example:</strong> Xₙ = U for all n, where U ~ Uniform[0,1] is fixed at the start.</p>
+  <p>Each sample path is constant (Xₙ = U always) → converges. But the limit U is random — different runs give different limits.</p>
+  <span class="ce">Xₙ = U for all n, U ~ Unif[0,1] (random constant)</span>
+</div>
+
+<div class="conv-card">
+  <span class="cn">(3)</span>
+  <div class="ct">Distributions converge, but paths don't</div>
+  <p>The CDF of Xₙ stabilizes, but individual sample paths oscillate without converging.</p>
+  <p><strong>Example:</strong> Xₙ = Uₙ where U₁, U₂, … are i.i.d. Uniform[0,1].</p>
+  <p>Each Xₙ ~ Uniform[0,1] — distribution is always the same, so it trivially converges in distribution. But each Uₙ is independent of the others, so sample paths jump around [0,1] forever without converging.</p>
+  <span class="ce">Xₙ = Uₙ i.i.d. Unif[0,1]. Distrib. ✓, paths ✗</span>
+</div>
+
+<div class="conv-card">
+  <span class="cn">(4)</span>
+  <div class="ct">Neither paths nor distributions converge</div>
+  <p>Sample paths don't converge and the distribution itself oscillates without a limit.</p>
+  <p><strong>Example:</strong> Xₙ = n mod 2 (deterministic: 0, 1, 0, 1, …).</p>
+  <p>Paths: each path is 0,1,0,1,… — no limit. Distributions: alternate between δ₀ (all mass at 0) and δ₁ (all mass at 1) — no weak limit since δ₀ ≠ δ₁.</p>
+  <span class="ce">Xₙ = n mod 2 → 0,1,0,1,… No limit anywhere.</span>
+</div>
+
+</div>
+
+<div class="block note">
+  <span class="lbl">Connection to permutons</span>
+  This is not just abstract probability theory — it's directly about how permuton sequences behave. A sequence of permutations can converge in distribution (as permutons) even when no individual permutation "converges" in any simple sense. Cases (3) and (4) show precisely when distributional convergence can fail.
+</div>
+
+<hr class="divider">
+
+<!-- ══ 9. PRACTICE ══ -->
+<h2 id="practice"><span class="sn">09</span>Try It Yourself</h2>
+
+<div class="practice-header">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+  Practice Problems — Week 8
+</div>
+<div class="practice-wrap">
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q1</span><span>Compute all six length-3 pattern densities for σ = (1,4,2,3,5) ∈ S₅. Then compute the TV distance from 1324 = (1,3,2,4).</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>σ = (1,4,2,3,5), n=5.</strong> Total triples: C(5,3) = 10.</div>
+  <div class="step-s"><strong>Count each pattern:</strong> Check all 10 triples systematically.
+  <br>p(123) = 5/10 = 1/2 &nbsp; p(132) = 2/10 = 1/5 &nbsp; p(213) = 2/10 = 1/5
+  <br>p(231) = 0 &nbsp; p(312) = 1/10 &nbsp; p(321) = 0</div>
+  <div class="step-s"><strong>1324 densities:</strong> 1/2, 1/4, 1/4, 0, 0, 0.</div>
+  <div class="step-s"><strong>TV distance:</strong> dTV = ½ × Σ|p₁−p₂| = ½ × (|1/2−1/2| + |1/5−1/4| + |1/5−1/4| + |0−0| + |1/10−0| + |0−0|)
+  = ½ × (0 + 1/20 + 1/20 + 0 + 1/10 + 0) = ½ × (1/10 + 1/10) = ½ × 1/5 = <strong>1/10</strong></div>
+  <p><span class="ans-box">dTV(14235, 1324) = 1/10 — the closest possible in S₅.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q2</span><span>For the uniform permuton, what are the length-3 pattern densities?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>Uniform permuton</strong> = Lebesgue measure on [0,1]². Sample n points uniformly, sort by x, record y-ranks → uniform random permutation.</div>
+  <div class="step-s"><strong>For a uniform random permutation:</strong> all 3! = 6 orderings of any 3 elements are equally likely. So each pattern has density 1/6.</div>
+  <p><span class="ans-box">p(π) = 1/6 for all π ∈ S₃. The uniform permuton is maximally "mixed".</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q3</span><span>Describe the step permuton for σ = (3,1,4,2) in [0,1]². Where are the four boxes?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>n=4, each box has size 1/4 × 1/4 and mass 1/4.</strong></div>
+  <div class="step-s"><strong>Box for position i, value σ(i):</strong> x ∈ [(i−1)/4, i/4], y ∈ [(σ(i)−1)/4, σ(i)/4].
+  <br>i=1, σ=3: x ∈ [0, 0.25], y ∈ [0.5, 0.75]
+  <br>i=2, σ=1: x ∈ [0.25, 0.5], y ∈ [0, 0.25]
+  <br>i=3, σ=4: x ∈ [0.5, 0.75], y ∈ [0.75, 1]
+  <br>i=4, σ=2: x ∈ [0.75, 1], y ∈ [0.25, 0.5]</div>
+  <p><span class="ans-box">Four boxes along an "S-curve" path through [0,1]²: upper-left, lower-center-left, upper-right, center-right.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q4</span><span>Show that knowing all length-3 pattern densities determines the length-2 density p(21). Give the formula.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>Formula for p(12):</strong> each S₃ pattern contributes to p(12) based on how many increasing pairs it has: 123→3, 132→2, 213→2, 231→1, 312→1, 321→0. Weighted average divided by 3 gives p(12).</div>
+  <div class="mb">p(12) = [3p(123) + 2p(132) + 2p(213) + p(231) + p(312)] / 3</div>
+  <div class="step-s"><strong>Then:</strong> p(21) = 1 − p(12).</div>
+  <p><span class="ans-box">p(21) = 1 − [3p(123) + 2p(132) + 2p(213) + p(231) + p(312)] / 3</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q5</span><span>Give an example of a permutation class whose basis contains infinitely many elements.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>Example:</strong> Let C = {σ : σ is a permutation of some [n] that has at most one descent}. This is the class of "layered" permutations of the form (k, k−1, …, 1, k+1, k+2, …, n) for various k — a single increasing run after a decreasing prefix.</div>
+  <div class="step-s">Actually, a cleaner example: the class of <strong>stack-sortable permutations sortable in 2 passes</strong>. Its basis is infinite — there's no finite set of forbidden patterns that characterizes it.</div>
+  <div class="step-s">Or even simpler: <strong>the class of permutations whose longest increasing subsequence has length ≤ 2</strong>. These avoid 321 and... wait, that's just Av(321), which has basis {321} — finite.
+  <br>Instead: <strong>the class of permutations avoiding 12...k for all k</strong> simultaneously. This class = {only decreasing permutations}, but actually this has basis {12} (one element). 
+  <br>Real example: the <strong>class of separable permutations</strong> has an infinite basis.</div>
+  <p><span class="ans-box">The basis can be infinite. E.g., the class of permutations not containing a monotone subsequence of length k for ANY k has infinitely many minimal forbidden patterns.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q6</span><span>For the random walk permuton, what is p(12)? Use the length-3 marginal formula.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>Length-3 densities for random walk:</strong> p(123)=p(321)=1/4, all others=1/8.</div>
+  <div class="step-s"><strong>Apply marginal formula:</strong>
+  p(12) = [3·(1/4) + 2·(1/8) + 2·(1/8) + 1·(1/8) + 1·(1/8) + 0·(1/4)] / 3
+  = [3/4 + 1/4 + 1/4 + 1/8 + 1/8] / 3
+  = [3/4 + 1/2 + 1/4] / 3
+  = [3/2] / 3 = 1/2</div>
+  <p>Makes sense! The random walk is symmetric, so P(step up) = P(step down) = 1/2. The probability that any two values are in increasing order is 1/2.</p>
+  <p><span class="ans-box">p(12) = 1/2 for the random walk permuton. ✓</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q7</span><span>Construct a random sequence on [0,1] that converges in distribution to a non-trivial limit, but fails to converge almost surely.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>Use the oscillating example:</strong> Let U ~ Uniform[0,1] (fixed at start). Define Xₙ = U if n is even, 1−U if n is odd.</div>
+  <div class="step-s"><strong>Distribution:</strong> Both U and 1−U are Uniform[0,1]. So Xₙ ~ Uniform[0,1] for all n. Distributions converge (trivially, always the same). ✓</div>
+  <div class="step-s"><strong>Almost sure behavior:</strong> For any fixed U ≠ 1/2, the sequence alternates between U and 1−U ≠ U forever. Sample paths do not converge (except on the probability-0 event U=1/2). ✗</div>
+  <p><span class="ans-box">Xₙ = U if n even, 1−U if n odd. Distribution ≡ Unif[0,1]. Paths don't converge a.s.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q8</span><span>What is the basis of the class Av(132, 231)?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>Is {132, 231} already an antichain?</strong> Neither 132 is a pattern of 231 nor 231 is a pattern of 132 (they're both length 3 and neither equals the other). Yes, antichain. ✓</div>
+  <div class="step-s"><strong>Is every permutation not in Av(132,231) containing 132 or 231?</strong> Yes by definition — Av(132,231) = permutations avoiding both. The minimal forbidden permutations ARE 132 and 231 since both are length 3 and all length-1 and length-2 permutations are in Av(132,231).</div>
+  <p><span class="ans-box">Basis = {132, 231}. Both are minimal — all patterns of length &lt;3 are trivially avoided.</span></p>
+</div>
+</div>
+
+</div>
+
+<hr class="divider">
+
+<!-- ══ 10. HOMEWORK ══ -->
+<h2 id="hw"><span class="sn">10</span>Homework</h2>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Monday May 18</span>
+  <p><strong>Problem:</strong> Compute all 6 length-3 pattern densities for 1324. Choose a σ ∈ S₅ you think is close to 1324 and compute the TV distance between their density profiles.</p>
+  <p><strong>Pattern densities for 1324 = (1,3,2,4):</strong> C(4,3)=4 triples total.</p>
+  <ul class="L">
+    <li>p(123) = 2/4 = 1/2 &nbsp;|&nbsp; p(132) = 1/4 &nbsp;|&nbsp; p(213) = 1/4</li>
+    <li>p(231) = 0 &nbsp;|&nbsp; p(312) = 0 &nbsp;|&nbsp; p(321) = 0</li>
+  </ul>
+  <p><strong>Best S₅ choice:</strong> σ = (1,4,2,3,5) = 14235. C(5,3)=10 triples.</p>
+  <ul class="L">
+    <li>p(123) = 5/10 = 1/2 &nbsp;|&nbsp; p(132) = 2/10 = 1/5 &nbsp;|&nbsp; p(213) = 2/10 = 1/5</li>
+    <li>p(231) = 0 &nbsp;|&nbsp; p(312) = 1/10 &nbsp;|&nbsp; p(321) = 0</li>
+  </ul>
+  <p><strong>TV distance:</strong> dTV = ½ × (|1/2−1/2| + |1/4−1/5| + |1/4−1/5| + 0 + |0−1/10| + 0) = ½ × (1/20 + 1/20 + 1/10) = ½ × 1/5 = <strong>1/10</strong>.</p>
+  <p>This is the minimum TV distance achievable in S₅ — no S₅ permutation is closer to 1324 under this metric.</p>
+</div>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Wednesday May 20</span>
+  <p><strong>Problem:</strong> Prove that every permutation class C has a unique antichain basis A with C = Av(A).</p>
+  <p><strong>Key steps:</strong></p>
+  <ol class="L">
+    <li>Define A = {minimal permutations not in C}.</li>
+    <li>C ⊆ Av(A): if σ ∈ C contains π ∈ A, then downward closure gives π ∈ C, contradicting π ∈ A.</li>
+    <li>Av(A) ⊆ C: if σ ∉ C, take minimal sub-permutation π ∉ C — then π ∈ A and π ⊆ σ, so σ ∉ Av(A).</li>
+    <li>A is antichain: if π were a proper pattern of τ (both in A), minimality of τ gives π ∈ C, contradicting π ∈ A.</li>
+    <li>Uniqueness: if B is another antichain with C = Av(B), show A ⊆ B and B ⊆ A by chasing minimality.</li>
+  </ol>
+</div>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Friday May 22</span>
+  <p><strong>Problem:</strong> Describe random sequences X₁,X₂,… on [0,1] illustrating each behavior:</p>
+  <ol class="L">
+    <li><strong>Converges a.s. to fixed point:</strong> Xₙ = Uⁿ where U ~ Unif[0,1]. Converges to 0 a.s. since U&lt;1 a.s.</li>
+    <li><strong>Converges a.s., not always same point:</strong> Xₙ = U for all n. Each path is constant (converges to U), but U is random over [0,1].</li>
+    <li><strong>Distributions converge, paths don't:</strong> Xₙ = Uₙ i.i.d. Unif[0,1]. Distribution is always Unif[0,1] (converges trivially). Paths oscillate — no a.s. limit.</li>
+    <li><strong>Neither converges:</strong> Xₙ = n mod 2. Deterministic sequence 0,1,0,1,… — no limit. Distributions alternate δ₀ and δ₁ — no weak limit.</li>
+  </ol>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 11. CHEAT SHEET ══ -->
+<h2 id="cheat"><span class="sn">11</span>One-Page Cheat Sheet</h2>
+<div class="cheat-sheet">
+  <div class="cheat-title">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Week 8 Cheat Sheet
+  </div>
+  <div class="cheat-grid">
+    <div class="cheat-section">
+      <h5>Pattern Densities</h5>
+      <ul>
+        <li>p(π,σ) = (# k-subsets forming π) / C(n,k)</li>
+        <li>Sum over all π ∈ Sₖ = 1 (probability distribution)</li>
+        <li>Marginal: p(12) = [3p(123)+2p(132)+2p(213)+p(231)+p(312)] / 3</li>
+        <li>TV distance = ½ Σ|p₁(π)−p₂(π)|, value in [0,1]</li>
+        <li>1324: p(123)=½, p(132)=p(213)=¼, rest=0</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Permuton</h5>
+      <ul>
+        <li>Prob. measure on [0,1]² with uniform marginals</li>
+        <li>G(x,y) = μ([0,x]×[0,y]); G(x,1)=x, G(1,y)=y</li>
+        <li>σ → step permuton: mass 1/n at box [(i−1)/n,i/n]×[(σ(i)−1)/n,σ(i)/n]</li>
+        <li>Diagonal permuton: supp = {y=x}; p(123…k)=1</li>
+        <li>Uniform permuton: full [0,1]²; p(π)=1/k! ∀π∈Sₖ</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Random Walk Permuton</h5>
+      <ul>
+        <li>n−1 symmetric i.i.d. steps</li>
+        <li>p(123)=p(321)=1/4; p(132)=p(231)=p(213)=p(312)=1/8</li>
+        <li>p(12) = 1/2 (symmetric steps)</li>
+      </ul>
+    </div>
+    <div class="cheat-section">
+      <h5>Convergence</h5>
+      <ul>
+        <li>Sequence converges to μ iff CDFs G_{σₙ}(x,y) → G_μ(x,y)</li>
+        <li>Equivalently: all pattern densities p(π,σₙ) → p(π,μ)</li>
+        <li>1,12,123,… → diagonal permuton</li>
+        <li>Uniform random perms → uniform permuton</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Support</h5>
+      <ul>
+        <li>supp(μ) = smallest closed set with μ-prob 1</li>
+        <li>= ⋂{closed C : μ(C)=1}</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Basis of Permutation Class</h5>
+      <ul>
+        <li>A = minimal permutations NOT in C</li>
+        <li>C = Av(A), A is an antichain, A is unique</li>
+        <li>Proof: minimality gives existence and antichain; uniqueness by inclusion</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Four Convergence Modes</h5>
+      <ul>
+        <li>(1) a.s. fixed: Xₙ=Uⁿ → 0</li>
+        <li>(2) a.s. random: Xₙ=U (constant U~Unif)</li>
+        <li>(3) distrib. only: Xₙ=Uₙ i.i.d. Unif</li>
+        <li>(4) neither: Xₙ = n mod 2</li>
+        <li>a.s. ⟹ in distribution (not vice versa)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Math 100 · Dartmouth College · Spring 2026 · Week 8 — Permutons, Convergence &amp; Permutation Classes</div>
+</main>
+</div>
+<script>
+document.querySelectorAll('.pq-q').forEach(function(q){
+  q.addEventListener('click',function(){
+    var a=this.parentElement.querySelector('.pq-a');
+    var open=this.classList.toggle('open');
+    a.classList.toggle('vis',open);
+  });
+});
+var links=document.querySelectorAll('nav a');
+function setActive(){
+  var best=null;
+  document.querySelectorAll('h2[id],h3[id]').forEach(function(s){
+    if(s.getBoundingClientRect().top<120) best=s.id;
+  });
+  links.forEach(function(l){l.classList.toggle('active',l.getAttribute('href')==='#'+best);});
+}
+window.addEventListener('scroll',setActive);
+setActive();
+</script>
+</body>
+</html>

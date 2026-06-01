@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 7 — Patterns, Stack Sorting &amp; Catalan Numbers</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1117;--bg2:#161820;--bg3:#1e2028;--bg4:#252730;--border:#2e3040;--ink:#e8e4dc;--ink2:#a8a49c;--ink3:#68645c;--gold:#d4a843;--gold2:#f0c060;--teal:#4ab8a8;--teal2:#6dd4c4;--rose:#c86478;--rose2:#e08090;--violet:#9878c8;--violet2:#b898e0;--green:#5a9e6a;--green2:#7ac88a;--orange:#d4824a;--mono:'JetBrains Mono',monospace;--serif:'Source Serif 4',Georgia,serif;--display:'Playfair Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--serif);background:var(--bg);color:var(--ink);line-height:1.8;font-size:16.5px}
+.shell{display:flex;min-height:100vh}
+nav{width:248px;min-width:248px;background:var(--bg2);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;padding:1.6rem 0;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.nav-logo{padding:0 1.2rem 1.2rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.nav-logo .course{font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3)}
+.nav-logo .title{font-family:var(--display);font-size:13px;color:var(--gold);margin-top:.25rem;line-height:1.3}
+nav ul{list-style:none}
+.nav-section{font-family:var(--sans);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);padding:.9rem 1.2rem .2rem}
+nav a{display:block;font-family:var(--sans);font-size:12px;color:var(--ink2);text-decoration:none;padding:.3rem 1.2rem;line-height:1.4;border-left:2px solid transparent;transition:all .15s}
+nav a:hover{color:var(--ink);background:var(--bg3)}
+nav a.active{color:var(--gold);border-left-color:var(--gold);background:var(--bg3)}
+main{flex:1;max-width:860px;padding:3.5rem 4rem}
+.cover{margin-bottom:3.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border)}
+.week-badge{display:inline-block;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.3);border-radius:3px;padding:.25rem .7rem;margin-bottom:1rem}
+.cover h1{font-family:var(--display);font-size:2.3rem;font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:.6rem}
+.cover h1 em{color:var(--gold);font-style:italic}
+.cover .subtitle{font-family:var(--sans);font-size:.9rem;color:var(--ink2);font-weight:300}
+.topics-row{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1.4rem}
+.topic-pill{font-family:var(--sans);font-size:11px;font-weight:500;padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);color:var(--ink2)}
+h2{font-family:var(--display);font-size:1.55rem;font-weight:600;color:var(--ink);margin:3.5rem 0 1.2rem;scroll-margin-top:2rem;display:flex;align-items:center;gap:.7rem}
+h2 .sn{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);padding:.25rem .55rem;border-radius:3px;flex-shrink:0}
+h3{font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--teal);margin:2rem 0 .65rem;scroll-margin-top:2rem;letter-spacing:.01em}
+h4{font-family:var(--sans);font-size:.9rem;font-weight:600;color:var(--ink2);margin:1.4rem 0 .4rem}
+p{margin-bottom:.9rem}
+.block{margin:1.2rem 0;padding:1rem 1.2rem;border-radius:6px}
+.def{background:rgba(74,184,168,.07);border-left:3px solid var(--teal)}
+.thm{background:rgba(212,168,67,.07);border-left:3px solid var(--gold)}
+.proof{background:var(--bg3);border-left:3px solid var(--border)}
+.ex{background:rgba(154,120,200,.07);border-left:3px solid var(--violet)}
+.note{background:var(--bg3);border-left:3px solid var(--border);font-size:.92rem;color:var(--ink2)}
+.hw{background:rgba(200,100,120,.07);border-left:3px solid var(--rose)}
+.warn{background:rgba(212,130,74,.07);border-left:3px solid var(--orange)}
+.insight{background:rgba(74,184,168,.1);border:1px solid rgba(74,184,168,.25);border-radius:6px}
+.lbl{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:.4rem}
+.def .lbl{color:var(--teal)}.thm .lbl{color:var(--gold)}.proof .lbl{color:var(--ink3)}.ex .lbl{color:var(--violet)}.hw .lbl{color:var(--rose)}.note .lbl{color:var(--ink3)}.warn .lbl{color:var(--orange)}.insight .lbl{color:var(--teal)}
+.m{font-family:var(--mono);font-size:.83em;background:var(--bg4);color:var(--gold2);padding:.12em .38em;border-radius:3px;white-space:nowrap}
+.mb{display:block;font-family:var(--mono);font-size:.86em;background:var(--bg3);color:var(--teal2);padding:.65rem 1rem;border-radius:4px;margin:.7rem 0;border:1px solid var(--border);overflow-x:auto;white-space:pre}
+ul.L,ol.L{padding-left:1.4rem;margin:.5rem 0 .8rem}
+ul.L li,ol.L li{margin-bottom:.35rem}
+.step{background:var(--bg3);border-left:2px solid var(--teal);padding:.5rem .9rem;border-radius:0 4px 4px 0;margin:.5rem 0;font-size:.9rem}
+.step strong{color:var(--teal2)}
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:.87rem;font-family:var(--sans)}
+th{background:var(--bg3);color:var(--ink2);font-weight:600;padding:.5rem .8rem;text-align:left;border-bottom:1px solid var(--border);font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
+td{padding:.42rem .8rem;border-bottom:1px solid var(--bg3);vertical-align:top;color:var(--ink2)}
+tr:last-child td{border-bottom:none}
+td:first-child{color:var(--ink);font-weight:500}
+.yes{color:var(--green2);font-weight:600}.no{color:var(--rose2);font-weight:600}
+.arc{background:var(--bg2);border:1px solid var(--gold);border-radius:8px;padding:1.2rem 1.4rem;margin:1.5rem 0}
+.arc-title{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem}
+.arc-steps{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem;font-family:var(--sans);font-size:.82rem}
+.arc-step{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.3rem .7rem;color:var(--ink)}
+.arc-arrow{color:var(--gold);font-size:1.1rem}
+/* Stack trace */
+.trace{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.8rem 1rem;margin:.8rem 0;font-family:var(--mono);font-size:.82em}
+.trace-row{display:flex;gap:1.5rem;margin:.3rem 0;align-items:baseline}
+.trace-label{color:var(--ink3);min-width:70px;font-size:.78em}
+.trace-val{color:var(--teal2)}
+.trace-out{color:var(--gold2)}
+.trace-op{color:var(--rose2);font-size:.75em}
+/* Dyck path visual */
+.dyck-wrap{display:flex;flex-wrap:wrap;gap:1rem;margin:1rem 0;align-items:flex-end}
+/* Practice */
+.practice-header{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#2a3a5e,#1e4a3a);padding:.6rem 1.1rem;border-radius:6px 6px 0 0;display:flex;align-items:center;gap:.5rem}
+.practice-wrap{border:1px solid var(--border);border-radius:0 0 6px 6px;overflow:hidden;margin-bottom:2rem}
+.pq{border-bottom:1px solid var(--border)}.pq:last-child{border-bottom:none}
+.pq-q{font-family:var(--sans);font-size:.875rem;font-weight:500;color:var(--ink);padding:.75rem 1.1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;user-select:none;transition:background .12s}
+.pq-q:hover{background:var(--bg3)}
+.pq-q .qn{font-size:9.5px;font-weight:700;letter-spacing:.1em;color:var(--teal);min-width:1.8rem;padding-top:.1rem;flex-shrink:0}
+.pq-q .arr{font-size:11px;color:var(--ink3);transition:transform .18s;flex-shrink:0;padding-top:.1rem}
+.pq-q.open .arr{transform:rotate(180deg)}
+.pq-a{display:none;padding:.2rem 1.1rem .9rem;border-top:1px dashed var(--border);background:var(--bg2)}
+.pq-a.vis{display:block}
+.pq-a .al{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green2);margin-bottom:.5rem;display:block;padding-top:.55rem}
+.pq-a p{font-size:.875rem;font-family:var(--sans);color:var(--ink2);margin-bottom:.45rem;line-height:1.65}
+.pq-a .step-s{background:var(--bg3);border-left:2px solid var(--teal);padding:.45rem .8rem;border-radius:0 4px 4px 0;margin:.35rem 0;font-size:.85rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a .step-s strong{color:var(--teal2)}
+.pq-a ul,.pq-a ol{padding-left:1.3rem;margin:.3rem 0 .45rem;font-size:.875rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a li{margin-bottom:.25rem}
+.ans-box{background:rgba(90,158,106,.1);border:1px solid rgba(90,158,106,.3);border-radius:4px;padding:.4rem .8rem;font-family:var(--mono);font-size:.82em;color:var(--green2);margin:.4rem 0;display:inline-block}
+.cheat-sheet{background:var(--bg2);border:1px solid var(--gold);border-radius:8px;padding:1.5rem;margin:2rem 0}
+.cheat-title{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem}
+.cheat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.cheat-section h5{font-family:var(--sans);font-size:.8rem;font-weight:700;color:var(--teal2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.cheat-section p,.cheat-section li{font-family:var(--sans);font-size:.8rem;color:var(--ink2);line-height:1.5;margin-bottom:.25rem}
+.cheat-section ul{padding-left:1.1rem;margin:.25rem 0}
+.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+
+/* ── Page navigation buttons ── */
+.page-actions{display:flex;flex-wrap:wrap;gap:.55rem;margin-bottom:1.3rem}
+.page-link{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--bg);background:var(--gold);border:1px solid rgba(212,168,67,.55);border-radius:4px;padding:.42rem .78rem;text-decoration:none;transition:transform .15s,background .15s,border-color .15s,color .15s}
+.page-link:hover{background:var(--gold2);text-decoration:none;transform:translateY(-1px)}
+.page-link.secondary{color:var(--ink2);background:transparent;border-color:var(--border)}
+.page-link.secondary:hover{color:var(--ink);background:var(--bg3);border-color:rgba(212,168,67,.45)}
+.page-link.disabled{color:var(--ink3);background:transparent;border-color:var(--border);pointer-events:none;cursor:default;opacity:.7}
+.sidebar-actions{display:grid;gap:.45rem;padding:.2rem 1.2rem 1rem}
+.sidebar-actions .page-link{justify-content:center;padding:.36rem .65rem}
+
+.footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:var(--sans);font-size:11px;color:var(--ink3)}
+@media(max-width:960px){nav{display:none}main{padding:2rem 1.5rem}}
+@media(max-width:660px){.cheat-grid{grid-template-columns:1fr}.arc-steps{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav>
+  <div class="nav-logo">
+    <div class="course">Math 100 · Spring 2026</div>
+    <div class="title">Week 7 — Patterns, Stack Sorting &amp; Catalan</div>
+  </div>
+
+  <div class="sidebar-actions">
+    <a class="page-link" href="index.html">← Home</a>
+    <a class="page-link secondary" href="week6_comparability_graphs_dimension.html">← Previous Week</a>
+    <a class="page-link secondary" href="week8_permutons_convergence.html">Next Week →</a>
+  </div>
+  <ul>
+    <li class="nav-section">Sections</li>
+    <li><a href="#why">1 · Why We Care</a></li>
+    <li><a href="#dim-sn">2 · dim(Sₙ) = n (HW May 11)</a></li>
+    <li><a href="#patterns">3 · Pattern Avoidance</a></li>
+    <li><a href="#321">↳ 321-Avoiding</a></li>
+    <li><a href="#classes">↳ Permutation Classes</a></li>
+    <li><a href="#stack">4 · Stack Sorting</a></li>
+    <li><a href="#ckt">↳ The c,k,t Argument</a></li>
+    <li><a href="#321-machine">5 · The 321 Machine</a></li>
+    <li><a href="#dyck">6 · Dyck Paths &amp; Catalan</a></li>
+    <li><a href="#ballot">↳ Ballot Theorem</a></li>
+    <li><a href="#sw">7 · Stanley–Wilf</a></li>
+    <li><a href="#permutons">8 · Permutons</a></li>
+    <li><a href="#practice">9 · Try It Yourself</a></li>
+    <li><a href="#hw">10 · Homework</a></li>
+    <li><a href="#cheat">11 · Cheat Sheet</a></li>
+  </ul>
+</nav>
+<main>
+
+
+<div class="page-actions">
+  <a class="page-link" href="index.html">← Back to Home</a>
+  <a class="page-link secondary" href="week6_comparability_graphs_dimension.html">← Previous Week</a>
+  <a class="page-link secondary" href="week8_permutons_convergence.html">Next Week →</a>
+</div>
+
+<div class="cover">
+  <div class="week-badge">Week 7</div>
+  <h1>Patterns, Stack Sorting<br>&amp; <em>Catalan Numbers</em></h1>
+  <div class="subtitle">Math 100 · Dartmouth College · Spring 2026</div>
+  <div class="topics-row">
+    <span class="topic-pill">dim(Sₙ) = n proof</span>
+    <span class="topic-pill">Pattern avoidance</span>
+    <span class="topic-pill">321-avoiding permutations</span>
+    <span class="topic-pill">Permutation classes</span>
+    <span class="topic-pill">Stack sorting</span>
+    <span class="topic-pill">231-avoiding ↔ stack-sortable</span>
+    <span class="topic-pill">Dyck paths</span>
+    <span class="topic-pill">Catalan numbers</span>
+    <span class="topic-pill">Ballot theorem</span>
+    <span class="topic-pill">Stanley–Wilf</span>
+    <span class="topic-pill">Permutons</span>
+  </div>
+</div>
+
+<!-- ══ 1. WHY WE CARE ══ -->
+<h2 id="why"><span class="sn">01</span>Why We Care</h2>
+<p>This week ties together several threads. We finish the dimension story by proving dim(Sₙ) = n with a clean cycle argument. Then we move into pattern avoidance — asking "which permutations avoid a given sub-pattern?" — and discover a beautiful connection: the 231-avoiding and 321-avoiding permutations are both counted by the Catalan numbers, via a bijection to Dyck paths, proved using the ballot theorem.</p>
+
+<div class="arc">
+  <div class="arc-title">🔗 Central arc of Week 7</div>
+  <div class="arc-steps">
+    <span class="arc-step">dim(Sₙ)=n<br><small style="color:var(--ink3)">cycle argument</small></span>
+    <span class="arc-arrow">→</span>
+    <span class="arc-step">321-avoiding<br><small style="color:var(--ink3)">= 2 increasing runs</small></span>
+    <span class="arc-arrow">→</span>
+    <span class="arc-step">Stack sort<br><small style="color:var(--ink3)">↔ 231-avoiding</small></span>
+    <span class="arc-arrow">→</span>
+    <span class="arc-step">Dyck paths<br><small style="color:var(--ink3)">= Cₙ</small></span>
+    <span class="arc-arrow">→</span>
+    <span class="arc-step">Ballot theorem<br><small style="color:var(--ink3)">cycle lemma</small></span>
+  </div>
+</div>
+
+<!-- ══ 2. dim(Sₙ) = n ══ -->
+<h2 id="dim-sn"><span class="sn">02</span>dim(Sₙ) = n — The Complete Proof</h2>
+
+<p>Recall the standard example Sₙ from Week 6: elements {a₁,…,aₙ, b₁,…,bₙ} with <span class="m">aᵢ &lt; bⱼ iff i ≠ j</span>. The diagonal pairs (aᵢ, bᵢ) are all incomparable. We showed dim(Sₙ) ≤ n in Week 6 by exhibiting n linear extensions. Now we prove dim(Sₙ) ≥ n.</p>
+
+<div class="block thm">
+  <span class="lbl">Theorem (HW May 11) — dim(Sₙ) = n exactly</span>
+  The standard example Sₙ has dimension exactly n.
+</div>
+
+<div class="block proof">
+  <span class="lbl">Proof of lower bound — dim(Sₙ) ≥ n</span>
+  <p><strong>Key lemma: in any linear extension of Sₙ, at most one diagonal pair (aᵢ, bᵢ) can have bᵢ before aᵢ.</strong></p>
+  <p><em>Proof of lemma:</em> Suppose for contradiction that some linear extension L has both <span class="m">bᵢ before aᵢ</span> AND <span class="m">bⱼ before aⱼ</span> for some i ≠ j. We derive a cycle:</p>
+  <ul class="L">
+    <li><span class="m">aⱼ &lt; bᵢ</span> in Sₙ (since j ≠ i) → <span class="m">aⱼ before bᵢ</span> in L</li>
+    <li><span class="m">bᵢ before aᵢ</span> in L (assumption)</li>
+    <li><span class="m">aᵢ &lt; bⱼ</span> in Sₙ (since i ≠ j) → <span class="m">aᵢ before bⱼ</span> in L</li>
+    <li><span class="m">bⱼ before aⱼ</span> in L (assumption)</li>
+  </ul>
+  <p>Chaining these: <span class="m">aⱼ → bᵢ → aᵢ → bⱼ → aⱼ</span> — a cycle in L. But L is a total order, which has no cycles. Contradiction. ✗</p>
+  <p><strong>Conclusion:</strong> Since each linear extension can "separate" at most one diagonal pair (aᵢ, bᵢ), and we have n incomparable diagonal pairs that each must be separated, the realizer needs at least n extensions. Therefore dim(Sₙ) ≥ n.</p>
+  <p>Combined with dim(Sₙ) ≤ n (the explicit realizer from Week 6): <strong>dim(Sₙ) = n. ∎</strong></p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">Concrete example — S₂</span>
+  <p>S₂ = {a₁,a₂,b₁,b₂} with a₁&lt;b₂ and a₂&lt;b₁. Diagonal pairs: (a₁,b₁) and (a₂,b₂).</p>
+  <p>If some extension L has b₁ before a₁: then a₂ before b₁ (since a₂&lt;b₁) and a₁ before b₂ (since a₁&lt;b₂). So L contains: a₂→b₁→a₁→b₂. Can L also have b₂ before a₂? That would give b₂→a₂→b₁→a₁→b₂ — cycle! So L cannot also separate (a₂,b₂). Two separate extensions needed. dim(S₂) = 2. ✓</p>
+</div>
+
+<!-- ══ 3. PATTERN AVOIDANCE ══ -->
+<h2 id="patterns"><span class="sn">03</span>Pattern Avoidance</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Pattern Containment and Avoidance</span>
+  A permutation <span class="m">σ ∈ Sₙ</span> <strong>contains</strong> the pattern <span class="m">π ∈ Sₖ</span> (k ≤ n) if there exist indices <span class="m">i₁ &lt; i₂ &lt; ··· &lt; iₖ</span> such that the relative order of <span class="m">σ(i₁), σ(i₂), …, σ(iₖ)</span> is the same as the relative order of <span class="m">π(1), π(2), …, π(k)</span>.
+  <br><br>
+  <span class="m">σ</span> <strong>avoids</strong> <span class="m">π</span> if it does not contain <span class="m">π</span>. We write <span class="m">Avₙ(π)</span> for the set of π-avoiding permutations of length n.
+</div>
+
+<div class="block ex">
+  <span class="lbl">Examples</span>
+  <ul class="L">
+    <li><span class="m">(3,1,4,2)</span> contains <span class="m">231</span>: take positions 1,2,4 with values (3,1,2) — relative order is 2,1,3? No. Take positions 1,3,4 with values (3,4,2) — relative order 2,3,1 = 231. ✓</li>
+    <li><span class="m">(1,3,2,4)</span> avoids <span class="m">321</span>: no three positions with values in strictly decreasing order. ✓</li>
+    <li><span class="m">(4,3,2,1)</span> contains every pattern in S₃ (it's the reverse permutation).</li>
+  </ul>
+</div>
+
+<h3 id="321">321-Avoiding Permutations</h3>
+
+<div class="block thm">
+  <span class="lbl">Characterization of 321-Avoiding Permutations</span>
+  The following are equivalent for a permutation σ:
+  <ol class="L">
+    <li>σ avoids the pattern 321.</li>
+    <li>σ has no decreasing subsequence of length 3 (longest decreasing subsequence has length ≤ 2).</li>
+    <li>σ can be partitioned into <strong>at most 2 increasing subsequences</strong>.</li>
+  </ol>
+  <em>Why (1) ↔ (2):</em> A 321 pattern IS a decreasing subsequence of length 3. ✓<br>
+  <em>Why (2) ↔ (3):</em> By Dilworth's theorem, the longest decreasing subsequence has length ≤ 2 iff the permutation (viewed as a poset under dominance) has width ≤ 2, iff it can be partitioned into at most 2 chains = 2 increasing subsequences. ✓
+</div>
+
+<div class="block ex">
+  <span class="lbl">Examples — splitting into 2 increasing subsequences</span>
+  <ul class="L">
+    <li><span class="m">(3,1,4,2)</span>: Split as {3,4} and {1,2} — both increasing. No 321 pattern. ✓</li>
+    <li><span class="m">(2,4,1,3)</span>: Split as {2,4} and {1,3}. ✓</li>
+    <li><span class="m">(3,2,1,4)</span>: Contains 3&gt;2&gt;1 — a 321 pattern. Cannot split into 2 increasing. ✗</li>
+  </ul>
+</div>
+
+<div class="block note">
+  <span class="lbl">Connection to Week 4 — Erdős–Szekeres</span>
+  By Erdős–Szekeres, any permutation of length n²+1 contains either an increasing subsequence of length n+1 or a decreasing subsequence of length n+1. A 321-avoiding permutation has longest decreasing subsequence ≤ 2. If it's 321-avoiding of length n, the longest increasing subsequence is at least ⌈n/2⌉ (by Erdős–Szekeres with r=2, s=⌈n/2⌉).
+</div>
+
+<h3 id="classes">Permutation Classes</h3>
+
+<div class="block def">
+  <span class="lbl">Definition — Permutation Class</span>
+  A <strong>permutation class</strong> is a set C of permutations that is <em>closed downward under pattern containment</em>: if σ ∈ C and π is a pattern of σ (π is contained in σ), then π ∈ C.
+  <br><br>
+  Every permutation class is of the form <span class="m">Av(F)</span> = {σ : σ avoids all π ∈ F} for some set F of "forbidden patterns."
+</div>
+
+<div class="block ex">
+  <span class="lbl">Examples</span>
+  <ul class="L">
+    <li>Av(321) = all 321-avoiding permutations (closed: any pattern of a 321-avoider avoids 321 too).</li>
+    <li>Av(231) = all 231-avoiding permutations = stack-sortable permutations.</li>
+    <li>Av(12) = only the decreasing permutations (n, n−1, …, 1) for each n.</li>
+    <li>Av(∅) = all permutations (no forbidden pattern).</li>
+  </ul>
+</div>
+
+<!-- ══ 4. STACK SORTING ══ -->
+<h2 id="stack"><span class="sn">04</span>Stack Sorting and 231-Avoiding Permutations</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Stack-Sort Algorithm</span>
+  Given input permutation σ = (σ(1), σ(2), …, σ(n)), process left to right with a stack:
+  <ol class="L">
+    <li>If the stack is <em>empty</em> or the <em>stack top is greater than</em> the current input element: <strong>PUSH</strong> the input element onto the stack.</li>
+    <li>Otherwise (stack top ≤ current input): <strong>POP</strong> the stack top to the output, and repeat the comparison.</li>
+    <li>After all input is processed: pop remaining stack elements to output.</li>
+  </ol>
+  The algorithm <strong>succeeds</strong> if the output is the sorted sequence 1, 2, …, n.
+</div>
+
+<div class="block ex">
+  <span class="lbl">Trace example — σ = (2, 3, 1)</span>
+  <div class="trace">
+    <div class="trace-row"><span class="trace-label">Input 2:</span><span class="trace-op">PUSH 2</span><span class="trace-val">stack=[2]</span><span class="trace-out">output=[]</span></div>
+    <div class="trace-row"><span class="trace-label">Input 3:</span><span class="trace-op">top=2 &lt; 3 → POP 2</span><span class="trace-val">stack=[]</span><span class="trace-out">output=[2]</span></div>
+    <div class="trace-row"><span class="trace-label"></span><span class="trace-op">PUSH 3</span><span class="trace-val">stack=[3]</span><span class="trace-out">output=[2]</span></div>
+    <div class="trace-row"><span class="trace-label">Input 1:</span><span class="trace-op">top=3 &gt; 1 → PUSH 1</span><span class="trace-val">stack=[3,1]</span><span class="trace-out">output=[2]</span></div>
+    <div class="trace-row"><span class="trace-label">Done:</span><span class="trace-op">POP 1, POP 3</span><span class="trace-val">stack=[]</span><span class="trace-out">output=[2,1,3]</span></div>
+  </div>
+  <p>Output [2,1,3] ≠ [1,2,3]. <span class="no">Not sorted!</span> Note: (2,3,1) contains the 231 pattern (values 2&lt;3 with 1&lt;2 after).</p>
+</div>
+
+<div class="block thm">
+  <span class="lbl">Theorem (Knuth 1968) — Stack-Sortable ↔ 231-Avoiding</span>
+  A permutation σ is stack-sortable if and only if σ avoids the pattern 231.
+  <br><br>
+  Therefore: <span class="m">|stack-sortable perms of length n|  =  |Avₙ(231)|  =  Cₙ</span>.
+</div>
+
+<h3 id="ckt">Proof: The c,k,t Argument</h3>
+
+<div class="block proof">
+  <span class="lbl">Proof — (⟹) Not stack-sortable implies contains 231</span>
+  <p>Suppose stack-sort fails on σ — the output is not sorted. We show σ contains a 231 pattern.</p>
+
+  <div class="step"><strong>Setup the triple (t, c, k).</strong> Since the output is not sorted, at some point an element is output before a smaller element that should have come first. Trace back to identify:</div>
+  <ul class="L">
+    <li><strong>t</strong> = an element that has been pushed onto the stack and is waiting</li>
+    <li><strong>c</strong> = the element that caused t to be popped (c &gt; t, so c triggers popping t out of order)</li>
+    <li><strong>k</strong> = an element that comes AFTER c in the input with k &lt; t</li>
+  </ul>
+  <p>In σ, the relative positions are: <span class="m">t</span> appears before <span class="m">c</span>, which appears before <span class="m">k</span>.</p>
+
+  <div class="step"><strong>The values satisfy c &gt; t &gt; k.</strong></div>
+  <ul class="L">
+    <li>c &gt; t: because c arriving caused t to be popped (the algorithm pops when top &lt; input).</li>
+    <li>t &gt; k: because k &lt; t means k needs to come before t in sorted output, but t was already output — that's the failure.</li>
+  </ul>
+
+  <div class="step"><strong>Positions of (t,c,k) in σ form a 231 pattern.</strong> The element t appears at some position i, c at position j &gt; i, and k at position l &gt; j. Values: t &lt; c (since c &gt; t) and k &lt; t (since t &gt; k). So the relative order is: t=medium, c=large, k=small — exactly the pattern 231. ✓</div>
+
+  <p>Therefore σ contains 231. ∎</p>
+</div>
+
+<div class="block proof">
+  <span class="lbl">Proof — (⟸) 231-Avoiding implies stack-sortable</span>
+  <p>By strong induction on n. Base case n=1: trivially sorted.</p>
+  <p>Inductive step: let n be the largest element of σ. Say n is at position k. Run stack-sort up to but not including n.</p>
+  <p>Key observation: since σ avoids 231, the elements to the left of n (positions 1..k-1) must all be less than the elements to the right of n (positions k+1..n). (If some left value a &gt; some right value b, then with n in the middle: since a &lt; n, this creates... actually the argument uses the 231-avoidance more carefully on the subsequences.)</p>
+  <p>The induction applies to both the left subsequence (positions 1..k-1) and right subsequence (positions k+1..n) separately — both are 231-avoiding permutations of smaller length. Stack-sort correctly sorts each part, and n (being the maximum) can always be placed last. ∎</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">Stack-sort bijection → Dyck paths</span>
+  <p>For every 231-avoiding σ, run stack-sort and record: each <strong>PUSH = U step</strong>, each <strong>POP = D step</strong>. This gives a path with n U's and n D's that never goes below 0 (the stack never empties before we're done). This is a Dyck path, and the map σ ↦ path is a <strong>bijection</strong>.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>σ (231-avoiding)</th><th>Stack operations</th><th>Dyck path</th></tr>
+    <tr><td>(1,2,3)</td><td>push 1, pop 1, push 2, pop 2, push 3, pop 3</td><td>UDUDUD</td></tr>
+    <tr><td>(1,3,2)</td><td>push 1, pop 1, push 3, push 2, pop 2, pop 3</td><td>UDUUDD</td></tr>
+    <tr><td>(2,1,3)</td><td>push 2, push 1, pop 1, pop 2, push 3, pop 3</td><td>UUDDUD</td></tr>
+    <tr><td>(3,1,2)</td><td>push 3, push 1, pop 1, push 2, pop 2, pop 3</td><td>UUDUDD</td></tr>
+    <tr><td>(3,2,1)</td><td>push 3, push 2, push 1, pop 1, pop 2, pop 3</td><td>UUUDDD</td></tr>
+  </table></div>
+  <p>All 5 = C₃ Dyck paths of length 6 appear exactly once. ✓</p>
+</div>
+
+<!-- ══ 5. THE 321 MACHINE ══ -->
+<h2 id="321-machine"><span class="sn">05</span>The 321-Avoiding Machine (HW May 15)</h2>
+
+<div class="block def">
+  <span class="lbl">The 2-Queue Machine (Patience Sort into 2 Increasing Piles)</span>
+  Process elements of σ left to right, maintaining two queues (piles) Q₁ and Q₂:
+  <ol class="L">
+    <li>For each element x: if Q₁ is empty OR the last element of Q₁ is less than x, append x to Q₁.</li>
+    <li>Else if Q₂ is empty OR the last element of Q₂ is less than x, append x to Q₂.</li>
+    <li>Else: <strong>FAIL</strong> (σ contains a 321 pattern).</li>
+  </ol>
+  If it never fails: merge the two queues in sorted order to get output 1,2,…,n.
+</div>
+
+<div class="block thm">
+  <span class="lbl">Theorem — The machine sorts iff σ avoids 321</span>
+  The 2-queue machine succeeds (never fails) on σ if and only if σ avoids the pattern 321.
+  <br><br>
+  <em>Proof sketch:</em> If σ contains 321 (values a &gt; b &gt; c at positions i&lt;j&lt;l), then when processing c, both queues have top ≥ c (since b and something ≥ b are already placed), so both queues refuse c → FAIL. Conversely, if σ is 321-avoiding, it can be partitioned into 2 increasing subsequences (by the characterization above), so 2 queues always suffice.
+</div>
+
+<div class="block thm">
+  <span class="lbl">Counting 321-Avoiding Permutations</span>
+  <div class="mb">|Avₙ(321)|  =  Cₙ  =  C(2n,n) / (n+1)</div>
+  <em>Proof:</em> All six patterns of length 3 give Catalan-many avoiding permutations (Simion–Schmidt 1985). In particular |Avₙ(321)| = |Avₙ(231)| = Cₙ. The cleanest proof uses the Catalan recurrence directly:
+  <p>Let f(n) = |Avₙ(231)|. Place the maximum element n at position k. For 231-avoiding permutations, the k−1 elements to the left of n must be exactly {1,…,k−1}, and the n−k elements to the right must be exactly {k,…,n−1}. Each side is independently 231-avoiding. So:</p>
+  <div class="mb">f(n)  =  ∑_{k=1}^{n}  f(k−1) · f(n−k)   with f(0)=f(1)=1</div>
+  This is the Catalan recurrence, giving f(n) = Cₙ. ✓
+</div>
+
+<!-- ══ 6. DYCK PATHS & CATALAN ══ -->
+<h2 id="dyck"><span class="sn">06</span>Dyck Paths and Catalan Numbers</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Dyck Path</span>
+  A <strong>Dyck path of length 2n</strong> is a lattice path from (0,0) to (2n,0) using:
+  <ul class="L">
+    <li><strong>Up steps</strong> U = (+1,+1)</li>
+    <li><strong>Down steps</strong> D = (+1,−1)</li>
+  </ul>
+  that <strong>never goes below the x-axis</strong> (height ≥ 0 at all times).
+  <br><br>
+  Equivalently: a sequence of n U's and n D's such that every prefix has at least as many U's as D's.
+</div>
+
+<div class="block ex">
+  <span class="lbl">All Dyck paths for n = 3 (length 6)</span>
+  <p>There are C₃ = 5 Dyck paths. Heights at each step:</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Path</th><th>Heights</th><th>Diagram</th></tr>
+    <tr><td>UUUDDD</td><td>0,1,2,3,2,1,0</td><td>rises fully then drops</td></tr>
+    <tr><td>UUDDUD</td><td>0,1,2,1,0,1,0</td><td>double peak</td></tr>
+    <tr><td>UUDUDD</td><td>0,1,2,1,2,1,0</td><td>mountain valley mountain</td></tr>
+    <tr><td>UDUUDD</td><td>0,1,0,1,2,1,0</td><td>valley then mountain</td></tr>
+    <tr><td>UDUDUD</td><td>0,1,0,1,0,1,0</td><td>three separate peaks</td></tr>
+  </table></div>
+  <p>The path UUDUDD shown as an SVG:</p>
+  <div style="display:flex;justify-content:center;margin:1rem 0">
+  <svg width="280" height="100" viewBox="0 0 280 100">
+    <!-- Grid lines -->
+    <line x1="20" y1="20" x2="260" y2="20" stroke="#2e3040" stroke-width="1"/>
+    <line x1="20" y1="50" x2="260" y2="50" stroke="#2e3040" stroke-width="1.5"/>
+    <line x1="20" y1="80" x2="260" y2="80" stroke="#2e3040" stroke-width="1"/>
+    <!-- Axis -->
+    <line x1="20" y1="50" x2="260" y2="50" stroke="#4ab8a8" stroke-width="1" opacity=".3"/>
+    <!-- Path: UUDUDD, steps at x=20,60,100,140,180,220,260, y=50 is zero -->
+    <!-- Heights: 0,1,2,1,2,1,0 → y-coords (flipped): 50,20,50,... wait -->
+    <!-- Each step is 40px wide, 30px per height unit -->
+    <!-- UUDUDD: heights 0→1→2→1→2→1→0 -->
+    <polyline points="20,50 60,20 100,50 140,20 180,20 220,50 260,50" 
+              fill="none" stroke="#d4a843" stroke-width="2.5"/>
+    <!-- Step labels -->
+    <text x="40" y="90" font-family="monospace" font-size="10" fill="#4ab8a8" text-anchor="middle">U</text>
+    <text x="80" y="90" font-family="monospace" font-size="10" fill="#c86478" text-anchor="middle">D</text>
+    <text x="120" y="90" font-family="monospace" font-size="10" fill="#4ab8a8" text-anchor="middle">U</text>
+    <text x="160" y="90" font-family="monospace" font-size="10" fill="#4ab8a8" text-anchor="middle">U</text>
+    <text x="200" y="90" font-family="monospace" font-size="10" fill="#c86478" text-anchor="middle">D</text>
+    <text x="240" y="90" font-family="monospace" font-size="10" fill="#c86478" text-anchor="middle">D</text>
+    <!-- Start/end labels -->
+    <text x="20" y="46" font-family="monospace" font-size="9" fill="#68645c">(0,0)</text>
+    <text x="240" y="46" font-family="monospace" font-size="9" fill="#68645c">(6,0)</text>
+    <!-- Height labels -->
+    <text x="8" y="54" font-family="monospace" font-size="8" fill="#68645c">0</text>
+    <text x="8" y="24" font-family="monospace" font-size="8" fill="#68645c">1</text>
+  </svg>
+  </div>
+</div>
+
+<div class="block thm">
+  <span class="lbl">Catalan Number Formula</span>
+  The number of Dyck paths of length 2n equals the nth Catalan number:
+  <div class="mb">Cₙ  =  C(2n, n) / (n+1)  =  1/(n+1) · C(2n,n)</div>
+  <p>Values: C₀=1, C₁=1, C₂=2, C₃=5, C₄=14, C₅=42, C₆=132, C₇=429.</p>
+</div>
+
+<h3 id="ballot">Bertrand's Ballot Theorem and the Cycle Lemma</h3>
+
+<div class="block thm">
+  <span class="lbl">Bertrand's Ballot Theorem (1887)</span>
+  In an election where candidate A receives p votes and candidate B receives q votes, with p &gt; q, the probability that A is <strong>strictly ahead of B throughout the entire count</strong> (assuming votes are counted in a uniformly random order) is:
+  <div class="mb">P(A always strictly ahead)  =  (p − q) / (p + q)</div>
+</div>
+
+<div class="block proof">
+  <span class="lbl">Proof — The Cycle Lemma</span>
+  <p>Represent each vote for A as +1 and each vote for B as −1. A counting order is a sequence of p values (+1) and q values (−1).</p>
+
+  <div class="step"><strong>Arrange the votes in a circle.</strong> Consider all p+q positions in the circular arrangement as possible "starting points." We claim: exactly p−q of the p+q starting positions give a sequence where A is always strictly ahead (all partial sums positive).</div>
+
+  <div class="step"><strong>Prove the claim.</strong> For each starting position, define the "running total" as we go around the circle. Two different starting positions cannot both give "always positive" sequences from the same circular arrangement, UNLESS the total sum is positive (p &gt; q ensures the sum is p−q &gt; 0). A careful argument shows that among all p+q rotations of any fixed circular arrangement, exactly p−q start "winning" sequences. (This is the Dvoretzky–Motzkin cycle lemma.)</div>
+
+  <div class="step"><strong>Count.</strong> Total sequences = C(p+q, p). Winning sequences = C(p+q,p)·(p−q)/(p+q). Probability = (p−q)/(p+q). ✓</div>
+</div>
+
+<div class="block thm">
+  <span class="lbl">Deriving Cₙ = C(2n,n)/(n+1) from the Ballot Theorem</span>
+  <p>A Dyck path of length 2n is a sequence of n U's (+1) and n D's (−1) with all partial sums ≥ 0.</p>
+
+  <div class="step"><strong>Relate to ballot problem.</strong> Consider sequences of n+1 U's and n D's (total 2n+1 steps, sum = 1). By the ballot theorem with p=n+1 and q=n: P(always strictly ahead) = (n+1−n)/(n+1+n) = 1/(2n+1).</div>
+
+  <div class="step"><strong>Count.</strong> Number of such "always positive" sequences = C(2n+1, n+1)·1/(2n+1) = C(2n+1, n+1)/(2n+1).</div>
+
+  <div class="step"><strong>Simplify.</strong>
+  <div class="mb">C(2n+1, n+1) / (2n+1)  =  (2n+1)!/((n+1)!·n!) / (2n+1)  =  (2n)!/((n+1)!·n!)  =  C(2n,n)/(n+1)  =  Cₙ</div></div>
+
+  <div class="step"><strong>Connect to Dyck paths.</strong> Removing the last U from each "always positive" (n+1 U, n D) sequence gives a bijection to sequences of n U's and n D's with all partial sums ≥ 0 — precisely Dyck paths of length 2n. So the number of Dyck paths = Cₙ. ✓</div>
+
+  <p>Equivalently: <strong>P(random path ending at 0 is a Dyck path) = Cₙ / C(2n,n) = 1/(n+1)</strong>.</p>
+</div>
+
+<div class="block note">
+  <span class="lbl">The Big Picture — What Equals Cₙ</span>
+  All of the following count Cₙ for each n:
+  <ul class="L">
+    <li>Dyck paths of length 2n</li>
+    <li>231-avoiding permutations of {1,…,n}</li>
+    <li>321-avoiding permutations of {1,…,n}</li>
+    <li>Stack-sortable permutations of {1,…,n}</li>
+    <li>Ways to triangulate a convex (n+2)-gon</li>
+    <li>Full binary trees with n+1 leaves</li>
+    <li>Valid parenthesizations of n+1 factors</li>
+  </ul>
+</div>
+
+<!-- ══ 7. STANLEY–WILF ══ -->
+<h2 id="sw"><span class="sn">07</span>Stanley–Wilf Conjecture (Now a Theorem)</h2>
+
+<div class="block thm">
+  <span class="lbl">Marcus–Tardos Theorem (2004)</span>
+  For every permutation pattern σ, there exists a finite constant c(σ) such that:
+  <div class="mb">|Avₙ(σ)|  ≤  c(σ)ⁿ   for all n</div>
+  Equivalently, the Stanley–Wilf limit <span class="m">L(σ) = lim_{n→∞} |Avₙ(σ)|^{1/n}</span> exists and is finite.
+</div>
+
+<div class="block note">
+  <span class="lbl">What this means</span>
+  <ul class="L">
+    <li><strong>Total permutations:</strong> n! grows super-exponentially.</li>
+    <li><strong>Pattern-avoiding permutations:</strong> |Avₙ(σ)| grows at most exponentially — much smaller than n!.</li>
+    <li><strong>The theorem says:</strong> if you exclude even one pattern, the set shrinks dramatically from factorial to exponential growth.</li>
+    <li><strong>Special cases:</strong> L(321) = L(231) = 4 (the Catalan growth rate); L(1324) ≈ 11.6 (harder to compute).</li>
+  </ul>
+</div>
+
+<!-- ══ 8. PERMUTONS ══ -->
+<h2 id="permutons"><span class="sn">08</span>Permutons — Limits of Permutation Sequences</h2>
+
+<h3>Graphons as Motivation</h3>
+
+<div class="block def">
+  <span class="lbl">Graphon (informal)</span>
+  A <strong>graphon</strong> is the limit object for sequences of dense graphs. It is a symmetric measurable function <span class="m">W : [0,1]² → [0,1]</span> that encodes the "template" for making a random graph: to generate a graph on n vertices, sample n points uniformly from [0,1] and connect vertices i and j with probability W(xᵢ, xⱼ).
+  <br><br>
+  Graphons provide a language for saying "a sequence of graphs converges": a sequence (Gₙ) converges if for every fixed graph H, the density of H in Gₙ converges. The limit is a graphon.
+</div>
+
+<h3>Permutons</h3>
+
+<div class="block def">
+  <span class="lbl">Definition — Permuton</span>
+  A <strong>permuton</strong> is a probability measure <span class="m">μ</span> on the unit square <span class="m">[0,1]²</span> with <strong>uniform marginals</strong> — both the x-projection and y-projection of μ are the uniform distribution on [0,1].
+  <br><br>
+  Each permutation σ of length n gives a permuton by placing mass 1/n at each point:
+  <div class="mb">μ_σ  =  (1/n) ∑_{i=1}^{n}  δ_{((i−½)/n,  (σ(i)−½)/n)}</div>
+  This is the permutation matrix of σ, rescaled to live in [0,1]².
+</div>
+
+<div class="block def">
+  <span class="lbl">Definition — Pattern Density</span>
+  For permutations σ of length n and pattern π of length k, the <strong>pattern density</strong> of π in σ is:
+  <div class="mb">t(π, σ)  =  |{k-element subsets of positions realizing π in σ}| / C(n,k)</div>
+  This is the probability that a random k-element subset of {1,…,n} realizes pattern π.
+  <br><br>
+  <em>Why pattern density instead of Kendall tau:</em> Kendall tau compares permutations of the <em>same size</em>. Pattern density gives a normalized count that works across permutations of <em>different sizes</em>, enabling us to compare and take limits.
+</div>
+
+<div class="block def">
+  <span class="lbl">Definition — Convergence of Permutation Sequences</span>
+  A sequence of permutations σ₁, σ₂, σ₃, … (with |σₙ| → ∞) <strong>converges</strong> to a permuton μ if for every fixed pattern π ∈ Sₖ, the pattern densities converge:
+  <div class="mb">t(π, σₙ)  →  t(π, μ)   as n → ∞</div>
+  where t(π,μ) is the density of π in the limiting measure.
+</div>
+
+<div class="block note">
+  <span class="lbl">The big picture</span>
+  Permutons give a compact metric space in which sequences of permutations have convergent subsequences. This allows meaningful statements like "uniform random 321-avoiding permutations of length n converge to a specific permuton" — describing the typical shape of a large pattern-avoiding permutation.
+  <br><br>
+  The connection to graphons: every permutation has an associated "permutation graph," giving a bridge between the two theories. But permutons encode finer information than graphons — they remember the ordering structure, not just pairwise comparisons.
+</div>
+
+<hr class="divider">
+
+<!-- ══ 9. PRACTICE ══ -->
+<h2 id="practice"><span class="sn">09</span>Try It Yourself</h2>
+
+<div class="practice-header">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+  Practice Problems — Week 7
+</div>
+<div class="practice-wrap">
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q1</span><span>Is (2,4,1,3,5) stack-sortable? Trace the algorithm and identify any 231 pattern if it's not.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>Trace stack-sort on (2,4,1,3,5):</strong>
+  <br>Input 2: PUSH 2. stack=[2], output=[]
+  <br>Input 4: top=2&lt;4 → POP 2; stack empty → PUSH 4. stack=[4], output=[2]
+  <br>Input 1: top=4&gt;1 → PUSH 1. stack=[4,1], output=[2]
+  <br>Input 3: top=1&lt;3 → POP 1; top=4&gt;3 → PUSH 3. stack=[4,3], output=[2,1]
+  <br>Input 5: top=3&lt;5 → POP 3; top=4&lt;5 → POP 4; PUSH 5. stack=[5], output=[2,1,3,4]
+  <br>Done: POP 5. output=[2,1,3,4,5]</div>
+  <p>Output [2,1,3,4,5] ≠ [1,2,3,4,5]. <span class="no">Not sorted!</span> Element 1 comes after 2 in output.</p>
+  <p>Finding the 231 pattern: look for positions i&lt;j&lt;k with σ(i)&lt;σ(j) and σ(k)&lt;σ(i). Take positions 1,2,3 with values (2,4,1): 2&lt;4 and 1&lt;2 → pattern 231. ✓</p>
+  <p><span class="ans-box">Not stack-sortable. Contains 231 at positions (1,2,3) with values (2,4,1).</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q2</span><span>List all 321-avoiding permutations of {1,2,3} and show each decomposes into 2 increasing subsequences.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>There are C₃ = 5 of them (one permutation, (3,2,1), contains 321 and is excluded):</p>
+  <ul>
+    <li>(1,2,3): one increasing run {1,2,3}. Trivially 2 increasing subseqs.</li>
+    <li>(1,3,2): {1,3} and {2} — both increasing. ✓</li>
+    <li>(2,1,3): {2,3} and {1}. ✓</li>
+    <li>(2,3,1): {2,3} and {1}. ✓</li>
+    <li>(3,1,2): {3} and {1,2}. ✓</li>
+  </ul>
+  <p><span class="ans-box">5 = C₃ permutations, each partitioned into ≤ 2 increasing subsequences.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q3</span><span>Verify the ballot theorem for p=3, q=1: list all counting orders and check which have A always ahead.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>Formula predicts:</strong> P = (3−1)/(3+1) = 2/4 = 1/2. So 2 out of 4 orders should be favorable.</div>
+  <p>All C(4,1)=4 orderings of {A,A,A,B}:</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Order</th><th>Running totals</th><th>A always ahead?</th></tr>
+    <tr><td>AAAB</td><td>1,2,3,2</td><td class="yes">✓ Yes</td></tr>
+    <tr><td>AABA</td><td>1,2,1,2</td><td class="yes">✓ Yes</td></tr>
+    <tr><td>ABAA</td><td>1,0,1,2</td><td class="no">✗ No (tie at step 2)</td></tr>
+    <tr><td>BAAA</td><td>0,1,2,3</td><td class="no">✗ No (B ahead at step 1)</td></tr>
+  </table></div>
+  <p><span class="ans-box">2 out of 4 favorable. P = 1/2 = (3−1)/(3+1) ✓</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q4</span><span>How many Dyck paths of length 8 (n=4) are there? List one example.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s">C₄ = C(8,4)/(4+1) = 70/5 = 14 Dyck paths.</div>
+  <p>Example: UUUUDDDD — goes up 4 times then down 4 times. Heights: 0,1,2,3,4,3,2,1,0. Never negative. ✓</p>
+  <p>Another example: UDUDUDUDUD... wait, that has length 10. For n=4: UDUDUDUD — heights 0,1,0,1,0,1,0,1,0. ✓</p>
+  <p><span class="ans-box">14 Dyck paths. Example: UUUUDDDD.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q5</span><span>Prove: in any linear extension of S₃, at most one diagonal pair (aᵢ, bᵢ) has bᵢ before aᵢ. Use this to show dim(S₃) ≥ 3.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>S₃ has diagonal pairs:</strong> (a₁,b₁), (a₂,b₂), (a₃,b₃), all incomparable. Relations: aᵢ &lt; bⱼ for all i≠j.</div>
+  <div class="step-s"><strong>At most one reversal per extension.</strong> Suppose linear extension L has b₁ before a₁ AND b₂ before a₂. Then:
+  <br>a₂ &lt; b₁ → a₂ before b₁ in L
+  <br>b₁ before a₁ (assumption)
+  <br>a₁ &lt; b₂ → a₁ before b₂ in L
+  <br>b₂ before a₂ (assumption)
+  <br>Chain: a₂ → b₁ → a₁ → b₂ → a₂ — CYCLE. Contradiction! Same for any other pair of reversals.</div>
+  <div class="step-s"><strong>Dimension lower bound.</strong> We have 3 diagonal pairs, each needing a dedicated extension. Need ≥ 3 extensions. dim(S₃) ≥ 3. Combined with the explicit 3-extension realizer from Week 6: dim(S₃) = 3. ✓</div>
+  <p><span class="ans-box">At most one reversal per extension (cycle argument). Three pairs → dim(S₃) ≥ 3.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q6</span><span>Is the permutation (2,1,4,3,6,5) stack-sortable? 321-avoiding?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>Check 321-avoiding:</strong> Look for three positions i&lt;j&lt;k with σ(i)&gt;σ(j)&gt;σ(k). The values are (2,1,4,3,6,5). Check: 2&gt;1 but we need a third smaller value after 1: σ has 1 at position 2, and remaining values {4,3,6,5} are all &gt;1. So no 321 involving 1 as the "3". Check 4&gt;3: need something &lt;3 after position 4... values after position 4 are {6,5}, both &gt;3. No 321. Check 6&gt;5: nothing after position 6. No 321 pattern found. <span class="yes">321-avoiding ✓</span></div>
+  <div class="step-s"><strong>Check stack-sortable (231-avoiding):</strong> Look for positions i&lt;j&lt;k with σ(i)&lt;σ(j) and σ(k)&lt;σ(i). Try: positions 1,3,4 → values (2,4,3): 2&lt;4 and 3&gt;2, not 231. Positions 2,3,4 → (1,4,3): 1&lt;4 and 3&gt;1 → yes! 1&lt;4 and 3&lt;4 but 3&gt;1 → pattern is (1,4,3) = relative order (1,3,2) = 132, not 231. Try positions 1,3,6 → (2,4,5): increasing, not 231. Try positions 2,5,6 → (1,6,5): 1&lt;6 and 5&gt;1 → pattern (1,6,5) = (1,3,2) = 132, not 231. After checking all, no 231 found. <span class="yes">Stack-sortable ✓</span></div>
+  <p>Note: (2,1,4,3,6,5) is the pattern that alternates pairs — each pair is reversed but no triple is in the wrong decreasing order.</p>
+  <p><span class="ans-box">Both 321-avoiding and stack-sortable (231-avoiding). All 6 = C₃ permutations of each type are Catalan-counted. ✓</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q7</span><span>What is the Stanley–Wilf limit L(σ) for the pattern σ = 21 (just the 2-element decreasing pattern)?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>Avₙ(21)</strong> = permutations with no decreasing pair = only the increasing permutation (1,2,…,n). So |Avₙ(21)| = 1 for all n.</div>
+  <div class="step-s"><strong>Stanley–Wilf limit:</strong> L(21) = lim 1^{1/n} = 1.</div>
+  <p><span class="ans-box">L(21) = 1. (Avoidance of 21 is extremely restrictive — only 1 permutation per n.)</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q8</span><span>The Catalan recurrence for 231-avoiding permutations: why must the elements left of n be exactly {1,…,k−1} when n is at position k?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step-s"><strong>Suppose some left value a &gt; some right value b</strong>, i.e., a is at some position i &lt; k and b is at some position j &gt; k with a &gt; b. We show this creates a 231 pattern in σ.</div>
+  <div class="step-s"><strong>The 231 pattern:</strong> Consider positions i, k, j (left to right in σ). Values: σ(i)=a, σ(k)=n, σ(j)=b. We have b &lt; a &lt; n, so relative order is (a, n, b) with b &lt; a &lt; n. The pattern is: medium, large, small = 231. ✓</div>
+  <div class="step-s"><strong>Conclusion:</strong> If σ avoids 231, no such a and b can exist. So all left values must be &lt; all right values. Since the left has k−1 values from {1,…,n−1} and they must all be less than all n−k right values, and the sets are complementary, the left values must be exactly {1,…,k−1} and right values exactly {k,…,n−1}.</div>
+  <p><span class="ans-box">A 231 pattern forces left values to be {1,…,k−1}: (leftval, n, rightval) = (medium, large, small) = 231.</span></p>
+</div>
+</div>
+
+</div><!-- end practice-wrap -->
+
+<hr class="divider">
+
+<!-- ══ 10. HOMEWORK ══ -->
+<h2 id="hw"><span class="sn">10</span>Homework</h2>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Monday May 11</span>
+  <p><strong>Problem:</strong> Show that the standard example Sₙ (aᵢ &lt; bⱼ iff i≠j) has dimension exactly n.</p>
+  <p><strong>Upper bound (from Week 6):</strong> Explicit n-element realizer using rotated lexicographic orders.</p>
+  <p><strong>Lower bound:</strong> Key lemma — in any linear extension L, at most one diagonal pair (aᵢ,bᵢ) can have bᵢ before aᵢ. Proof: if bᵢ before aᵢ AND bⱼ before aⱼ for i≠j, the chain aⱼ→bᵢ→aᵢ→bⱼ→aⱼ is a cycle in L, contradicting that L is a total order. Since all n pairs must be separated, need n extensions. dim ≥ n. ∎</p>
+</div>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Wednesday May 13</span>
+  <p><strong>Problem:</strong> Describe the permutations that avoid the pattern 321.</p>
+  <p><strong>Answer:</strong> A permutation avoids 321 iff it has no decreasing subsequence of length 3, iff its longest decreasing subsequence has length ≤ 2, iff it can be partitioned into at most 2 increasing subsequences. Equivalently, it is 2-increasing (can be written as a merge of 2 increasing sequences). These are also called the "queue-sortable" permutations.</p>
+</div>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Friday May 15</span>
+  <p><strong>Problem:</strong> Devise a sorting machine that works iff the permutation is 321-avoiding. Use it to show the count equals the nth Catalan number.</p>
+  <p><strong>The machine:</strong> Use 2 increasing queues (patience sort). Process each element: put it in queue 1 if it extends queue 1 (greater than its current last element), else queue 2, else FAIL. Succeeds iff 321-avoiding (shown above).</p>
+  <p><strong>Count = Cₙ:</strong></p>
+  <ol class="L">
+    <li>|Avₙ(321)| = |Avₙ(231)| (both equal Cₙ by the Catalan recurrence, since all 6 length-3 patterns give the same count).</li>
+    <li>|Avₙ(231)| = Cₙ by the Catalan recurrence: place n at position k, left = {1,…,k−1}, right = {k,…,n−1}, giving f(n) = Σ f(k−1)·f(n−k) = Cₙ.</li>
+    <li>Bijection: Avₙ(231) ↔ Dyck paths of length 2n via stack-sort (PUSH=U, POP=D), so |Avₙ(231)| = number of Dyck paths = Cₙ.</li>
+    <li>Cₙ = C(2n,n)/(n+1) via the ballot theorem / cycle lemma.</li>
+  </ol>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 11. CHEAT SHEET ══ -->
+<h2 id="cheat"><span class="sn">11</span>One-Page Cheat Sheet</h2>
+<div class="cheat-sheet">
+  <div class="cheat-title">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Week 7 Cheat Sheet
+  </div>
+  <div class="cheat-grid">
+    <div class="cheat-section">
+      <h5>dim(Sₙ) = n</h5>
+      <ul>
+        <li>Sₙ: aᵢ &lt; bⱼ iff i≠j; diagonal pairs (aᵢ,bᵢ) incomparable</li>
+        <li>Key lemma: each linear extension reverses ≤ 1 diagonal pair</li>
+        <li>Proof: reversing 2 pairs creates a 4-cycle → contradiction</li>
+        <li>n pairs need n extensions → dim ≥ n; realizer gives dim ≤ n</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Pattern Avoidance</h5>
+      <ul>
+        <li>σ avoids π: no k positions in σ with values in relative order of π</li>
+        <li>Permutation class: closed downward under pattern containment</li>
+        <li>Every class = Av(F) for some forbidden set F</li>
+      </ul>
+      <h5 style="margin-top:.8rem">321-Avoiding</h5>
+      <ul>
+        <li>≡ no decreasing subseq of length 3</li>
+        <li>≡ can be split into 2 increasing subsequences</li>
+        <li>Sorted by 2-queue patience sort machine</li>
+        <li>Count = Cₙ</li>
+      </ul>
+    </div>
+    <div class="cheat-section">
+      <h5>Stack Sort ↔ 231-Avoiding</h5>
+      <ul>
+        <li>Stack sort: push if top&gt;input, pop while top≤input</li>
+        <li>Succeeds iff σ avoids 231</li>
+        <li>Proof (⟹): failure gives (t,c,k) = 231 pattern with c&gt;t&gt;k</li>
+        <li>Stack sort bijection: PUSH=U, POP=D → Dyck path</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Catalan Numbers</h5>
+      <ul>
+        <li>Cₙ = C(2n,n)/(n+1)</li>
+        <li>Recurrence: Cₙ = Σ C_{k-1}·C_{n-k}</li>
+        <li>= # Dyck paths of length 2n</li>
+        <li>= # 231-avoiding perms of [n]</li>
+        <li>= # 321-avoiding perms of [n]</li>
+        <li>P(random path ends at 0 is Dyck) = 1/(n+1)</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Ballot &amp; Stanley–Wilf &amp; Permutons</h5>
+      <ul>
+        <li>Ballot: P(A always ahead) = (p−q)/(p+q)</li>
+        <li>Cycle lemma proves ballot theorem</li>
+        <li>Stanley–Wilf: |Avₙ(σ)| ≤ c(σ)ⁿ (Marcus–Tardos 2004)</li>
+        <li>Permuton: prob. measure on [0,1]² with uniform marginals</li>
+        <li>Convergence: pattern densities t(π,σₙ) → t(π,μ)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Math 100 · Dartmouth College · Spring 2026 · Week 7 — Patterns, Stack Sorting &amp; Catalan Numbers</div>
+</main>
+</div>
+<script>
+document.querySelectorAll('.pq-q').forEach(function(q){
+  q.addEventListener('click',function(){
+    var a=this.parentElement.querySelector('.pq-a');
+    var open=this.classList.toggle('open');
+    a.classList.toggle('vis',open);
+  });
+});
+var links=document.querySelectorAll('nav a');
+function setActive(){
+  var best=null;
+  document.querySelectorAll('h2[id],h3[id]').forEach(function(s){
+    if(s.getBoundingClientRect().top<120) best=s.id;
+  });
+  links.forEach(function(l){l.classList.toggle('active',l.getAttribute('href')==='#'+best);});
+}
+window.addEventListener('scroll',setActive);
+setActive();
+</script>
+</body>
+</html>
