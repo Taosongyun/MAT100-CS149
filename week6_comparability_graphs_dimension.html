@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 6 — Comparability Graphs &amp; Dimension</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1117;--bg2:#161820;--bg3:#1e2028;--bg4:#252730;--border:#2e3040;--ink:#e8e4dc;--ink2:#a8a49c;--ink3:#68645c;--gold:#d4a843;--gold2:#f0c060;--teal:#4ab8a8;--teal2:#6dd4c4;--rose:#c86478;--rose2:#e08090;--violet:#9878c8;--violet2:#b898e0;--green:#5a9e6a;--green2:#7ac88a;--orange:#d4824a;--orange2:#f0a060;--mono:'JetBrains Mono',monospace;--serif:'Source Serif 4',Georgia,serif;--display:'Playfair Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--serif);background:var(--bg);color:var(--ink);line-height:1.8;font-size:16.5px}
+.shell{display:flex;min-height:100vh}
+nav{width:248px;min-width:248px;background:var(--bg2);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;padding:1.6rem 0;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.nav-logo{padding:0 1.2rem 1.2rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.nav-logo .course{font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3)}
+.nav-logo .title{font-family:var(--display);font-size:13px;color:var(--gold);margin-top:.25rem;line-height:1.3}
+nav ul{list-style:none}
+.nav-section{font-family:var(--sans);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);padding:.9rem 1.2rem .2rem}
+nav a{display:block;font-family:var(--sans);font-size:12px;color:var(--ink2);text-decoration:none;padding:.3rem 1.2rem;line-height:1.4;border-left:2px solid transparent;transition:all .15s}
+nav a:hover{color:var(--ink);background:var(--bg3)}
+nav a.active{color:var(--gold);border-left-color:var(--gold);background:var(--bg3)}
+main{flex:1;max-width:860px;padding:3.5rem 4rem}
+.cover{margin-bottom:3.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border)}
+.week-badge{display:inline-block;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.3);border-radius:3px;padding:.25rem .7rem;margin-bottom:1rem}
+.cover h1{font-family:var(--display);font-size:2.3rem;font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:.6rem}
+.cover h1 em{color:var(--gold);font-style:italic}
+.cover .subtitle{font-family:var(--sans);font-size:.9rem;color:var(--ink2);font-weight:300}
+.topics-row{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1.4rem}
+.topic-pill{font-family:var(--sans);font-size:11px;font-weight:500;padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);color:var(--ink2)}
+h2{font-family:var(--display);font-size:1.55rem;font-weight:600;color:var(--ink);margin:3.5rem 0 1.2rem;scroll-margin-top:2rem;display:flex;align-items:center;gap:.7rem}
+h2 .sn{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);padding:.25rem .55rem;border-radius:3px;flex-shrink:0}
+h3{font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--teal);margin:2rem 0 .65rem;scroll-margin-top:2rem;letter-spacing:.01em}
+h4{font-family:var(--sans);font-size:.9rem;font-weight:600;color:var(--ink2);margin:1.4rem 0 .4rem}
+p{margin-bottom:.9rem}
+.block{margin:1.2rem 0;padding:1rem 1.2rem;border-radius:6px}
+.def{background:rgba(74,184,168,.07);border-left:3px solid var(--teal)}
+.thm{background:rgba(212,168,67,.07);border-left:3px solid var(--gold)}
+.proof{background:var(--bg3);border-left:3px solid var(--border)}
+.ex{background:rgba(154,120,200,.07);border-left:3px solid var(--violet)}
+.note{background:var(--bg3);border-left:3px solid var(--border);font-size:.92rem;color:var(--ink2)}
+.hw{background:rgba(200,100,120,.07);border-left:3px solid var(--rose)}
+.warn{background:rgba(212,130,74,.07);border-left:3px solid var(--orange)}
+.insight{background:rgba(74,184,168,.1);border:1px solid rgba(74,184,168,.25);border-radius:6px}
+.lbl{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:.4rem}
+.def .lbl{color:var(--teal)}.thm .lbl{color:var(--gold)}.proof .lbl{color:var(--ink3)}.ex .lbl{color:var(--violet)}.hw .lbl{color:var(--rose)}.note .lbl{color:var(--ink3)}.warn .lbl{color:var(--orange)}.insight .lbl{color:var(--teal)}
+.m{font-family:var(--mono);font-size:.83em;background:var(--bg4);color:var(--gold2);padding:.12em .38em;border-radius:3px;white-space:nowrap}
+.mb{display:block;font-family:var(--mono);font-size:.86em;background:var(--bg3);color:var(--teal2);padding:.65rem 1rem;border-radius:4px;margin:.7rem 0;border:1px solid var(--border);overflow-x:auto;white-space:pre}
+ul.L,ol.L{padding-left:1.4rem;margin:.5rem 0 .8rem}
+ul.L li,ol.L li{margin-bottom:.35rem}
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:.87rem;font-family:var(--sans)}
+th{background:var(--bg3);color:var(--ink2);font-weight:600;padding:.5rem .8rem;text-align:left;border-bottom:1px solid var(--border);font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
+td{padding:.42rem .8rem;border-bottom:1px solid var(--bg3);vertical-align:top;color:var(--ink2)}
+tr:last-child td{border-bottom:none}
+td:first-child{color:var(--ink);font-weight:500}
+.yes{color:var(--green2);font-weight:600}.no{color:var(--rose2);font-weight:600}
+.graph-pair{display:flex;gap:2rem;margin:1.5rem 0;flex-wrap:wrap;align-items:flex-start}
+.graph-fig{text-align:center;flex:1;min-width:180px}
+.graph-fig .gcap{font-family:var(--sans);font-size:11px;color:var(--ink3);margin-top:.5rem;line-height:1.4}
+.graph-fig .gtitle{font-family:var(--sans);font-size:.78rem;font-weight:700;margin-bottom:.35rem;display:block}
+.dim-table{width:100%;border-collapse:collapse;font-size:.87rem;font-family:var(--sans);margin:.8rem 0}
+.dim-table th{background:rgba(154,120,200,.15);color:var(--violet2);padding:.45rem .8rem;text-align:left;border-bottom:1px solid var(--border);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.dim-table td{padding:.4rem .8rem;border-bottom:1px solid var(--bg3);color:var(--ink2)}
+.dim-table tr:last-child td{border-bottom:none}
+.dim-table td:first-child{color:var(--ink);font-weight:500}
+.practice-header{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#2a3a5e,#1e4a3a);padding:.6rem 1.1rem;border-radius:6px 6px 0 0;display:flex;align-items:center;gap:.5rem}
+.practice-wrap{border:1px solid var(--border);border-radius:0 0 6px 6px;overflow:hidden;margin-bottom:2rem}
+.pq{border-bottom:1px solid var(--border)}.pq:last-child{border-bottom:none}
+.pq-q{font-family:var(--sans);font-size:.875rem;font-weight:500;color:var(--ink);padding:.75rem 1.1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;user-select:none;transition:background .12s}
+.pq-q:hover{background:var(--bg3)}
+.pq-q .qn{font-size:9.5px;font-weight:700;letter-spacing:.1em;color:var(--teal);min-width:1.8rem;padding-top:.1rem;flex-shrink:0}
+.pq-q .arr{font-size:11px;color:var(--ink3);transition:transform .18s;flex-shrink:0;padding-top:.1rem}
+.pq-q.open .arr{transform:rotate(180deg)}
+.pq-a{display:none;padding:.2rem 1.1rem .9rem;border-top:1px dashed var(--border);background:var(--bg2)}
+.pq-a.vis{display:block}
+.pq-a .al{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green2);margin-bottom:.5rem;display:block;padding-top:.55rem}
+.pq-a p{font-size:.875rem;font-family:var(--sans);color:var(--ink2);margin-bottom:.45rem;line-height:1.65}
+.pq-a .step{background:var(--bg3);border-left:2px solid var(--teal);padding:.5rem .8rem;border-radius:0 4px 4px 0;margin:.4rem 0;font-size:.85rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a .step strong{color:var(--teal2)}
+.pq-a ul,.pq-a ol{padding-left:1.3rem;margin:.3rem 0 .45rem;font-size:.875rem;font-family:var(--sans);color:var(--ink2)}
+.pq-a li{margin-bottom:.25rem}
+.ans-box{background:rgba(90,158,106,.1);border:1px solid rgba(90,158,106,.3);border-radius:4px;padding:.4rem .8rem;font-family:var(--mono);font-size:.82em;color:var(--green2);margin:.4rem 0;display:inline-block}
+.cheat-sheet{background:var(--bg2);border:1px solid var(--gold);border-radius:8px;padding:1.5rem;margin:2rem 0}
+.cheat-title{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem}
+.cheat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.cheat-section h5{font-family:var(--sans);font-size:.8rem;font-weight:700;color:var(--teal2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.cheat-section p,.cheat-section li{font-family:var(--sans);font-size:.8rem;color:var(--ink2);line-height:1.5;margin-bottom:.25rem}
+.cheat-section ul{padding-left:1.1rem;margin:.25rem 0}
+.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+
+/* ── Page navigation buttons ── */
+.page-actions{display:flex;flex-wrap:wrap;gap:.55rem;margin-bottom:1.3rem}
+.page-link{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--bg);background:var(--gold);border:1px solid rgba(212,168,67,.55);border-radius:4px;padding:.42rem .78rem;text-decoration:none;transition:transform .15s,background .15s,border-color .15s,color .15s}
+.page-link:hover{background:var(--gold2);text-decoration:none;transform:translateY(-1px)}
+.page-link.secondary{color:var(--ink2);background:transparent;border-color:var(--border)}
+.page-link.secondary:hover{color:var(--ink);background:var(--bg3);border-color:rgba(212,168,67,.45)}
+.page-link.disabled{color:var(--ink3);background:transparent;border-color:var(--border);pointer-events:none;cursor:default;opacity:.7}
+.sidebar-actions{display:grid;gap:.45rem;padding:.2rem 1.2rem 1rem}
+.sidebar-actions .page-link{justify-content:center;padding:.36rem .65rem}
+
+.footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:var(--sans);font-size:11px;color:var(--ink3)}
+@media(max-width:960px){nav{display:none}main{padding:2rem 1.5rem}}
+@media(max-width:660px){.graph-pair{flex-direction:column}.cheat-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav>
+  <div class="nav-logo">
+    <div class="course">Math 100 · Spring 2026</div>
+    <div class="title">Week 6 — Comparability Graphs &amp; Dimension</div>
+  </div>
+  <div class="sidebar-actions">
+    <a class="page-link" href="index.html">← Home</a>
+    <a class="page-link secondary" href="week5_poset_shapes_permutahedron.html">← Previous Week</a>
+    <a class="page-link disabled" href="#">Next Week →</a>
+  </div>
+  <ul>
+    <li class="nav-section">Sections</li>
+    <li><a href="#why">1 · Why We Care</a></li>
+    <li><a href="#graphs">2 · CG(P) and IG(P)</a></li>
+    <li><a href="#intersection">3 · Intersection of Orders</a></li>
+    <li><a href="#dimension">4 · Dimension dim(P)</a></li>
+    <li><a href="#intuition">↳ Geometric Intuition</a></li>
+    <li><a href="#realizers">↳ Two Requirements</a></li>
+    <li><a href="#standard">↳ Standard Example Sₙ</a></li>
+    <li><a href="#worked">5 · Worked Examples</a></li>
+    <li><a href="#practice">6 · Try It Yourself</a></li>
+    <li><a href="#hw">7 · Homework</a></li>
+    <li><a href="#cheat">8 · Cheat Sheet</a></li>
+  </ul>
+</nav>
+<main>
+
+<div class="page-actions">
+  <a class="page-link" href="index.html">← Back to Home</a>
+  <a class="page-link secondary" href="week5_poset_shapes_permutahedron.html">← Previous Week</a>
+  <a class="page-link disabled" href="#">Next Week →</a>
+</div>
+
+<div class="cover">
+  <div class="week-badge">Week 6</div>
+  <h1>Comparability Graphs<br>&amp; <em>Dimension</em></h1>
+  <div class="subtitle">Math 100 · Dartmouth College · Spring 2026</div>
+  <div class="topics-row">
+    <span class="topic-pill">Comparability graph CG(P)</span>
+    <span class="topic-pill">Incomparability graph IG(P)</span>
+    <span class="topic-pill">Intersection of linear orders</span>
+    <span class="topic-pill">Dimension dim(P)</span>
+    <span class="topic-pill">Realizers</span>
+    <span class="topic-pill">Standard example Sₙ</span>
+  </div>
+</div>
+
+<!-- ══ 1. WHY WE CARE ══ -->
+<h2 id="why"><span class="sn">01</span>Why We Care</h2>
+<p>This week introduces two new tools for thinking about posets. First, we can represent any poset as a graph in two complementary ways — encoding the comparable pairs or the incomparable pairs. Second, and most important for the midterm, we define the <strong>dimension</strong> of a poset: the minimum number of linear orders whose intersection reconstructs it exactly.</p>
+<p>Dimension measures how "complex" a poset is in a precise sense. A total order has dimension 1. An antichain needs dimension 2. And the standard example Sₙ has dimension exactly n, showing dimension can be arbitrarily large.</p>
+
+<!-- ══ 2. GRAPHS ══ -->
+<h2 id="graphs"><span class="sn">02</span>CG(P) and IG(P)</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Comparability Graph CG(P)</span>
+  The <strong>comparability graph</strong> of a poset P has:
+  <ul class="L">
+    <li><strong>Vertices:</strong> the elements of P.</li>
+    <li><strong>Edges:</strong> x ~ y iff x and y are <em>comparable</em> in P — that is, x &lt; y or y &lt; x.</li>
+  </ul>
+  CG(P) is an undirected graph — the direction of the comparison is forgotten.
+</div>
+
+<div class="block def">
+  <span class="lbl">Definition — Incomparability Graph IG(P)</span>
+  The <strong>incomparability graph</strong> IG(P) is the <em>complement</em> of CG(P):
+  <ul class="L">
+    <li><strong>Vertices:</strong> the elements of P.</li>
+    <li><strong>Edges:</strong> x ~ y iff x ∥ y (x and y are incomparable in P).</li>
+  </ul>
+  CG(P) and IG(P) together cover every pair of distinct elements exactly once.
+</div>
+
+<div class="block note">
+  <span class="lbl">CG + IG = complete graph</span>
+  For any two distinct elements x, y: exactly one holds — either x and y are comparable, or they are incomparable. So CG(P) and IG(P) partition the edges of the complete graph Kₙ on n = |P| vertices. Edge in CG ↔ no edge in IG, and vice versa.
+</div>
+
+<h4>Example — D₁₂ = {1, 2, 3, 4, 6, 12}</h4>
+
+<div class="graph-pair">
+<div class="graph-fig">
+  <span class="gtitle" style="color:var(--teal2)">CG(D₁₂) — comparable pairs</span>
+  <svg width="200" height="200" viewBox="0 0 200 200">
+    <!-- 1=(100,175), 2=(45,120), 3=(155,120), 4=(45,55), 6=(155,55), 12=(100,15) -->
+    <line x1="100" y1="175" x2="45" y2="120" stroke="#4ab8a8" stroke-width="1.5" opacity=".45"/>
+    <line x1="100" y1="175" x2="155" y2="120" stroke="#4ab8a8" stroke-width="1.5" opacity=".45"/>
+    <line x1="100" y1="175" x2="45" y2="55" stroke="#4ab8a8" stroke-width="1.5" opacity=".35"/>
+    <line x1="100" y1="175" x2="155" y2="55" stroke="#4ab8a8" stroke-width="1.5" opacity=".35"/>
+    <line x1="100" y1="175" x2="100" y2="15" stroke="#4ab8a8" stroke-width="1.5" opacity=".25"/>
+    <line x1="45" y1="120" x2="45" y2="55" stroke="#4ab8a8" stroke-width="1.5" opacity=".5"/>
+    <line x1="45" y1="120" x2="155" y2="55" stroke="#4ab8a8" stroke-width="1.5" opacity=".5"/>
+    <line x1="45" y1="120" x2="100" y2="15" stroke="#4ab8a8" stroke-width="1.5" opacity=".35"/>
+    <line x1="155" y1="120" x2="155" y2="55" stroke="#4ab8a8" stroke-width="1.5" opacity=".5"/>
+    <line x1="155" y1="120" x2="100" y2="15" stroke="#4ab8a8" stroke-width="1.5" opacity=".35"/>
+    <line x1="45" y1="55" x2="100" y2="15" stroke="#4ab8a8" stroke-width="1.5" opacity=".5"/>
+    <line x1="155" y1="55" x2="100" y2="15" stroke="#4ab8a8" stroke-width="1.5" opacity=".5"/>
+    <circle cx="100" cy="175" r="14" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="45" cy="120" r="14" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="155" cy="120" r="14" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="45" cy="55" r="14" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="155" cy="55" r="14" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="100" cy="15" r="14" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <text x="100" y="179" font-family="monospace" font-size="11" fill="#f0c060" text-anchor="middle" dominant-baseline="middle">1</text>
+    <text x="45" y="124" font-family="monospace" font-size="11" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">2</text>
+    <text x="155" y="124" font-family="monospace" font-size="11" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">3</text>
+    <text x="45" y="59" font-family="monospace" font-size="11" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">4</text>
+    <text x="155" y="59" font-family="monospace" font-size="11" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">6</text>
+    <text x="100" y="19" font-family="monospace" font-size="11" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">12</text>
+  </svg>
+  <div class="gcap">12 edges — all comparable pairs.<br>The 3 missing edges are 2∥3, 3∥4, 4∥6.</div>
+</div>
+
+<div class="graph-fig">
+  <span class="gtitle" style="color:var(--rose2)">IG(D₁₂) — incomparable pairs</span>
+  <svg width="200" height="200" viewBox="0 0 200 200">
+    <!-- Only edges: (2,3), (3,4), (4,6) -->
+    <line x1="45" y1="120" x2="155" y2="120" stroke="#c86478" stroke-width="2.5" opacity=".9"/>
+    <line x1="155" y1="120" x2="45" y2="55" stroke="#c86478" stroke-width="2.5" opacity=".9"/>
+    <line x1="45" y1="55" x2="155" y2="55" stroke="#c86478" stroke-width="2.5" opacity=".9"/>
+    <circle cx="100" cy="175" r="14" fill="#1e2028" stroke="#2e3040" stroke-width="1.5"/>
+    <circle cx="45" cy="120" r="14" fill="#1e2028" stroke="#c86478" stroke-width="1.5"/>
+    <circle cx="155" cy="120" r="14" fill="#1e2028" stroke="#c86478" stroke-width="1.5"/>
+    <circle cx="45" cy="55" r="14" fill="#1e2028" stroke="#c86478" stroke-width="1.5"/>
+    <circle cx="155" cy="55" r="14" fill="#1e2028" stroke="#c86478" stroke-width="1.5"/>
+    <circle cx="100" cy="15" r="14" fill="#1e2028" stroke="#2e3040" stroke-width="1.5"/>
+    <text x="100" y="179" font-family="monospace" font-size="11" fill="#68645c" text-anchor="middle" dominant-baseline="middle">1</text>
+    <text x="45" y="124" font-family="monospace" font-size="11" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">2</text>
+    <text x="155" y="124" font-family="monospace" font-size="11" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">3</text>
+    <text x="45" y="59" font-family="monospace" font-size="11" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">4</text>
+    <text x="155" y="59" font-family="monospace" font-size="11" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">6</text>
+    <text x="100" y="19" font-family="monospace" font-size="11" fill="#68645c" text-anchor="middle" dominant-baseline="middle">12</text>
+  </svg>
+  <div class="gcap">Only 3 edges: 2∥3, 3∥4, 4∥6.<br>Elements 1 and 12 are isolated<br>(comparable to everything).</div>
+</div>
+</div>
+
+<div class="block ex">
+  <span class="lbl">More Examples</span>
+  <ul class="L">
+    <li><strong>Chain on n elements:</strong> CG = complete graph Kₙ (all pairs comparable). IG = empty graph.</li>
+    <li><strong>Antichain on n elements:</strong> CG = empty graph. IG = complete graph Kₙ.</li>
+    <li><strong>2+2 poset {a&lt;b, c&lt;d}:</strong> CG has 2 edges (a~b, c~d). IG has 4 edges (all cross-pairs a~c, a~d, b~c, b~d).</li>
+    <li><strong>Cliques in CG(P)</strong> = chains in P. <strong>Cliques in IG(P)</strong> = antichains in P.</li>
+  </ul>
+</div>
+
+<!-- ══ 3. INTERSECTION ══ -->
+<h2 id="intersection"><span class="sn">03</span>Intersection of Linear Orders</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Intersection of Linear Orders</span>
+  Given linear orders <span class="m">L₁, L₂, …, Lₖ</span> on the same set, their <strong>intersection</strong> is the partial order P where:
+  <div class="mb">x &lt; y  in P   iff   x appears before y in EVERY Lᵢ</div>
+  Written as permutations in one-line notation: x appears to the <em>left</em> of y in all k permutations.
+</div>
+
+<div class="block insight">
+  <span class="lbl">The Key Idea</span>
+  <p>Each linear order "votes" on the relative order of each pair (x, y). The relation x&lt;y ends up in the intersection only if it wins <strong>unanimously</strong> — every single Lᵢ places x before y.</p>
+  <p>If even one Lᵢ disagrees (puts y before x), then x and y are <strong>incomparable</strong> in the intersection.</p>
+</div>
+
+<div class="block note">
+  <span class="lbl">Why the intersection is always a valid poset</span>
+  Reflexivity: we use strict &lt; so no self-loops. Antisymmetry: if x before y in all orders, y cannot be before x in all orders simultaneously. Transitivity: if x before y in all, and y before z in all, then x before z in all. ✓
+</div>
+
+<h4>Step-by-step example</h4>
+<div class="block ex">
+  <span class="lbl">Example — Intersection of L₁ = [1,2,3,4] and L₂ = [2,1,4,3]</span>
+  <p>For each of the C(4,2)=6 pairs, check both:</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Pair</th><th>In L₁?</th><th>In L₂?</th><th>In intersection?</th></tr>
+    <tr><td>1 vs 2</td><td>1 before 2 ✓</td><td>2 before 1 ✗</td><td>1 ∥ 2</td></tr>
+    <tr><td>1 vs 3</td><td>1 before 3 ✓</td><td>1 before 3 ✓</td><td><span class="yes">1 &lt; 3</span></td></tr>
+    <tr><td>1 vs 4</td><td>1 before 4 ✓</td><td>1 before 4 ✓</td><td><span class="yes">1 &lt; 4</span></td></tr>
+    <tr><td>2 vs 3</td><td>2 before 3 ✓</td><td>2 before 3 ✓</td><td><span class="yes">2 &lt; 3</span></td></tr>
+    <tr><td>2 vs 4</td><td>2 before 4 ✓</td><td>2 before 4 ✓</td><td><span class="yes">2 &lt; 4</span></td></tr>
+    <tr><td>3 vs 4</td><td>3 before 4 ✓</td><td>4 before 3 ✗</td><td>3 ∥ 4</td></tr>
+  </table></div>
+  <p><strong>Result:</strong> {1&lt;3, 1&lt;4, 2&lt;3, 2&lt;4}, with 1∥2 and 3∥4. The poset has two elements {1,2} at the bottom and {3,4} at the top, every bottom below every top, but elements within each level are incomparable.</p>
+  <div style="display:flex;justify-content:center;margin:.8rem 0">
+  <svg width="150" height="110" viewBox="0 0 150 110">
+    <line x1="35" y1="85" x2="35" y2="25" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+    <line x1="35" y1="85" x2="115" y2="25" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+    <line x1="115" y1="85" x2="35" y2="25" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+    <line x1="115" y1="85" x2="115" y2="25" stroke="#4ab8a8" stroke-width="1.5" opacity=".6"/>
+    <circle cx="35" cy="85" r="14" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="115" cy="85" r="14" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="35" cy="25" r="14" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <circle cx="115" cy="25" r="14" fill="#1e2028" stroke="#4ab8a8" stroke-width="1.5"/>
+    <text x="35" y="89" font-family="monospace" font-size="12" fill="#f0c060" text-anchor="middle" dominant-baseline="middle">1</text>
+    <text x="115" y="89" font-family="monospace" font-size="12" fill="#f0c060" text-anchor="middle" dominant-baseline="middle">2</text>
+    <text x="35" y="29" font-family="monospace" font-size="12" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">3</text>
+    <text x="115" y="29" font-family="monospace" font-size="12" fill="#e8e4dc" text-anchor="middle" dominant-baseline="middle">4</text>
+  </svg>
+  </div>
+</div>
+
+<!-- ══ 4. DIMENSION ══ -->
+<h2 id="dimension"><span class="sn">04</span>Dimension of a Poset</h2>
+
+<div class="block def">
+  <span class="lbl">Definition — Dimension dim(P)</span>
+  The <strong>dimension</strong> of a poset P, written <span class="m">dim(P)</span>, is the <em>minimum</em> number of linear extensions of P whose intersection equals P:
+  <div class="mb">dim(P)  =  min{k : ∃ linear extensions L₁,…,Lₖ  with  L₁ ∩ ··· ∩ Lₖ = P}</div>
+  A set {L₁,…,Lₖ} of linear extensions realizing this minimum is called a <strong>realizer</strong> of P.
+</div>
+
+<div class="block warn">
+  <span class="lbl">Only linear extensions count</span>
+  The Lᵢ must be <em>linear extensions of P</em> — total orders consistent with P (if x&lt;y in P then x before y in every Lᵢ). This guarantees the intersection is always P or coarser than P.
+</div>
+
+<h3 id="intuition">Geometric Intuition</h3>
+
+<div class="block insight">
+  <span class="lbl">Dimension = number of "axes" needed to represent P</span>
+  <p>A realizer L₁,…,Lₖ assigns each element x a coordinate vector — its position in each Lᵢ:</p>
+  <div class="mb">x  →  (position in L₁,  position in L₂,  …,  position in Lₖ)</div>
+  <p>Then <span class="m">x &lt; y in P</span> iff <span class="m">x's position is smaller than y's in EVERY coordinate</span>.</p>
+  <p>This embeds P into a product of k chains (a k-dimensional grid). dim(P) = minimum number of axes needed.</p>
+  <ul class="L">
+    <li><strong>dim = 1:</strong> P is a line — one axis suffices, P is already a total order.</li>
+    <li><strong>dim = 2:</strong> P fits in a 2D plane — two axes, like a grid.</li>
+    <li><strong>dim = n:</strong> P genuinely needs n-dimensional space.</li>
+  </ul>
+</div>
+
+<div class="block ex">
+  <span class="lbl">Geometric example — 2+2 poset in 2D</span>
+  <p>Realizer for {a&lt;b, c&lt;d}: L₁=[a,b,c,d], L₂=[c,d,a,b].</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Element</th><th>Pos in L₁</th><th>Pos in L₂</th><th>2D point</th><th>Compared to others</th></tr>
+    <tr><td>a</td><td>1</td><td>3</td><td>(1,3)</td><td>a&lt;b since (1,3)&lt;(2,4) componentwise ✓</td></tr>
+    <tr><td>b</td><td>2</td><td>4</td><td>(2,4)</td><td>b∥c since (2,4) vs (3,1): 2&lt;3 but 4&gt;1 ✗</td></tr>
+    <tr><td>c</td><td>3</td><td>1</td><td>(3,1)</td><td>c&lt;d since (3,1)&lt;(4,2) componentwise ✓</td></tr>
+    <tr><td>d</td><td>4</td><td>2</td><td>(4,2)</td><td>a∥d since (1,3) vs (4,2): 1&lt;4 but 3&gt;2 ✗</td></tr>
+  </table></div>
+  <p>The two chains {a&lt;b} and {c&lt;d} are "oriented perpendicular to each other" in 2D space. That is exactly why they are incomparable — neither is componentwise smaller.</p>
+</div>
+
+<h3 id="realizers">The Two Requirements for a Realizer</h3>
+
+<div class="block thm">
+  <span class="lbl">What a Realizer Must Do</span>
+  {L₁,…,Lₖ} is a realizer of P iff it satisfies:
+  <ol class="L">
+    <li><strong>(A) Preserve all relations:</strong> If x &lt; y in P, then x before y in ALL Lᵢ. (Automatic since each Lᵢ is a linear <em>extension</em> of P.)</li>
+    <li><strong>(B) Separate all incomparable pairs:</strong> If x ∥ y in P, then some Lᵢ has x before y AND some Lⱼ has y before x — so they don't accidentally end up comparable in the intersection.</li>
+  </ol>
+  <strong>Condition (B) is the binding constraint.</strong> For every incomparable pair, the realizer must "cover" it from both directions.
+</div>
+
+<h4>Dimension of common posets</h4>
+<table class="dim-table">
+  <tr><th>Poset</th><th>dim</th><th>Realizer (verified)</th></tr>
+  <tr><td>Total order (chain)</td><td>1</td><td>L₁ = the chain itself</td></tr>
+  <tr><td>Antichain on 2+ elements</td><td>2</td><td>L₁ = any order, L₂ = reverse</td></tr>
+  <tr><td>V-poset {a&lt;b, a&lt;c}</td><td>2</td><td>L₁=[a,b,c], L₂=[a,c,b]</td></tr>
+  <tr><td>Diamond {a&lt;b,a&lt;c,b&lt;d,c&lt;d}</td><td>2</td><td>L₁=[a,b,c,d], L₂=[a,c,b,d]</td></tr>
+  <tr><td>2+2 poset {a&lt;b, c&lt;d}</td><td>2</td><td>L₁=[a,b,c,d], L₂=[c,d,a,b]</td></tr>
+  <tr><td>Standard example Sₙ</td><td>n</td><td>See below</td></tr>
+</table>
+
+<div class="block note">
+  <span class="lbl">Every finite poset has a realizer</span>
+  By Szpilrajn's theorem, every partial order can be extended to a linear order. The set of ALL linear extensions of P has intersection equal to P. So dim(P) ≤ e(P) (number of linear extensions). In practice dim(P) is usually very small.
+</div>
+
+<h3 id="standard">The Standard Example Sₙ</h3>
+
+<div class="block def">
+  <span class="lbl">Definition — Standard Example Sₙ</span>
+  Sₙ has <span class="m">2n</span> elements <span class="m">{a₁,…,aₙ, b₁,…,bₙ}</span> with the single rule:
+  <div class="mb">aᵢ &lt; bⱼ   iff   i ≠ j</div>
+  So each aᵢ is below every bⱼ <em>except</em> bᵢ. Each diagonal pair (aᵢ, bᵢ) is incomparable.
+  <br><br>
+  <strong>dim(Sₙ) = n.</strong>
+</div>
+
+<div class="block ex">
+  <span class="lbl">S₂ is the 2+2 poset</span>
+  <p>S₂ = {a₁,a₂,b₁,b₂} with a₁&lt;b₂ and a₂&lt;b₁. Incomparable: a₁∥b₁, a₂∥b₂.</p>
+  <p>Relabel a₁→a, a₂→c, b₁→d, b₂→b: we get {a&lt;b, c&lt;d} — exactly the 2+2 poset.</p>
+  <p><strong>dim(S₂) = 2.</strong> Realizer: L₁=[a₁,b₂,a₂,b₁], L₂=[a₂,b₁,a₁,b₂]. ✓</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">S₃ — 6 elements, dim = 3</span>
+  <p>S₃ = {a₁,a₂,a₃,b₁,b₂,b₃}. Relations: a₁&lt;b₂,b₃; a₂&lt;b₁,b₃; a₃&lt;b₁,b₂. Incomparable: (a₁,b₁), (a₂,b₂), (a₃,b₃) and all aᵢ∥aⱼ, bᵢ∥bⱼ.</p>
+  <p>The 3 diagonal pairs each need separate linear extensions → dim ≥ 3. And an explicit 3-element realizer exists → dim = 3.</p>
+</div>
+
+<div class="block thm">
+  <span class="lbl">Why dim(Sₙ) = n — the key argument</span>
+  <p><strong>Lower bound (dim ≥ n):</strong> Consider the diagonal pair (aᵢ, bᵢ) — they are incomparable, so the realizer must have some Lₖ with bᵢ before aᵢ. But since aⱼ&lt;bᵢ for all j≠i, every linear extension must have aⱼ before bᵢ. So in Lₖ: all a₁,…,aᵢ₋₁,aᵢ₊₁,…,aₙ come before bᵢ, then bᵢ, then aᵢ. This extension is "dedicated" to separating pair (aᵢ,bᵢ). Since the n diagonal pairs are independent, you need at least n such dedicated extensions.</p>
+  <p><strong>Upper bound (dim ≤ n):</strong> An explicit n-element realizer can be constructed.</p>
+</div>
+
+<!-- ══ 5. WORKED EXAMPLES ══ -->
+<h2 id="worked"><span class="sn">05</span>Worked Examples</h2>
+
+<div class="block ex">
+  <span class="lbl">🟢 Example 1 — Compute CG and IG of the 2+2 poset</span>
+  <p><strong>Poset:</strong> {a&lt;b, c&lt;d}, elements {a,b,c,d}.</p>
+  <p><strong>Comparable pairs:</strong> (a,b) and (c,d). CG has exactly 2 edges: a~b and c~d.</p>
+  <p><strong>Incomparable pairs:</strong> All 4 cross-pairs between {a,b} and {c,d}: a~c, a~d, b~c, b~d. IG has 4 edges.</p>
+  <p>Check: 2+4 = 6 = C(4,2). ✓ CG + IG = complete graph K₄.</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">🟡 Example 2 — Build an intersection from scratch</span>
+  <p><strong>Given:</strong> L₁=[a,b,c,d], L₂=[b,a,d,c].</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Pair</th><th>L₁</th><th>L₂</th><th>Intersection</th></tr>
+    <tr><td>{a,b}</td><td>a before b</td><td>b before a</td><td>a ∥ b</td></tr>
+    <tr><td>{a,c}</td><td>a before c</td><td>a before c</td><td><span class="yes">a &lt; c</span></td></tr>
+    <tr><td>{a,d}</td><td>a before d</td><td>a before d</td><td><span class="yes">a &lt; d</span></td></tr>
+    <tr><td>{b,c}</td><td>b before c</td><td>b before c</td><td><span class="yes">b &lt; c</span></td></tr>
+    <tr><td>{b,d}</td><td>b before d</td><td>b before d</td><td><span class="yes">b &lt; d</span></td></tr>
+    <tr><td>{c,d}</td><td>c before d</td><td>d before c</td><td>c ∥ d</td></tr>
+  </table></div>
+  <p><strong>Result:</strong> {a&lt;c, a&lt;d, b&lt;c, b&lt;d} with a∥b and c∥d. This is the same "2-below-2" structure as the first intersection example.</p>
+</div>
+
+<div class="block ex">
+  <span class="lbl">🔴 Example 3 — Verify a realizer for the diamond</span>
+  <p><strong>Poset:</strong> Diamond {a&lt;b, a&lt;c, b&lt;d, c&lt;d} with b∥c.</p>
+  <p><strong>Proposed realizer:</strong> L₁=[a,b,c,d], L₂=[a,c,b,d].</p>
+  <p><strong>Check (A) — valid linear extensions?</strong></p>
+  <ul class="L">
+    <li>a&lt;b: L₁ pos 1&lt;2 ✓, L₂ pos 1&lt;3 ✓</li>
+    <li>a&lt;c: L₁ pos 1&lt;3 ✓, L₂ pos 1&lt;2 ✓</li>
+    <li>b&lt;d: L₁ pos 2&lt;4 ✓, L₂ pos 3&lt;4 ✓</li>
+    <li>c&lt;d: L₁ pos 3&lt;4 ✓, L₂ pos 2&lt;4 ✓</li>
+  </ul>
+  <p><strong>Check (B) — incomparable pair (b,c) separated?</strong></p>
+  <ul class="L">
+    <li>L₁: b at pos 2, c at pos 3 → b before c.</li>
+    <li>L₂: c at pos 2, b at pos 3 → c before b.</li>
+  </ul>
+  <p>L₁ and L₂ disagree on (b,c) → b∥c in intersection. ✓</p>
+  <p><span class="yes"><strong>Valid realizer. dim(diamond) = 2.</strong></span></p>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 6. PRACTICE ══ -->
+<h2 id="practice"><span class="sn">06</span>Try It Yourself</h2>
+
+<div class="practice-header">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+  Practice Problems — Comparability Graphs, Intersection, Dimension
+</div>
+<div class="practice-wrap">
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q1</span><span>For the chain 1&lt;2&lt;3&lt;4, describe CG(P) and IG(P) completely.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>CG(P):</strong> All pairs in a chain are comparable. CG = complete graph K₄ with C(4,2) = 6 edges.</div>
+  <div class="step"><strong>IG(P):</strong> No pairs are incomparable. IG = empty graph, 0 edges.</div>
+  <p><span class="ans-box">CG = K₄ (6 edges). IG = empty (0 edges).</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q2</span><span>Compute the intersection of L₁=[1,3,2,4] and L₂=[3,1,4,2]. Which pairs end up incomparable?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step">Check each pair — does x appear before y in BOTH?</div>
+  <ul>
+    <li>(1,2): L₁ pos 1&lt;3 ✓; L₂ pos 2&lt;4 ✓ → <strong>1&lt;2</strong></li>
+    <li>(1,3): L₁ pos 1&lt;2 ✓; L₂ pos 2&gt;1 ✗ (3 is at pos 1, before 1) → 1∥3</li>
+    <li>(1,4): L₁ pos 1&lt;4 ✓; L₂ pos 2&lt;3 ✓ → <strong>1&lt;4</strong></li>
+    <li>(2,3): L₁ pos 3&gt;2 ✗ (3 before 2 in L₁) → 2∥3</li>
+    <li>(2,4): L₁ pos 3&lt;4 ✓; L₂ pos 4&gt;3 ✗ (4 before 2 in L₂) → 2∥4</li>
+    <li>(3,4): L₁ pos 2&lt;4 ✓; L₂ pos 1&lt;3 ✓ → <strong>3&lt;4</strong></li>
+  </ul>
+  <p>Relations: {1&lt;2, 1&lt;4, 3&lt;4}. Incomparable: 1∥3, 2∥3, 2∥4.</p>
+  <p><span class="ans-box">Intersection = {1&lt;2, 1&lt;4, 3&lt;4}. This is a skew/N-like poset.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q3</span><span>Show dim(antichain on 4 elements) = 2 by giving an explicit realizer.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>dim ≥ 2:</strong> There are incomparable pairs (e.g. a∥b), so at least 2 extensions are needed.</div>
+  <div class="step"><strong>Explicit realizer:</strong> L₁=[a,b,c,d] and L₂=[d,c,b,a] (the reverse). For any pair (x,y): in L₁ x comes before y, in L₂ y comes before x. So no pair satisfies "x before y in BOTH" — the intersection is the empty poset = antichain. ✓</div>
+  <p><span class="ans-box">dim = 2. Realizer: L₁=[a,b,c,d], L₂=[d,c,b,a].</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q4</span><span>Why does a total order (chain) have dim = 1?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step">A total order is already a linear extension of itself. The intersection of {L} where L is the chain is just L — which equals the chain P. So one linear extension suffices.</div>
+  <div class="step">Cannot do it with 0 extensions (the minimum is always ≥ 1). And since all pairs are comparable (no incomparable pairs to separate), condition (B) is vacuously satisfied with a single extension.</div>
+  <p><span class="ans-box">dim(chain) = 1. The chain is its own realizer.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q5</span><span>Verify that L₁=[a,b,c], L₂=[a,c,b] is a valid realizer for the V-poset {a&lt;b, a&lt;c} with b∥c.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Both are linear extensions?</strong> a before b: L₁ pos 1&lt;2 ✓, L₂ pos 1&lt;3 ✓. a before c: L₁ pos 1&lt;3 ✓, L₂ pos 1&lt;2 ✓. ✓</div>
+  <div class="step"><strong>Incomparable pair (b,c) separated?</strong> L₁ has b before c (pos 2&lt;3). L₂ has c before b (pos 2&lt;3). Disagree → b∥c in intersection. ✓</div>
+  <div class="step"><strong>Intersection = V-poset?</strong> a&lt;b ✓, a&lt;c ✓, b∥c ✓.</div>
+  <p><span class="ans-box">Valid realizer. dim(V-poset) = 2.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q6</span><span>Identify the standard example S₂. What familiar poset is it? What is its dimension?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>S₂</strong> has elements {a₁,a₂,b₁,b₂} with a₁&lt;b₂ and a₂&lt;b₁. Incomparable: a₁∥b₁, a₂∥b₂, a₁∥a₂, b₁∥b₂.</div>
+  <div class="step"><strong>Identification:</strong> Relabel a₁→a, a₂→c, b₁→d, b₂→b: get {a&lt;b, c&lt;d} = the <strong>2+2 poset</strong>.</div>
+  <div class="step"><strong>dim(S₂) = 2.</strong></div>
+  <p><span class="ans-box">S₂ = 2+2 poset. dim = 2.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q7</span><span>Explain in your own words: why does dim(Sₙ) ≥ n? What forces you to need at least n linear extensions?</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <p>The n diagonal pairs (a₁,b₁),…,(aₙ,bₙ) are all incomparable. Focus on pair (aᵢ,bᵢ):</p>
+  <div class="step">Since aᵢ∥bᵢ, the realizer needs some Lₖ with bᵢ before aᵢ.</div>
+  <div class="step">But since aⱼ&lt;bᵢ for all j≠i, every linear extension must place aⱼ before bᵢ. So in Lₖ the order is: (all aⱼ, j≠i) …then bᵢ …then aᵢ. This extension is "dedicated" to separating (aᵢ,bᵢ).</div>
+  <div class="step">Each of the n pairs needs its own dedicated extension, and these requirements are incompatible to combine. So ≥ n extensions are required.</div>
+  <p><span class="ans-box">dim(Sₙ) ≥ n because each diagonal pair (aᵢ,bᵢ) forces a dedicated linear extension, and the n requirements are independent.</span></p>
+</div>
+</div>
+
+<div class="pq">
+<div class="pq-q"><span class="qn">Q8</span><span>Compute the intersection of σ=[2,3,1,4] and τ=[1,2,3,4]. Give the resulting poset as a list of relations.</span><span class="arr">▼</span></div>
+<div class="pq-a"><span class="al">Solution</span>
+  <div class="step"><strong>Positions in σ=[2,3,1,4]:</strong> element 2 at pos 1, element 3 at pos 2, element 1 at pos 3, element 4 at pos 4.</div>
+  <div class="step"><strong>Positions in τ=[1,2,3,4]:</strong> element 1 at pos 1, element 2 at pos 2, element 3 at pos 3, element 4 at pos 4.</div>
+  <div class="step"><strong>Check each pair:</strong>
+  <br>(1,2): σ has 2 before 1 ✗ → 1∥2
+  <br>(1,3): σ has 3 before 1 ✗ → 1∥3
+  <br>(1,4): σ: 1 at pos 3, 4 at pos 4 ✓; τ: 1 at pos 1, 4 at pos 4 ✓ → <strong>1&lt;4</strong>
+  <br>(2,3): σ: 2 at pos 1, 3 at pos 2 ✓; τ: 2 at pos 2, 3 at pos 3 ✓ → <strong>2&lt;3</strong>
+  <br>(2,4): σ: 2 at pos 1, 4 at pos 4 ✓; τ: 2 at pos 2, 4 at pos 4 ✓ → <strong>2&lt;4</strong>
+  <br>(3,4): σ: 3 at pos 2, 4 at pos 4 ✓; τ: 3 at pos 3, 4 at pos 4 ✓ → <strong>3&lt;4</strong></div>
+  <p>Note: 2&lt;4 is implied by 2&lt;3&lt;4, so the Hasse diagram has: chain 2&lt;3&lt;4, and element 1 which only satisfies 1&lt;4 directly. Elements 1 and 2 are incomparable; 1 and 3 are incomparable.</p>
+  <p><span class="ans-box">Intersection: {1&lt;4, 2&lt;3, 2&lt;4, 3&lt;4}. Hasse: chain 2&lt;3&lt;4, with 1 only below 4.</span></p>
+</div>
+</div>
+
+</div><!-- end practice-wrap -->
+
+<hr class="divider">
+
+<!-- ══ 7. HOMEWORK ══ -->
+<h2 id="hw"><span class="sn">07</span>Homework</h2>
+
+<div class="block hw">
+  <span class="lbl">HW — Due Wednesday May 6</span>
+  <p><strong>Key definitions to recall:</strong></p>
+  <ul class="L">
+    <li><strong>CG(P):</strong> x~y iff x&lt;y or y&lt;x in P.</li>
+    <li><strong>IG(P):</strong> x~y iff x∥y in P. (Complement of CG(P).)</li>
+    <li><strong>Intersection of linear orderings:</strong> x&lt;y in L₁∩···∩Lₖ iff x appears to the left of y in every Lᵢ written in one-line notation.</li>
+  </ul>
+  <p><strong>Connections:</strong></p>
+  <ul class="L">
+    <li>Cliques in CG(P) = chains in P.</li>
+    <li>Cliques in IG(P) = antichains in P.</li>
+    <li>Dimension = minimum k such that k linear extensions of P intersect to give P.</li>
+    <li>A realizer must preserve all of P's relations AND separate every incomparable pair.</li>
+  </ul>
+</div>
+
+<hr class="divider">
+
+<!-- ══ 8. CHEAT SHEET ══ -->
+<h2 id="cheat"><span class="sn">08</span>One-Page Cheat Sheet</h2>
+<div class="cheat-sheet">
+  <div class="cheat-title">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Week 6 Cheat Sheet
+  </div>
+  <div class="cheat-grid">
+    <div class="cheat-section">
+      <h5>Comparability Graphs</h5>
+      <ul>
+        <li><strong>CG(P):</strong> x~y iff x comparable to y</li>
+        <li><strong>IG(P):</strong> x~y iff x∥y (complement of CG)</li>
+        <li>CG(P) + IG(P) = complete graph Kₙ</li>
+        <li>Chain: CG=Kₙ, IG=empty</li>
+        <li>Antichain: CG=empty, IG=Kₙ</li>
+        <li>Cliques in CG = chains in P</li>
+        <li>Cliques in IG = antichains in P</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Intersection of Orders</h5>
+      <ul>
+        <li>x&lt;y in L₁∩···∩Lₖ iff x left of y in ALL Lᵢ</li>
+        <li>If any Lᵢ disagrees: x∥y in intersection</li>
+        <li>Use one-line permutation notation</li>
+        <li>Intersection of total orders = valid poset</li>
+      </ul>
+    </div>
+    <div class="cheat-section">
+      <h5>Dimension dim(P)</h5>
+      <ul>
+        <li>min k linear extensions whose intersection = P</li>
+        <li>Realizer: must (A) preserve P's relations and (B) separate every incomparable pair</li>
+        <li>Geometric: k axes, x&lt;y iff componentwise &lt;</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Key Dimension Values</h5>
+      <ul>
+        <li>dim = 1: total order (chain)</li>
+        <li>Any antichain n≥2: dim = 2</li>
+        <li>V-poset, Λ-poset, diamond, 2+2: dim = 2</li>
+        <li>Standard example Sₙ: dim = n</li>
+        <li>S₂ = 2+2 poset, dim = 2</li>
+      </ul>
+      <h5 style="margin-top:.8rem">Standard Example Sₙ</h5>
+      <ul>
+        <li>{a₁..aₙ, b₁..bₙ}: aᵢ&lt;bⱼ iff i≠j</li>
+        <li>n incomparable diagonal pairs (aᵢ,bᵢ)</li>
+        <li>dim(Sₙ) = n: each pair needs dedicated extension</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Math 100 · Dartmouth College · Spring 2026 · Week 6 — Comparability Graphs &amp; Dimension</div>
+</main>
+</div>
+<script>
+document.querySelectorAll('.pq-q').forEach(function(q){
+  q.addEventListener('click',function(){
+    var a=this.parentElement.querySelector('.pq-a');
+    var open=this.classList.toggle('open');
+    a.classList.toggle('vis',open);
+  });
+});
+var links=document.querySelectorAll('nav a');
+function setActive(){
+  var best=null;
+  document.querySelectorAll('h2[id],h3[id]').forEach(function(s){
+    if(s.getBoundingClientRect().top<120) best=s.id;
+  });
+  links.forEach(function(l){l.classList.toggle('active',l.getAttribute('href')==='#'+best);});
+}
+window.addEventListener('scroll',setActive);
+setActive();
+</script>
+</body>
+</html>
